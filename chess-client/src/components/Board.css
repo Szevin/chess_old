@@ -1,0 +1,82 @@
+.board {
+  width: 528px;
+  height: 528px;
+  margin: auto;
+  border: 0.5rem solid #333;
+}
+.black, .white {
+  float: left;
+  width: 64px;
+  height: 64px;
+  font-size:50px;
+  text-align:center;
+  display: table-cell;
+  vertical-align:middle;
+}
+.black {
+  background-color: #999;
+}
+.white {
+  background-color: #fff;
+}
+
+.coord-letter {
+  width: 64px;
+  height: 64px;
+  font-size: 12px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 2.5rem;
+  text-transform: capitalize;
+  margin: auto;
+  text-align: center;
+  float: left;
+}
+
+.coord-number {
+  width: 64px;
+  height: 64px;
+  font-size: 12px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 2.5rem;
+  text-transform: capitalize;
+  margin: auto;
+  text-align: center;
+  float: middle;
+}
+
+.letter-coords {
+  justify-content: center;
+  width: 528px;
+  margin: auto;
+}
+
+.prev-moves {
+  width: 60px;
+  margin-left: 2rem;
+}
+
+.prev-moves li {
+  margin: 0 0.5rem;
+  list-style: none;
+  text-align: center;
+}
+
+html {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.last {
+  background-color: rgb(255, 236, 69);
+}
+
+.check {
+  background-color: rgb(255, 0, 0);
+}
+
+.valid {
+  background-color: turquoise;
+}
