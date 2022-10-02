@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "target": "ES5",
+    "module": "ES2015",
+    "declaration": true,
+    "outDir": "./dist",
+    "moduleResolution": "node"
+  },
+  "ts-node": {
+      "esm": true,
+  },
+}

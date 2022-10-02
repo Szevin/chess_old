@@ -1,4 +1,5 @@
-import { ColorTypes } from '../../models/Piece'
+import { ColorTypes } from 'chess-common'
+import React from 'react'
 
 /* eslint-disable max-len */
 const QueenSvg = ({ color }: { color: ColorTypes }) => (

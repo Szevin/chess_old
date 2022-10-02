@@ -1,0 +1,8 @@
+.vscode
+build
+node_modules
+.env
+lib
+lib-esm
+package-lock.json
+_bundles

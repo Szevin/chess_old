@@ -2,17 +2,16 @@ import './Board.css'
 
 import classNames from 'classnames'
 import React from 'react'
-import { Annotation } from '../models/Position'
+import { Annotation, Move } from 'chess-common'
 import PieceNode from './PieceNode'
-import { useAppSelector } from '../api'
-import { getPiece, Move } from '../api/redux/board'
+import { useAppSelector } from '../store'
 
 // eslint-disable import/no-named-as-default
 /* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
-  const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+  const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
   const [selectedPosition, setselectedPosition] = React.useState<Annotation | null>(null)
   const [validMoves, setValidMoves] = React.useState<Array<Annotation>>([])
@@ -24,7 +23,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
       setValidMoves([])
       return
     }
-    const piece = getPiece(board, selectedPosition)
+    const piece = board.getPiece(selectedPosition)
     if (!piece) {
       setValidMoves([])
       return
@@ -35,7 +34,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
 
   const handleMove = (to: Annotation) => {
     if (!selectedPosition) return
-    const piece = getPiece(board, selectedPosition)
+    const piece = board.getPiece(selectedPosition)
     if (!piece) {
       return
     }
@@ -76,7 +75,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
                     valid: validMoves.includes((letter + (row + 1)) as Annotation),
                     // last: [board.getLastMove()?.to.annotation, board.getLastMove()?.from.annotation].includes((letter + (row + 1)) as Annotation),
                     check: board.isCheck
-                    && getPiece(board, `${letter}${row + 1}` as Annotation)?.name === 'king',
+                    && board.getPiece(`${letter}${row + 1}` as Annotation)?.name === 'king',
                   })}
                   key={letter + row}
                 />

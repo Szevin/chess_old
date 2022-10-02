@@ -1,36 +1,14 @@
 {
-  "name": "chess-server",
-  "version": "1.0.0",
-  "description": "chess server",
-  "main": "index.ts",
+  "name": "chess",
+  "workspaces": [
+    "chess-client",
+    "chess-server",
+    "chess-common"
+  ],
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.ts",
-    "build": "pkg . --target node14-linux-x64 --out-path dist"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Szevin/chess-server.git"
-  },
-  "author": "Geiger Kevin (FOT0IZ)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Szevin/chess-server/issues"
-  },
-  "bin": "./index.ts",
-  "homepage": "https://github.com/Szevin/chess-server#readme",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.1",
-    "express": "^4.18.1",
-    "mongoose": "^6.5.1",
-    "pkg": "^5.8.0",
-    "swagger-jsdoc": "^6.2.5",
-    "swagger-ui-express": "^4.5.0"
-  },
-  "devDependencies": {
-    "@types/socket.io": "^3.0.2",
-    "@types/swagger-jsdoc": "^6.0.1",
-    "@types/swagger-ui-express": "^4.1.3"
+    "start": "run-p client server",
+    "client": "cd chess-client && npm start",
+    "server": "cd chess-server && npm start"
   }
 }

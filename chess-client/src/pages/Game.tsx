@@ -1,5 +1,6 @@
+import React from 'react'
 import { useParams } from 'react-router'
-import { useSocket } from '../api/socket'
+import { useSocket } from '../store/socket'
 import BoardNode from '../components/BoardNode'
 
 const Game = () => {

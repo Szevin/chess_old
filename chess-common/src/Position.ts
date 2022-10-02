@@ -10,10 +10,10 @@ class Position {
 
   y: number
 
-  constructor(x: number, y: number) {
-    this.x = x
-    this.y = y
-    this.annotation = `${COLS[x - 1]}${y}` as Annotation
+  constructor(ann: Annotation) {
+    this.x = COLS.indexOf(ann[0]) +1
+    this.y = Number(ann[1])
+    this.annotation = ann
   }
 
   isValid() {
@@ -44,13 +44,6 @@ class Position {
     directions.forEach((direction) => {
       this.addDirection(direction)
     })
-  }
-
-  fromAnnotation(annotation: Annotation) {
-    this.x = COLS.indexOf(annotation[0]) + 1
-    this.y = parseInt(annotation[1], 10)
-    this.annotation = annotation
-    return this
   }
 
   // distanceTo(to: Position) {

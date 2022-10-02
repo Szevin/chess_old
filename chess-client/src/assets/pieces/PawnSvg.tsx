@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
-import { ColorTypes } from '../../models/Piece'
+import { ColorTypes } from 'chess-common'
+import React from 'react'
 
 const PawnSvg = ({ color }: { color:ColorTypes }) => (
   <>

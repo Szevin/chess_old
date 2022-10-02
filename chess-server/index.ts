@@ -1,3 +1,4 @@
+import { Board, Move } from 'chess-common';
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
@@ -5,12 +6,12 @@ import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import dotenv from 'dotenv';
 
-import boardRoute from './api/routes/board';
-import userRoute from './api/routes/user';
-import { Board, Move, Piece } from './models/Board';
+// import boardRoute from './api/routes/board.js';
+// import userRoute from './api/routes/user.js';
 
-require('dotenv').config()
+dotenv.config()
 const port = process.env.PORT ?? 3030
 const app = express()
 
@@ -38,8 +39,8 @@ app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 //END Swagger Info
 
 //REGISTER ROUTES
-app.use('/api/user', userRoute)
-app.use('/api/board', boardRoute)
+// app.use('/api/user', userRoute)
+// app.use('/api/board', boardRoute)
 
 interface ServerToClientEvents {
   board: (board: Board) => void;
@@ -96,7 +97,7 @@ io.on('connection', (socket) => {
     console.log('user disconnected')
     boards = boards.map(board => {
       if (board.players.includes(socket.id)) {
-        board.players = board.players.filter(player => player !== socket.id)
+        board.players = board.players.filter((player) => player !== socket.id)
         io.to(board.id).emit('board', board)
       }
       return board

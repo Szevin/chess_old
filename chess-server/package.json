@@ -1,0 +1,35 @@
+{
+  "name": "chess",
+  "version": "1.0.0",
+  "description": "chess server",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.ts",
+    "build": "pkg . --target node14-linux-x64 --out-path dist"
+  },
+  "type": "module",
+  "author": "Geiger Kevin (FOT0IZ)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Szevin/chess-server/issues"
+  },
+  "bin": "./index.ts",
+  "homepage": "https://github.com/Szevin/chess-server#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.5.1",
+    "pkg": "^5.8.0",
+    "swagger-jsdoc": "^6.2.5",
+    "swagger-ui-express": "^4.5.0",
+    "chess-common": "file:../chess-common",
+    "eslint-config-chess": "file:../chess-eslint"
+  },
+  "devDependencies": {
+    "@types/socket.io": "^3.0.2",
+    "@types/swagger-jsdoc": "^6.0.1",
+    "@types/swagger-ui-express": "^4.1.3"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "chess-common",
+  "version": "0.0.1",
+  "description": "Common code for chess",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "dependencies": {
+    "eslint-config-chess": "file:../chess-eslint"
+  }
+}
