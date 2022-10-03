@@ -5,6 +5,7 @@
     "chess-server",
     "chess-common"
   ],
+  "private": true,
   "type": "module",
   "scripts": {
     "start": "run-p client server",
