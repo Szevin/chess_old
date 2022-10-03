@@ -20,14 +20,12 @@ const boardSlice = createSlice({
   name: 'board',
   initialState,
   reducers: {
-    addMove(state, action: PayloadAction<Move>) {
-      state.moves.push(action.payload)
-    },
     setBoard(state, action: PayloadAction<Board>) {
-      Object.assign(state, action.payload)
+      const board = Object.assign(new Board(action.payload.id), action.payload)
+      Object.assign(state, board)
     },
   },
 })
 
-export const { addMove, setBoard } = boardSlice.actions
+export const { setBoard } = boardSlice.actions
 export default boardSlice.reducer

@@ -24,8 +24,7 @@
     "pkg": "^5.8.0",
     "swagger-jsdoc": "^6.2.5",
     "swagger-ui-express": "^4.5.0",
-    "chess-common": "file:../chess-common",
-    "eslint-config-chess": "file:../chess-eslint"
+    "chess-common": "file:../chess-common"
   },
   "devDependencies": {
     "@types/socket.io": "^3.0.2",

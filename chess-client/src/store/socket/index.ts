@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client'
+import { Move } from 'chess-common'
 import { useAppDispatch } from '..'
 import { setBoard } from '../redux/board'
-import { Move } from 'chess-common'
 
 const socket = io('http://localhost:3030')
 
