@@ -4,25 +4,21 @@ export type PieceTypes = 'rook' | 'knight' | 'bishop' | 'queen' | 'king' | 'pawn
 export type ColorTypes = 'white' | 'black'
 export type PieceUnicodes = '♖' | '♘' | '♗' | '♕' | '♔' | '♙' | '♜' | '♞' | '♝' | '♛' | '♚' | '♟' | null
 
+export interface PieceMoves {
+  empty: Annotation[];
+  captures: Annotation[];
+  valid: Annotation[];
+}
+
 class Piece {
   name: PieceTypes
-
   position: Annotation
-
   color: ColorTypes
-
   canTakeOwn: boolean
-
   isBlockable: boolean
-
   range: number
-
   unicode: PieceUnicodes
-
-  moves: Annotation[]
-
-  captures: Annotation[]
-
+  moves: PieceMoves
   directions: {
     move: Direction[][];
     capture: Direction[][];
@@ -32,8 +28,11 @@ class Piece {
     this.name = name;
     this.color = color;
     this.position = position;
-    this.moves = [];
-    this.captures = [];
+    this.moves = {
+      empty: [],
+      captures: [],
+      valid: [],
+    }
     this.directions = getPieceDirections(name, color);
     this.unicode = getPieceUnicode(name, color);
     this.range = getPieceRange(name);

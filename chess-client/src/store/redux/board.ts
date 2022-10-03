@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { Board, Move } from 'chess-common'
+import { Board } from 'chess-common'
 
 const initialState = {
   id: '',

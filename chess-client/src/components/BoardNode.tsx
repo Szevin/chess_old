@@ -11,7 +11,7 @@ import { useAppSelector } from '../store'
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
-  const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
   const [selectedPosition, setselectedPosition] = React.useState<Annotation | null>(null)
   const [validMoves, setValidMoves] = React.useState<Array<Annotation>>([])

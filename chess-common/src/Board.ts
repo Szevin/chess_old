@@ -1,5 +1,5 @@
 import Position, { Annotation, Direction } from './Position';
-import Piece, { PieceTypes, ColorTypes, PieceUnicodes } from './Piece'
+import Piece, { PieceTypes, ColorTypes, PieceUnicodes, PieceMoves } from './Piece'
 import { Move } from './Move';
 
 export class Board {
@@ -77,13 +77,27 @@ export class Board {
   }
 
   calcPieceValidMoves = (piece: Piece) => {
-    piece.moves = this.getDirectionalMoves(piece);
-    piece.captures = this.getCaptureMoves(piece);
+    piece.moves = this.getMoves(piece);
+
   }
 
   getPiece = (at: Annotation) => this.pieces.find((piece) => piece.position === at);
 
-  getDirectionalMoves = (piece: Piece): Annotation[] => {
+  getMoves = (piece: Piece): PieceMoves => {
+    const moves = {
+      empty: [],
+      captures: [],
+      valid: [],
+    } as PieceMoves;
+
+    moves.empty = this.filterPinnedMoves(piece, this.getEmptyMoves(piece));
+    moves.captures = this.filterPinnedMoves(piece, this.getCaptureMoves(piece));
+    moves.valid = [...moves.empty, ...moves.captures];
+
+    return moves;
+  }
+
+  getEmptyMoves = (piece: Piece): Annotation[] => {
     const moves: Position[] = [];
     piece.directions.move.forEach((direction) => {
       const position = new Position(piece.position);
@@ -102,8 +116,9 @@ export class Board {
         directionRange += 1;
       }
     });
+
     return moves.map((move) => move.annotation);
-  };
+  }
 
   getCaptureMoves = (piece: Piece): Annotation[] => {
     const captures: Position[] = [];
@@ -127,4 +142,17 @@ export class Board {
 
     return captures.map((move) => move.annotation);
   };
+
+  filterPinnedMoves = (piece: Piece, moves: Annotation[]): Annotation[] => {
+    const filteredMoves: Annotation[] = [];
+    moves.forEach((move) => {
+
+    });
+
+    return filteredMoves;
+  }
+
+  simulateMove = (piece: Piece, move: Move) => {
+
+  }
 }
