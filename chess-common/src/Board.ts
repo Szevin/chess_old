@@ -55,7 +55,7 @@ export class Board {
     const piece = this.pieces.find((piece) => piece.position === move.from)
     if (!piece) throw Error('Piece not found!')
 
-    piece.moveTo(move.to)
+    piece.moveTo(move.to, this)
 
     this.moves.push(move)
     this.currentPlayer = this.getEnemyColor()
@@ -102,12 +102,15 @@ export class Board {
     const moves = {
       empty: [],
       captures: [],
+      castle: [],
       valid: [],
     } as PieceMoves
 
     moves.empty = this.filterPinnedMoves(piece, this.getEmptyMoves(piece))
     moves.captures = this.filterPinnedMoves(piece, this.getCaptureMoves(piece))
-    moves.valid = [...moves.empty, ...moves.captures]
+    moves.castle = this.getCastleMoves(piece)
+
+    moves.valid = [...moves.empty, ...moves.captures, ...moves.castle]
 
     return moves
   }
@@ -178,5 +181,28 @@ export class Board {
     })
 
     return filteredMoves
+  }
+
+  getCastleMoves = (piece: Piece): Annotation[] => {
+    const moves: Annotation[] = []
+    if (piece.hasMoved || piece.name !== 'king') return moves
+
+    const directions = ['left', 'right'] as Direction[]
+
+    directions.forEach((direction) => {
+      const position = new Position(piece.position)
+      while(position.isValid() && !this.getEnemyPieces().map((piece) => piece.moves.valid).some((moves) => moves.includes(position.annotation))) {
+        position.addDirection(direction)
+        const piece = this.getPiece(position.annotation)
+        if (piece) {
+          if (piece.name === 'rook' && !piece.hasMoved) {
+            moves.push(position.addDirection(direction === 'left' ? 'right' : 'left').annotation)
+          }
+          break
+        }
+      }
+    })
+
+    return moves
   }
 }

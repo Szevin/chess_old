@@ -38,17 +38,17 @@ class Position {
         break
     }
     this.annotation = `${COLS[this.x - 1]}${this.y}` as Annotation
+
+    return this
   }
 
   addDirections(directions: Direction[]) {
     directions.forEach((direction) => {
       this.addDirection(direction)
     })
+
+    return this
   }
-
-  // distanceTo(to: Position) {
-
-  // }
 }
 
 export default Position

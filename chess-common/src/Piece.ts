@@ -1,3 +1,4 @@
+import { Board } from './Board';
 import { Annotation, Direction } from './Position'
 
 export type PieceTypes = 'rook' | 'knight' | 'bishop' | 'queen' | 'king' | 'pawn'
@@ -8,6 +9,7 @@ export interface PieceMoves {
   empty: Annotation[];
   captures: Annotation[];
   valid: Annotation[];
+  castle: Annotation[];
 }
 
 export interface IPiece {
@@ -29,6 +31,7 @@ class Piece {
     empty: [] as Annotation[],
     captures: [] as Annotation[],
     valid: [] as Annotation[],
+    castle: [] as Annotation[],
   } as PieceMoves
   directions: {
     move: Direction[][];
@@ -128,7 +131,7 @@ class Piece {
 
   };
 
-  moveTo = (to: Annotation): void => {
+  moveTo = (to: Annotation, board: Board): void => {
     this.position = to;
     this.hasMoved = true;
 
@@ -141,6 +144,18 @@ class Piece {
         this.range = this.setRange(this.name);
         this.unicode = this.setUnicode(this.name, this.color);
       }
+    }
+
+    if (this.name === 'king' && this.moves.castle.includes(to)) {
+      this.position = to;
+      const rookPos = ((to[0] === 'g' ? 'h' : 'a') + to[1]) as Annotation;
+      const rook = board.getPiece(rookPos);
+
+      if (!rook) {
+       throw Error('Rook not found')
+      }
+        const rookTo = ((to[0] === 'g' ? 'f' : 'd') + to[1]) as Annotation;
+        rook.moveTo(rookTo, board);
     }
   }
 
