@@ -84,6 +84,8 @@ export class Board {
     })
 
     this.isCheck = this.getEnemyPieces().map((piece) => piece.moves.captures).some((moves) => moves.includes(this.getKing(this.currentPlayer).position))
+    this.isCheckmate = this.isCheck && this.getOwnPieces().every((piece) => piece.moves.valid.length === 0)
+    this.isStalemate = !this.isCheck && this.getOwnPieces().every((piece) => piece.moves.valid.length === 0)
   }
 
   simulateMove = (move: Move) => {
@@ -97,7 +99,7 @@ export class Board {
       attacks.push(...this.getCaptureMoves(piece))
     })
 
-    this.isCheck = attacks.includes(this.getKing(this.currentPlayer).position)
+    this.isCheck = this.getKing(this.currentPlayer) && attacks.includes(this.getKing(this.currentPlayer).position)
   }
 
   calcPieceValidMoves = (piece: Piece) => {
@@ -106,6 +108,10 @@ export class Board {
 
   getEnemyPieces = () => {
     return this.pieces.filter((piece) => piece.color === this.getEnemyColor())
+  }
+
+  getOwnPieces = () => {
+    return this.pieces.filter((piece) => piece.color === this.currentPlayer)
   }
 
   getPiece = (at: Annotation) => this.pieces.find((piece) => piece.position === at)
@@ -118,8 +124,6 @@ export class Board {
       captures: [],
       valid: [],
     } as PieceMoves
-
-    if (this.currentPlayer !== piece.color) return moves
 
     moves.empty = this.filterPinnedMoves(piece, this.getEmptyMoves(piece))
     moves.captures = this.filterPinnedMoves(piece, this.getCaptureMoves(piece))
