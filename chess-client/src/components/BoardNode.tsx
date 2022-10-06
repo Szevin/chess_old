@@ -29,7 +29,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
       return
     }
 
-    setValidMoves([...piece.moves, ...piece.captures])
+    setValidMoves(piece.moves.valid)
   }, [selectedPosition])
 
   const handleMove = (to: Annotation) => {
@@ -39,7 +39,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
       return
     }
 
-    if (!([...piece.moves, ...piece.captures] ?? []).length || ![...piece.moves, ...piece.captures].includes(to)) {
+    if (!(piece.moves.valid).length || !piece.moves.valid.includes(to)) {
       setselectedPosition(null)
       return
     }
@@ -55,14 +55,14 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
   return (
     <div className="container">
       <div className="row mt-4 p-0">
-        <div className="col-1 p-0 mt-2">
+        {/* <div className="col-1 p-0 mt-2">
           {Array(8).fill(null).map((_, i) => (
           // eslint-disable-next-line react/no-array-index-key
             <div key={i} className="coord-number col-1">
               {8 - i}
             </div>
           ))}
-        </div>
+        </div> */}
         <div className="col-auto p-0">
 
           <div className="board">
@@ -75,7 +75,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
                     valid: validMoves.includes((letter + (row + 1)) as Annotation),
                     // last: [board.getLastMove()?.to.annotation, board.getLastMove()?.from.annotation].includes((letter + (row + 1)) as Annotation),
                     check: board.isCheck
-                    && board.getPiece(`${letter}${row + 1}` as Annotation)?.name === 'king',
+                    && board.getKing(board.currentPlayer).position === (letter + (row + 1)) as Annotation,
                   })}
                   key={letter + row}
                 />

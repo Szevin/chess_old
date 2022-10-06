@@ -1,25 +1,26 @@
-import Position, { Annotation, Direction } from './Position';
+import Position, { Annotation, Direction } from './Position'
 import Piece, { PieceTypes, ColorTypes, PieceUnicodes, PieceMoves } from './Piece'
-import { Move } from './Move';
+import { Move } from './Move'
+import * as uuid from 'uuid'
 
 export class Board {
-	id: string;
-	name: string;
-	players: string[];
-	spectators: string[];
-	moves: Move[];
-	pieces: Piece[];
-	isCheck: boolean;
-	isCheckmate: boolean;
-	isStalemate: boolean;
-	currentPlayer: string;
+	id: string
+	name: string
+	players: string[]
+	spectators: string[]
+	moves: Move[]
+	pieces: Piece[]
+	isCheck: boolean
+	isCheckmate: boolean
+	isStalemate: boolean
+	currentPlayer: ColorTypes
 
-  constructor(id: string) {
-    this.id = id;
-    this.name = 'test';
-    this.players = [];
-    this.spectators = [];
-    this.moves = [];
+  constructor(id: string, startingPlayer: ColorTypes = 'white', simulated: boolean = false) {
+    this.id = id
+    this.name = 'test'
+    this.players = []
+    this.spectators = []
+    this.moves = []
     this.pieces = [
       new Piece('rook', 'white', 'a1'),
       new Piece('knight', 'white', 'b1'),
@@ -53,106 +54,145 @@ export class Board {
       new Piece('pawn', 'black', 'f7'),
       new Piece('pawn', 'black', 'g7'),
       new Piece('pawn', 'black', 'h7'),
-    ];
-    this.isCheck = false;
-    this.isCheckmate = false;
-    this.isStalemate = false;
-    this.currentPlayer = 'white';
+    ]
+    this.isCheck = false
+    this.isCheckmate = false
+    this.isStalemate = false
+    this.currentPlayer = startingPlayer
 
-    this.pieces.map((piece) => this.calcPieceValidMoves(piece));
+    if (!simulated){
+      this.pieces.forEach((piece) => {
+        this.calcPieceValidMoves(piece)
+      })
+    }
+  }
+
+  getEnemyColor() {
+    return this.currentPlayer === 'white' ? 'black' : 'white'
   }
 
   handleMove = (move: Move) => {
-    this.pieces = this.pieces.filter((piece) => piece.position !== move.to);
-    const piece = this.pieces.find((piece) => piece.position === move.from);
-    if (!piece) throw Error('Piece not found!');
+    this.pieces = this.pieces.filter((piece) => piece.position !== move.to)
+    const piece = this.pieces.find((piece) => piece.position === move.from)
+    if (!piece) throw Error('Piece not found!')
 
-    piece.position = move.to;
-    this.moves.push(move);
+    piece.position = move.to
+    this.moves.push(move)
+    this.currentPlayer = this.getEnemyColor()
     this.pieces.forEach((piece) => {
-      this.calcPieceValidMoves(piece);
-    });
+      this.calcPieceValidMoves(piece)
+    })
 
-    this.currentPlayer = this.currentPlayer === 'white' ? 'black' : 'white';
+    this.isCheck = this.getEnemyPieces().map((piece) => piece.moves.captures).some((moves) => moves.includes(this.getKing(this.currentPlayer).position))
+  }
+
+  simulateMove = (move: Move) => {
+    this.pieces = this.pieces.filter((piece) => piece.position !== move.to)
+    const piece = this.getPiece(move.from)
+    if (!piece) throw Error('Piece not found!')
+
+    piece.position = move.to
+    let attacks: Annotation[] = []
+    this.getEnemyPieces().forEach((piece) => {
+      attacks.push(...this.getCaptureMoves(piece))
+    })
+
+    this.isCheck = attacks.includes(this.getKing(this.currentPlayer).position)
   }
 
   calcPieceValidMoves = (piece: Piece) => {
-    piece.moves = this.getMoves(piece);
-
+    piece.moves = this.getMoves(piece)
   }
 
-  getPiece = (at: Annotation) => this.pieces.find((piece) => piece.position === at);
+  getEnemyPieces = () => {
+    return this.pieces.filter((piece) => piece.color === this.getEnemyColor())
+  }
+
+  getPiece = (at: Annotation) => this.pieces.find((piece) => piece.position === at)
+
+  getKing = (color: ColorTypes) => this.pieces.find((piece) => piece.name === 'king' && piece.color === color)
 
   getMoves = (piece: Piece): PieceMoves => {
     const moves = {
       empty: [],
       captures: [],
       valid: [],
-    } as PieceMoves;
+    } as PieceMoves
 
-    moves.empty = this.filterPinnedMoves(piece, this.getEmptyMoves(piece));
-    moves.captures = this.filterPinnedMoves(piece, this.getCaptureMoves(piece));
-    moves.valid = [...moves.empty, ...moves.captures];
+    if (this.currentPlayer !== piece.color) return moves
 
-    return moves;
+    moves.empty = this.filterPinnedMoves(piece, this.getEmptyMoves(piece))
+    moves.captures = this.filterPinnedMoves(piece, this.getCaptureMoves(piece))
+    moves.valid = [...moves.empty, ...moves.captures]
+
+    return moves
   }
 
   getEmptyMoves = (piece: Piece): Annotation[] => {
-    const moves: Position[] = [];
+    const moves: Position[] = []
     piece.directions.move.forEach((direction) => {
-      const position = new Position(piece.position);
-      position.addDirections(direction);
-      let directionRange = 0;
+      const position = new Position(piece.position)
+      position.addDirections(direction)
+      let directionRange = 0
       while (
         (!piece.isBlockable || (piece.isBlockable && this.getPiece(position.annotation)?.color !== piece.color)) &&
         position.isValid() &&
         directionRange < piece.range
       ) {
         if (this.getPiece(position.annotation) && this.getPiece(position.annotation)?.color !== piece.color) {
-          break;
+          break
         }
-        moves.push(new Position(position.annotation));
-        position.addDirections(direction);
-        directionRange += 1;
+        moves.push(new Position(position.annotation))
+        position.addDirections(direction)
+        directionRange += 1
       }
-    });
+    })
 
-    return moves.map((move) => move.annotation);
+    return moves.map((move) => move.annotation)
   }
 
   getCaptureMoves = (piece: Piece): Annotation[] => {
-    const captures: Position[] = [];
+    const captures: Position[] = []
     piece.directions.capture.forEach((direction) => {
-      const position = new Position(piece.position);
-      position.addDirections(direction);
-      let directionRange = 0;
+      const position = new Position(piece.position)
+      position.addDirections(direction)
+      let directionRange = 0
       while (
         (!piece.isBlockable || (piece.isBlockable && this.getPiece(position.annotation)?.color !== piece.color)) &&
         position.isValid() &&
         directionRange < piece.range
       ) {
         if (this.getPiece(position.annotation) && this.getPiece(position.annotation)?.color !== piece.color) {
-          captures.push(new Position(position.annotation));
-          break;
+          captures.push(new Position(position.annotation))
+          break
         }
-        position.addDirections(direction);
-        directionRange += 1;
+        position.addDirections(direction)
+        directionRange += 1
       }
-    });
+    })
 
-    return captures.map((move) => move.annotation);
-  };
-
-  filterPinnedMoves = (piece: Piece, moves: Annotation[]): Annotation[] => {
-    const filteredMoves: Annotation[] = [];
-    moves.forEach((move) => {
-
-    });
-
-    return filteredMoves;
+    return captures.map((move) => move.annotation)
   }
 
-  simulateMove = (piece: Piece, move: Move) => {
+  filterPinnedMoves = (piece: Piece, moves: Annotation[]): Annotation[] => {
+    const filteredMoves: Annotation[] = []
+    if (!moves) return filteredMoves
 
+    moves.forEach((move) => {
+      let boardCopy = new Board("-1", this.currentPlayer, true)
+      boardCopy.pieces = this.pieces.map((piece) => new Piece(piece.name, piece.color, piece.position))
+
+      boardCopy.simulateMove({
+        from: piece.position,
+        to: move,
+        piece: piece.name,
+      })
+
+      if (!boardCopy.isCheck) {
+        filteredMoves.push(move)
+      }
+    })
+
+    return filteredMoves
   }
 }
