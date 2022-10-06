@@ -6,3 +6,4 @@ lib
 lib-esm
 package-lock.json
 _bundles
+coverage

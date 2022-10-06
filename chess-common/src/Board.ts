@@ -1,64 +1,43 @@
 import Position, { Annotation, Direction } from './Position'
-import Piece, { PieceTypes, ColorTypes, PieceUnicodes, PieceMoves } from './Piece'
+import Piece, { PieceTypes, ColorTypes, PieceUnicodes, PieceMoves, IPiece } from './Piece'
 import { Move } from './Move'
 import * as uuid from 'uuid'
 
+export const defaultPieceSetup = [
+  { name: 'rook', color: 'white', position: 'a1' },
+  { name: 'knight', color: 'white', position: 'b1' },
+  { name: 'bishop', color: 'white', position: 'c1' },
+  { name: 'queen', color: 'white', position: 'd1' },
+  { name: 'king', color: 'white', position: 'e1' },
+  { name: 'bishop', color: 'white', position: 'f1' },
+  { name: 'knight', color: 'white', position: 'g1' },
+  { name: 'rook', color: 'white', position: 'h1' },
+  { name: 'rook', color: 'black', position: 'a8' },
+  { name: 'knight', color: 'black', position: 'b8' },
+  { name: 'bishop', color: 'black', position: 'c8' },
+  { name: 'queen', color: 'black', position: 'd8' },
+  { name: 'king', color: 'black', position: 'e8' },
+  { name: 'bishop', color: 'black', position: 'f8' },
+  { name: 'knight', color: 'black', position: 'g8' },
+  { name: 'rook', color: 'black', position: 'h8' },
+  ...Array.from({ length: 8 }, (_, i) => ({ name: 'pawn', color: 'white', position: `${String.fromCharCode(97 + i)}2` })),
+  ...Array.from({ length: 8 }, (_, i) => ({ name: 'pawn', color: 'black', position: `${String.fromCharCode(97 + i)}7` })),
+] as IPiece[]
+
 export class Board {
 	id: string
-	name: string
-	players: string[]
-	spectators: string[]
-	moves: Move[]
+	players: string[] = []
+	spectators: string[] = []
+	moves: Move[] = []
 	pieces: Piece[]
-	isCheck: boolean
-	isCheckmate: boolean
-	isStalemate: boolean
-	currentPlayer: ColorTypes
+	isCheck: boolean = false
+	isCheckmate: boolean = false
+	isStalemate: boolean = false
+	currentPlayer: ColorTypes = 'white'
 
-  constructor(id: string, startingPlayer: ColorTypes = 'white', simulated: boolean = false) {
+  constructor(id: string, pieces: IPiece[] = defaultPieceSetup, simulated: boolean = false) {
     this.id = id
-    this.name = 'test'
-    this.players = []
-    this.spectators = []
-    this.moves = []
-    this.pieces = [
-      new Piece('rook', 'white', 'a1'),
-      new Piece('knight', 'white', 'b1'),
-      new Piece('bishop', 'white', 'c1'),
-      new Piece('queen', 'white', 'd1'),
-      new Piece('king', 'white', 'e1'),
-      new Piece('bishop', 'white', 'f1'),
-      new Piece('knight', 'white', 'g1'),
-      new Piece('rook', 'white', 'h1'),
-      new Piece('pawn', 'white', 'a2'),
-      new Piece('pawn', 'white', 'b2'),
-      new Piece('pawn', 'white', 'c2'),
-      new Piece('pawn', 'white', 'd2'),
-      new Piece('pawn', 'white', 'e2'),
-      new Piece('pawn', 'white', 'f2'),
-      new Piece('pawn', 'white', 'g2'),
-      new Piece('pawn', 'white', 'h2'),
-      new Piece('rook', 'black', 'a8'),
-      new Piece('knight', 'black', 'b8'),
-      new Piece('bishop', 'black', 'c8'),
-      new Piece('queen', 'black', 'd8'),
-      new Piece('king', 'black', 'e8'),
-      new Piece('bishop', 'black', 'f8'),
-      new Piece('knight', 'black', 'g8'),
-      new Piece('rook', 'black', 'h8'),
-      new Piece('pawn', 'black', 'a7'),
-      new Piece('pawn', 'black', 'b7'),
-      new Piece('pawn', 'black', 'c7'),
-      new Piece('pawn', 'black', 'd7'),
-      new Piece('pawn', 'black', 'e7'),
-      new Piece('pawn', 'black', 'f7'),
-      new Piece('pawn', 'black', 'g7'),
-      new Piece('pawn', 'black', 'h7'),
-    ]
-    this.isCheck = false
-    this.isCheckmate = false
-    this.isStalemate = false
-    this.currentPlayer = startingPlayer
+    this.pieces = pieces.map(piece => new Piece(piece.name, piece.color, piece.position))
 
     if (!simulated){
       this.pieces.forEach((piece) => {
@@ -76,7 +55,8 @@ export class Board {
     const piece = this.pieces.find((piece) => piece.position === move.from)
     if (!piece) throw Error('Piece not found!')
 
-    piece.position = move.to
+    piece.moveTo(move.to)
+
     this.moves.push(move)
     this.currentPlayer = this.getEnemyColor()
     this.pieces.forEach((piece) => {
@@ -183,8 +163,8 @@ export class Board {
     if (!moves) return filteredMoves
 
     moves.forEach((move) => {
-      let boardCopy = new Board("-1", this.currentPlayer, true)
-      boardCopy.pieces = this.pieces.map((piece) => new Piece(piece.name, piece.color, piece.position))
+      let boardCopy = new Board("-1", this.pieces, true)
+      boardCopy.currentPlayer = this.currentPlayer
 
       boardCopy.simulateMove({
         from: piece.position,
