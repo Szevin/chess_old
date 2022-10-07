@@ -1,6 +1,7 @@
 import Position, { Annotation, Direction } from './Position'
 import Piece, { PieceType, ColorType, PieceUnicode, PieceMoves, IPiece } from './Piece'
 import { Move } from './Move'
+import { Message } from './Message'
 
 export const defaultPieceSetup = [
   { name: 'rook', color: 'white', position: 'a1' },
@@ -27,7 +28,8 @@ export class Board {
 	id: string
 	players: string[] = []
 	spectators: string[] = []
-	moves: Move[] = []
+  messages: Message[] = []
+  moves: Move[] = []
 	pieces: Piece[]
 	isCheck: boolean = false
 	isCheckmate: boolean = false

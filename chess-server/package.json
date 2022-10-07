@@ -17,6 +17,8 @@
   "bin": "./index.ts",
   "homepage": "https://github.com/Szevin/chess-server#readme",
   "dependencies": {
+    "@types/uuid": "^8.3.4",
+    "chess-common": "file:../chess-common",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
@@ -24,7 +26,7 @@
     "pkg": "^5.8.0",
     "swagger-jsdoc": "^6.2.5",
     "swagger-ui-express": "^4.5.0",
-    "chess-common": "file:../chess-common"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/socket.io": "^3.0.2",

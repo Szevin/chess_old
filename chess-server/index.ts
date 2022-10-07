@@ -1,4 +1,4 @@
-import { Board, Move } from 'chess-common';
+import { Board, Message, Move } from 'chess-common';
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
@@ -7,6 +7,7 @@ import { Server } from 'socket.io';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import dotenv from 'dotenv';
+import * as uuid from 'uuid';
 
 // import boardRoute from './api/routes/board.js';
 // import userRoute from './api/routes/user.js';
@@ -49,6 +50,7 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
   move: (move: Move) => void;
   join: (id: string) => void;
+  message: (message: string) => void;
 }
 
 interface InterServerEvents {
@@ -77,6 +79,15 @@ io.on('connection', (socket) => {
     }
     const board  = boards.find(board => board.id === id)
 
+    if (board.players.find(player => player === socket.id)) {
+      return
+    }
+
+    if (board.players.length <= 2) {
+      board.spectators.push(socket.id)
+      return
+    }
+
     board?.players.push(socket.id)
     socket.join(id)
     if (board) {
@@ -89,6 +100,19 @@ io.on('connection', (socket) => {
     const board = boards.find(board => board.players.includes(socket.id))
     if (board) {
       board.handleMove(move)
+      io.to(board.id).emit('board', board)
+    }
+  })
+
+  socket.on('message', (message: string) => {
+    const board = boards.find(board => board.players.includes(socket.id))
+    if (board) {
+      board.messages.push({
+        content: message,
+        user: String(board.players.indexOf(socket.id)),
+        id: uuid.v4(),
+        timestamp: Date.now(),
+      })
       io.to(board.id).emit('board', board)
     }
   })

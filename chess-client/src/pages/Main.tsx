@@ -7,7 +7,7 @@ const Main = () => {
   const cancelRef = React.useRef()
 
   return (
-    <Stack>
+    <Stack justifyContent="center" alignItems="center">
       <Button onClick={onOpen} colorScheme="green">Play</Button>
       <PlayDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose} />
     </Stack>

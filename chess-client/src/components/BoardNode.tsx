@@ -3,10 +3,11 @@ import './Board.css'
 import classNames from 'classnames'
 import React from 'react'
 import { Annotation, Move } from 'chess-common'
-import { useToast } from '@chakra-ui/react'
+import { Box, Grid, GridItem, useToast } from '@chakra-ui/react'
 import { useReward } from 'react-rewards'
 import PieceNode from './PieceNode'
 import { useAppSelector } from '../store'
+import Chat from './Chat'
 
 // eslint-disable import/no-named-as-default
 /* eslint-disable no-param-reassign */
@@ -90,48 +91,47 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
   }, [board])
 
   return (
-    <div className="container">
-      <div className="row mt-4 p-0">
-        <div className="col-10 p-0">
-
-          <div className="board">
-            {Array.from(Array(8).keys()).reverse().map((row) => (
-              cols.map((letter, col) => (
-                <div
-                  id={`${letter}${row + 1}` === board.moves.at(-1)?.to ? 'last' : ''}
-                  className={classNames({
-                    white: ((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2)),
-                    black: !(((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2))),
-                    valid: validMoves.includes((letter + (row + 1)) as Annotation),
-                    // last: [board.getLastMove()?.to.annotation, board.getLastMove()?.from.annotation].includes((letter + (row + 1)) as Annotation),
-                    check: board.isCheck
+    <Grid templateRows="repeat(2, 1fr)" templateColumns="repeat(12, 1fr)" marginLeft={4} justifyContent="start">
+      <GridItem rowSpan={1} colSpan={6} className="board">
+        {Array.from(Array(8).keys()).reverse().map((row) => (
+          cols.map((letter, col) => (
+            <div
+              id={`${letter}${row + 1}` === board.moves.at(-1)?.to ? 'last' : ''}
+              className={classNames({
+                white: ((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2)),
+                black: !(((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2))),
+                valid: validMoves.includes((letter + (row + 1)) as Annotation),
+                // last: [board.getLastMove()?.to.annotation, board.getLastMove()?.from.annotation].includes((letter + (row + 1)) as Annotation),
+                check: board.isCheck
                     && board.getKing(board.currentPlayer).position === (letter + (row + 1)) as Annotation,
-                  })}
-                  key={letter + row}
-                />
-              ))
-            ))}
-            { board.pieces.map((piece) => (
-              <PieceNode
-                key={piece.id}
-                piece={piece}
-                isDraggable={board.currentPlayer === piece.color && !board.isCheckmate}
-                onMove={handleMove}
-                setselectedPosition={setselectedPosition}
-              />
-            ))}
-          </div>
-        </div>
-        <div className="prev-moves col-2 p-0 ml-2">
-          { board.moves.map((move) => (
-            // TODO unique keys
-            <li key={move.piece + move.from + move.to}>
-              {`${move.piece}${move.from}-${move.to}`}
-            </li>
-          )) }
-        </div>
-      </div>
-    </div>
+              })}
+              key={letter + row}
+            />
+          ))
+        ))}
+        { board.pieces.map((piece) => (
+          <PieceNode
+            key={piece.id}
+            piece={piece}
+            isDraggable={board.currentPlayer === piece.color && !board.isCheckmate}
+            onMove={handleMove}
+            setselectedPosition={setselectedPosition}
+          />
+        ))}
+      </GridItem>
+      <GridItem rowSpan={1} colSpan={2} className="prev-moves">
+        { board.moves.map((move) => (
+          // TODO unique keys
+          <li key={move.piece + move.from + move.to}>
+            {`${move.piece}${move.from}-${move.to}`}
+          </li>
+        )) }
+      </GridItem>
+
+      <GridItem marginTop={4} rowSpan={1} colSpan={8}>
+        <Chat messages={board.messages} />
+      </GridItem>
+    </Grid>
   )
 }
 

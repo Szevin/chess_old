@@ -7,7 +7,7 @@ import Header from './Header'
 const Layout = () => (
   <>
     <Header />
-    <Grid justifyContent="center" marginTop={10}>
+    <Grid marginTop={10}>
       <Outlet />
     </Grid>
     <Footer />
