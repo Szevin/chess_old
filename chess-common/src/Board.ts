@@ -1,7 +1,6 @@
 import Position, { Annotation, Direction } from './Position'
-import Piece, { PieceTypes, ColorTypes, PieceUnicodes, PieceMoves, IPiece } from './Piece'
+import Piece, { PieceType, ColorType, PieceUnicode, PieceMoves, IPiece } from './Piece'
 import { Move } from './Move'
-import * as uuid from 'uuid'
 
 export const defaultPieceSetup = [
   { name: 'rook', color: 'white', position: 'a1' },
@@ -33,9 +32,13 @@ export class Board {
 	isCheck: boolean = false
 	isCheckmate: boolean = false
 	isStalemate: boolean = false
-	currentPlayer: ColorTypes = 'white'
+	currentPlayer: ColorType = 'white'
 
   constructor(id: string, pieces: IPiece[] = defaultPieceSetup, simulated: boolean = false) {
+    if(pieces.some((p, i) => pieces.findIndex(p2 => p2.position === p.position) !== i)) {
+      throw new Error('Two pieces with same position')
+    }
+
     this.id = id
     this.pieces = pieces.map(piece => new Piece(piece.name, piece.color, piece.position))
 
@@ -96,7 +99,7 @@ export class Board {
 
   getPiece = (at: Annotation) => this.pieces.find((piece) => piece.position === at)
 
-  getKing = (color: ColorTypes) => this.pieces.find((piece) => piece.name === 'king' && piece.color === color)
+  getKing = (color: ColorType) => this.pieces.find((piece) => piece.name === 'king' && piece.color === color)
 
   getMoves = (piece: Piece): PieceMoves => {
     const moves = {
@@ -196,7 +199,7 @@ export class Board {
         const piece = this.getPiece(position.annotation)
         if (piece) {
           if (piece.name === 'rook' && !piece.hasMoved) {
-            moves.push(position.addDirection(direction === 'left' ? 'right' : 'left').annotation)
+            moves.push(position.addDirections(direction === 'left' ? ['right', 'right'] : ['left']).annotation)
           }
           break
         }

@@ -10,11 +10,14 @@
   "scripts": {
     "start": "npm run build-common && run-p client server",
     "install-all": "run-p client-install server-install common-install",
-    "build-common": "cd chess-common && tsc",
     "client": "cd chess-client && npm start",
-    "server": "cd chess-server && npm start",
     "client-install": "cd chess-client && npm install",
+
+    "server": "cd chess-server && npm start",
     "server-install": "cd chess-server && npm install",
+
+    "test-common": "cd chess-common && npm test --",
+    "build-common": "cd chess-common && tsc",
     "common-install": "cd chess-common && npm install"
   },
   "dependencies": {

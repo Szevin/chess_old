@@ -1,9 +1,36 @@
 import { Board } from './Board';
-import { Annotation, Direction } from './Position'
+import Position, { Annotation, Direction } from './Position'
 
-export type PieceTypes = 'rook' | 'knight' | 'bishop' | 'queen' | 'king' | 'pawn'
-export type ColorTypes = 'white' | 'black'
-export type PieceUnicodes = '♖' | '♘' | '♗' | '♕' | '♔' | '♙' | '♜' | '♞' | '♝' | '♛' | '♚' | '♟' | null
+const pieceTypes = {
+  pawn: '',
+  rook: '',
+  knight: '',
+  bishop: '',
+  queen: '',
+  king: '',
+}
+const colorTypes = {
+  white: '',
+  black: '',
+}
+const pieceUnicodes = {
+  '♙': '',
+  '♖': '',
+  '♘': '',
+  '♗': '',
+  '♕': '',
+  '♔': '',
+  '♟': '',
+  '♜': '',
+  '♞': '',
+  '♝': '',
+  '♛': '',
+  '♚': '',
+}
+
+export type PieceType = keyof typeof pieceTypes
+export type ColorType = keyof typeof colorTypes
+export type PieceUnicode = keyof typeof pieceUnicodes
 
 export interface PieceMoves {
   empty: Annotation[];
@@ -13,20 +40,20 @@ export interface PieceMoves {
 }
 
 export interface IPiece {
-  name: PieceTypes;
-  color: ColorTypes;
+  name: PieceType;
+  color: ColorType;
   position: Annotation;
 }
 
-class Piece {
-  name: PieceTypes
+export class Piece {
+  name: PieceType
   position: Annotation
-  color: ColorTypes
+  color: ColorType
   canTakeOwn = false;
   isBlockable = true
   range: number
   hasMoved = false
-  unicode: PieceUnicodes
+  unicode: PieceUnicode
   moves = {
     empty: [] as Annotation[],
     captures: [] as Annotation[],
@@ -38,7 +65,11 @@ class Piece {
     capture: Direction[][];
   };
 
-  constructor(name: PieceTypes, color: ColorTypes, position: Annotation) {
+  constructor(name: PieceType, color: ColorType, position: Annotation) {
+    if (!pieceTypes.hasOwnProperty(name)) throw new Error(`Invalid piece name: ${name}`)
+    if (!colorTypes.hasOwnProperty(color)) throw new Error(`Invalid piece color: ${color}`)
+    if (! new Position(position).isValid()) throw new Error(`Invalid piece position: ${position}`)
+
     this.name = name;
     this.color = color;
     this.position = position;
@@ -47,7 +78,7 @@ class Piece {
     this.unicode = this.setUnicode(name, color);
   }
 
-  setDirections = (name: PieceTypes, color: ColorTypes): {
+  private setDirections = (name: PieceType, color: ColorType): {
     move: Direction[][];
     capture: Direction[][];
   } => {
@@ -97,7 +128,7 @@ class Piece {
     }
   };
 
-  setRange = (name: PieceTypes): number => {
+  private setRange = (name: PieceType): number => {
     switch (name) {
       case 'rook':
       case 'bishop':
@@ -112,7 +143,7 @@ class Piece {
     }
   };
 
-  setUnicode = (name: PieceTypes, color: ColorTypes): PieceUnicodes => {
+  private setUnicode = (name: PieceType, color: ColorType): PieceUnicode => {
     switch (name) {
       case 'rook':
         return color === 'white' ? '♜' : '♖';
