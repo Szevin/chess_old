@@ -9,14 +9,14 @@
   "type": "module",
   "scripts": {
     "start": "npm run build-common && run-p client server",
-    "install-all": "run-p client-install server-install common-install",
+    "install-all": "npm i && run-p client-install server-install common-install",
     "client": "cd chess-client && npm start",
     "client-install": "cd chess-client && npm install",
 
     "server": "cd chess-server && npm start",
     "server-install": "cd chess-server && npm install",
 
-    "test-common": "cd chess-common && npm test --",
+    "test": "cd chess-common && npm test --",
     "build-common": "cd chess-common && tsc",
     "common-install": "cd chess-common && npm install"
   },

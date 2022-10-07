@@ -3,6 +3,8 @@ import './Board.css'
 import classNames from 'classnames'
 import React from 'react'
 import { Annotation, Move } from 'chess-common'
+import { useToast } from '@chakra-ui/react'
+import { useReward } from 'react-rewards'
 import PieceNode from './PieceNode'
 import { useAppSelector } from '../store'
 
@@ -13,6 +15,15 @@ import { useAppSelector } from '../store'
 const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
   const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
+  const toast = useToast()
+  const { reward } = useReward('last', 'confetti', {
+    lifetime: 300,
+    elementCount: 100,
+    elementSize: 15,
+    angle: 90,
+    startVelocity: 15,
+    spread: 360,
+  })
   const [selectedPosition, setselectedPosition] = React.useState<Annotation | null>(null)
   const [validMoves, setValidMoves] = React.useState<Array<Annotation>>([])
 
@@ -47,31 +58,50 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
     move({
       from: selectedPosition,
       to,
-      piece: piece.name,
+      piece: piece.unicode,
     })
     setselectedPosition(null)
   }
 
+  React.useEffect(() => {
+    if (board.isCheckmate) {
+      toast({
+        title: 'Checkmate',
+        description: `Checkmate! ${board.currentPlayer === 'white' ? 'black' : 'white'} wins!`,
+        status: 'success',
+        duration: null,
+        isClosable: true,
+      })
+
+      reward()
+    }
+
+    if (board.isStalemate) {
+      toast({
+        title: 'Stalemate',
+        description: 'Stalemate!',
+        status: 'success',
+        duration: null,
+        isClosable: true,
+      })
+
+      reward()
+    }
+  }, [board])
+
   return (
     <div className="container">
       <div className="row mt-4 p-0">
-        {/* <div className="col-1 p-0 mt-2">
-          {Array(8).fill(null).map((_, i) => (
-          // eslint-disable-next-line react/no-array-index-key
-            <div key={i} className="coord-number col-1">
-              {8 - i}
-            </div>
-          ))}
-        </div> */}
-        <div className="col-auto p-0">
+        <div className="col-10 p-0">
 
           <div className="board">
             {Array.from(Array(8).keys()).reverse().map((row) => (
               cols.map((letter, col) => (
                 <div
+                  id={`${letter}${row + 1}` === board.moves.at(-1)?.to ? 'last' : ''}
                   className={classNames({
-                    black: ((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2)),
-                    white: !(((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2))),
+                    white: ((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2)),
+                    black: !(((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2))),
                     valid: validMoves.includes((letter + (row + 1)) as Annotation),
                     // last: [board.getLastMove()?.to.annotation, board.getLastMove()?.from.annotation].includes((letter + (row + 1)) as Annotation),
                     check: board.isCheck
@@ -83,7 +113,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
             ))}
             { board.pieces.map((piece) => (
               <PieceNode
-                key={piece.color + piece.name + piece.position}
+                key={piece.id}
                 piece={piece}
                 isDraggable={board.currentPlayer === piece.color && !board.isCheckmate}
                 onMove={handleMove}
@@ -91,12 +121,8 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
               />
             ))}
           </div>
-
-          <div className="letter-coords ml-2">
-            { cols.map((letter) => (<div key={letter} className="coord-letter">{letter}</div>)) }
-          </div>
         </div>
-        <div className="prev-moves col-2 p-0 m-0">
+        <div className="prev-moves col-2 p-0 ml-2">
           { board.moves.map((move) => (
             // TODO unique keys
             <li key={move.piece + move.from + move.to}>

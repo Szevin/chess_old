@@ -53,8 +53,8 @@
 }
 
 .prev-moves {
-  width: 60px;
-  margin-left: 2rem;
+  border: 1px solid #333;
+  background-color: #999;
 }
 
 .prev-moves li {

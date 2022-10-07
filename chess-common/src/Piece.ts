@@ -1,5 +1,6 @@
 import { Board } from './Board';
 import Position, { Annotation, Direction } from './Position'
+import * as uuid from 'uuid';
 
 const pieceTypes = {
   pawn: '',
@@ -46,6 +47,7 @@ export interface IPiece {
 }
 
 export class Piece {
+  id: string
   name: PieceType
   position: Annotation
   color: ColorType
@@ -70,6 +72,7 @@ export class Piece {
     if (!colorTypes.hasOwnProperty(color)) throw new Error(`Invalid piece color: ${color}`)
     if (! new Position(position).isValid()) throw new Error(`Invalid piece position: ${position}`)
 
+    this.id = uuid.v4()
     this.name = name;
     this.color = color;
     this.position = position;
