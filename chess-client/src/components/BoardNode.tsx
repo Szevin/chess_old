@@ -3,11 +3,12 @@ import './Board.css'
 import classNames from 'classnames'
 import React from 'react'
 import { Annotation, Move } from 'chess-common'
-import { Box, Grid, GridItem, useToast } from '@chakra-ui/react'
+import { Grid, GridItem, useToast } from '@chakra-ui/react'
 import { useReward } from 'react-rewards'
 import PieceNode from './PieceNode'
 import { useAppSelector } from '../store'
 import Chat from './Chat'
+import { useSocket } from '../store/socket'
 
 // eslint-disable import/no-named-as-default
 /* eslint-disable no-param-reassign */
@@ -29,6 +30,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
   const [validMoves, setValidMoves] = React.useState<Array<Annotation>>([])
 
   const board = useAppSelector((state) => state.board)
+  const { user } = useSocket()
 
   React.useEffect(() => {
     if (!selectedPosition) {
@@ -113,7 +115,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
           <PieceNode
             key={piece.id}
             piece={piece}
-            isDraggable={board.currentPlayer === piece.color && !board.isCheckmate}
+            isDraggable={board.currentPlayer === piece.color && !board.isCheckmate && board.players[board.currentPlayer === 'white' ? 0 : 1] === user && board.players.includes(user)}
             onMove={handleMove}
             setselectedPosition={setselectedPosition}
           />
@@ -129,7 +131,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
       </GridItem>
 
       <GridItem marginTop={4} rowSpan={1} colSpan={8}>
-        <Chat messages={board.messages} />
+        {board.players.includes(user) && <Chat messages={board.messages} />}
       </GridItem>
     </Grid>
   )

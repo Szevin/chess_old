@@ -71,29 +71,30 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEve
 let boards: Board[] = []
 
 io.on('connection', (socket) => {
-  console.log('a user connected')
+  console.log(`Socket ${socket.id} connected`);
 
   socket.on('join', (id) => {
     if (!boards.find(board => board.id === id)) {
       boards.push(new Board(id))
     }
     const board  = boards.find(board => board.id === id)
-
-    if (board.players.find(player => player === socket.id)) {
-      return
-    }
-
-    if (board.players.length <= 2) {
-      board.spectators.push(socket.id)
-      return
-    }
-
-    board?.players.push(socket.id)
     socket.join(id)
-    if (board) {
+
+    if (board.players.find(player => player === socket.id)) return
+
+
+    if (board.players.length >= 2) {
+      if(board.spectators.find(spectator => spectator === socket.id)) return
+
+      console.log(`${socket.id} spectating ${id}`)
+      board.spectators.push(socket.id)
       io.to(board.id).emit('board', board)
+      return
     }
-    console.log('joined room', id)
+
+    board.players.push(socket.id)
+    io.to(board.id).emit('board', board)
+    console.log(`${socket.id} playing ${id}`);
   })
 
   socket.on('move', (move: Move) => {
@@ -118,7 +119,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', () => {
-    console.log('user disconnected')
+    console.log(`Socket ${socket.id} disconnected`);
     boards = boards.map(board => {
       if (board.players.includes(socket.id)) {
         board.players = board.players.filter((player) => player !== socket.id)
