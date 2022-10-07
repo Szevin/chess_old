@@ -11,6 +11,7 @@ const Chat = ({ messages } : { messages: Message[] }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     message(newMessage)
+    setNewMessage('')
   }
 
   return (

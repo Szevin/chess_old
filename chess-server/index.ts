@@ -99,10 +99,11 @@ io.on('connection', (socket) => {
 
   socket.on('move', (move: Move) => {
     const board = boards.find(board => board.players.includes(socket.id))
-    if (board) {
-      board.handleMove(move)
-      io.to(board.id).emit('board', board)
-    }
+    if (!board) throw Error(`Board not found for ${socket.id}`)
+    if (!board.pieces.some(piece => piece.moves.valid.some((valid) => valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${board.id}`)
+
+    board.handleMove(move)
+    io.to(board.id).emit('board', board)
   })
 
   socket.on('message', (message: string) => {
@@ -122,7 +123,7 @@ io.on('connection', (socket) => {
     console.log(`Socket ${socket.id} disconnected`);
     boards = boards.map(board => {
       if (board.players.includes(socket.id)) {
-        // board.players = board.players.filter((player) => player !== socket.id)
+        board.players = board.players.filter((player) => player !== socket.id)
         board.players = board.spectators.filter((spectator) => spectator !== socket.id)
         io.to(board.id).emit('board', board)
       }

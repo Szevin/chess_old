@@ -3,7 +3,7 @@ import './Board.css'
 import classNames from 'classnames'
 import React from 'react'
 import { Annotation, Move } from 'chess-common'
-import { Grid, GridItem, useToast } from '@chakra-ui/react'
+import { Grid, GridItem, Heading, useToast } from '@chakra-ui/react'
 import { useReward } from 'react-rewards'
 import PieceNode from './PieceNode'
 import { useAppSelector } from '../store'
@@ -94,6 +94,12 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
 
   return (
     <Grid templateRows="repeat(2, 1fr)" templateColumns="repeat(12, 1fr)" marginLeft={4} justifyContent="start">
+      <Heading as="h1" size="xl">
+        You are: {board.players[0] === user ? 'White' : board.players[1] === user ? 'Black' : 'Spectator'}
+      </Heading>
+      <Heading>
+        Turn: {board.currentPlayer === 'white' ? 'White' : 'Black'}
+      </Heading>
       <GridItem rowSpan={1} colSpan={6} className="board">
         {Array.from(Array(8).keys()).reverse().map((row) => (
           cols.map((letter, col) => (

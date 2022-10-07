@@ -1,5 +1,6 @@
 import { io } from 'socket.io-client'
 import { Move } from 'chess-common'
+import React from 'react'
 import { useAppDispatch } from '..'
 import { setBoard } from '../redux/board'
 
@@ -7,7 +8,11 @@ const socket = io(process.env.SERVER_URL ?? 'http://localhost:3030')
 
 export const useSocket = () => {
   const dispatch = useAppDispatch()
-  const user = socket.id
+  const [user, setUser] = React.useState<string>(socket.id)
+
+  socket.onAny(() => {
+    setUser(socket.id)
+  })
 
   socket.on('board', (board) => {
     dispatch(setBoard({
