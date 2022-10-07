@@ -122,7 +122,8 @@ io.on('connection', (socket) => {
     console.log(`Socket ${socket.id} disconnected`);
     boards = boards.map(board => {
       if (board.players.includes(socket.id)) {
-        board.players = board.players.filter((player) => player !== socket.id)
+        // board.players = board.players.filter((player) => player !== socket.id)
+        board.players = board.spectators.filter((spectator) => spectator !== socket.id)
         io.to(board.id).emit('board', board)
       }
       return board
