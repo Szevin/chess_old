@@ -80,7 +80,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
       toast({
         title: 'Stalemate',
         description: 'Stalemate!',
-        status: 'success',
+        status: 'warning',
         duration: null,
         isClosable: true,
       })
