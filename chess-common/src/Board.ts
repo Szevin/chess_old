@@ -1,5 +1,6 @@
+/* eslint-disable import/no-named-as-default */
 import Position, { Annotation, Direction } from './Position'
-import Piece, { PieceType, ColorType, PieceUnicode, PieceMoves, IPiece } from './Piece'
+import Piece, { ColorType, PieceMoves, IPiece } from './Piece'
 import { Move } from './Move'
 import { Message } from './Message'
 
@@ -25,26 +26,35 @@ export const defaultPieceSetup = [
 ] as IPiece[]
 
 export class Board {
-	id: string
-	players: string[] = []
-	spectators: string[] = []
+  id: string
+
+  players: string[] = []
+
+  spectators: string[] = []
+
   messages: Message[] = []
+
   moves: Move[] = []
-	pieces: Piece[]
-	isCheck: boolean = false
-	isCheckmate: boolean = false
-	isStalemate: boolean = false
-	currentPlayer: ColorType = 'white'
+
+  pieces: Piece[]
+
+  isCheck: boolean = false
+
+  isCheckmate: boolean = false
+
+  isStalemate: boolean = false
+
+  currentPlayer: ColorType = 'white'
 
   constructor(id: string, pieces: IPiece[] = defaultPieceSetup, simulated: boolean = false) {
-    if(pieces.some((p, i) => pieces.findIndex(p2 => p2.position === p.position) !== i)) {
+    if (pieces.some((p, i) => pieces.findIndex((p2) => p2.position === p.position) !== i)) {
       throw new Error('Two pieces with same position')
     }
 
     this.id = id
-    this.pieces = pieces.map(piece => new Piece(piece.name, piece.color, piece.position))
+    this.pieces = pieces.map((piece) => new Piece(piece.name, piece.color, piece.position))
 
-    if (!simulated){
+    if (!simulated) {
       this.pieces.forEach((piece) => {
         this.calcPieceValidMoves(piece)
       })
@@ -79,7 +89,7 @@ export class Board {
     if (!piece) throw Error('Piece not found!')
 
     piece.position = move.to
-    let attacks: Annotation[] = []
+    const attacks: Annotation[] = []
     this.getEnemyPieces().forEach((piece) => {
       attacks.push(...this.getCaptureMoves(piece))
     })
@@ -91,13 +101,9 @@ export class Board {
     piece.moves = this.getMoves(piece)
   }
 
-  getEnemyPieces = () => {
-    return this.pieces.filter((piece) => piece.color === this.getEnemyColor())
-  }
+  getEnemyPieces = () => this.pieces.filter((piece) => piece.color === this.getEnemyColor())
 
-  getOwnPieces = () => {
-    return this.pieces.filter((piece) => piece.color === this.currentPlayer)
-  }
+  getOwnPieces = () => this.pieces.filter((piece) => piece.color === this.currentPlayer)
 
   getPiece = (at: Annotation) => this.pieces.find((piece) => piece.position === at)
 
@@ -127,9 +133,9 @@ export class Board {
       position.addDirections(direction)
       let directionRange = 0
       while (
-        (!piece.isBlockable || (piece.isBlockable && this.getPiece(position.annotation)?.color !== piece.color)) &&
-        position.isValid() &&
-        directionRange < piece.range
+        (!piece.isBlockable || (piece.isBlockable && this.getPiece(position.annotation)?.color !== piece.color))
+        && position.isValid()
+        && directionRange < piece.range
       ) {
         if (this.getPiece(position.annotation) && this.getPiece(position.annotation)?.color !== piece.color) {
           break
@@ -150,9 +156,9 @@ export class Board {
       position.addDirections(direction)
       let directionRange = 0
       while (
-        (!piece.isBlockable || (piece.isBlockable && this.getPiece(position.annotation)?.color !== piece.color)) &&
-        position.isValid() &&
-        directionRange < piece.range
+        (!piece.isBlockable || (piece.isBlockable && this.getPiece(position.annotation)?.color !== piece.color))
+        && position.isValid()
+        && directionRange < piece.range
       ) {
         if (this.getPiece(position.annotation) && this.getPiece(position.annotation)?.color !== piece.color) {
           captures.push(new Position(position.annotation))
@@ -171,7 +177,7 @@ export class Board {
     if (!moves) return filteredMoves
 
     moves.forEach((move) => {
-      let boardCopy = new Board("-1", this.pieces, true)
+      const boardCopy = new Board('-1', this.pieces, true)
       boardCopy.currentPlayer = this.currentPlayer
 
       boardCopy.simulateMove({
@@ -197,7 +203,7 @@ export class Board {
 
     directions.forEach((direction) => {
       const position = new Position(piece.position)
-      while(position.isValid() && !this.getEnemyPieces().map((piece) => piece.moves.valid).some((moves) => moves.includes(position.annotation))) {
+      while (position.isValid() && !this.getEnemyPieces().map((piece) => piece.moves.valid).some((moves) => moves.includes(position.annotation))) {
         position.addDirection(direction)
         const piece = this.getPiece(position.annotation)
         if (piece) {

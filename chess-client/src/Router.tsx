@@ -8,7 +8,7 @@ import Main from './pages/Main'
 import Register from './pages/Register'
 
 const Router = () => {
-  const token = localStorage.getItem('token')
+  const token = sessionStorage.getItem('user')
 
   if (!token) {
     return (

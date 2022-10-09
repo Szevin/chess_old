@@ -2,10 +2,9 @@ import './Board.css'
 
 import classNames from 'classnames'
 import React from 'react'
-import { Annotation } from 'chess-common'
+import { Annotation, IUser } from 'chess-common'
 import {
-  Badge,
-  Box, Grid, GridItem, Heading, HStack, useToast,
+  Box, Grid, GridItem, Heading, HStack, Tag, useToast,
 } from '@chakra-ui/react'
 import { useReward } from 'react-rewards'
 import { ViewIcon } from '@chakra-ui/icons'
@@ -13,6 +12,7 @@ import PieceNode from './PieceNode'
 import { useAppSelector } from '../store'
 import Chat from './Chat'
 import { useSocket } from '../store/socket'
+import UserNode from './UserNode'
 
 // eslint-disable import/no-named-as-default
 /* eslint-disable no-param-reassign */
@@ -115,17 +115,21 @@ const BoardNode = () => {
   }
 
   return (
-    <Grid templateRows="repeat(2, 1fr)" templateColumns="repeat(12, 1fr)" marginLeft={4} justifyContent="start">
-      <Heading as="h1" size="xl">
-        You are: {board.players[0] === user ? 'White' : board.players[1] === user ? 'Black' : 'Spectator'}
-      </Heading>
-      <Heading>
-        Turn: {board.currentPlayer === 'white' ? 'White' : 'Black'}
-      </Heading>
-      <Badge>
-        {board.spectators.length}
-        <ViewIcon />
-      </Badge>
+    <Grid templateRows="repeat(30, 0.1fr)" templateColumns="repeat(12, 1fr)" marginLeft={4} justifyContent="start">
+      <GridItem rowSpan={1} colSpan={10} justifyContent="center">
+        <Heading justifyContent="center">
+          Turn: {board.currentPlayer === 'white' ? 'White' : 'Black'}
+        </Heading>
+      </GridItem>
+      <GridItem colSpan={2}>
+        <Tag colorScheme="blue">
+          <ViewIcon marginRight="1" />
+          {board.spectators.length}
+        </Tag>
+      </GridItem>
+      <GridItem colSpan={1}>
+        <UserNode user={{ name: board.players[0] } as IUser} />
+      </GridItem>
       <GridItem rowSpan={1} colSpan={6} className="board">
         {Array.from(Array(8).keys()).reverse().map((row) => (
           cols.map((letter, col) => (
@@ -137,7 +141,7 @@ const BoardNode = () => {
                 valid: validMoves.includes((letter + (row + 1)) as Annotation),
                 // last: [board.getLastMove()?.to.annotation, board.getLastMove()?.from.annotation].includes((letter + (row + 1)) as Annotation),
                 check: board.isCheck
-                    && board.getKing(board.currentPlayer).position === (letter + (row + 1)) as Annotation,
+                && board.getKing(board.currentPlayer).position === (letter + (row + 1)) as Annotation,
               })}
               key={letter + row}
             />
@@ -153,14 +157,14 @@ const BoardNode = () => {
           />
         ))}
       </GridItem>
-      <GridItem rowSpan={1} colSpan={2} className="prev-moves">
+      <Grid width="10rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400" templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
         { board.moves.map((move) => (
           // TODO unique keys
-          <li key={move.piece + move.from + move.to}>
+          <GridItem key={move.piece + move.from + move.to}>
             {`${move.piece}${move.from}-${move.to}`}
-          </li>
+          </GridItem>
         )) }
-      </GridItem>
+      </Grid>
 
       <GridItem marginTop={4} rowSpan={1} colSpan={8}>
         {board.players.includes(user) && <Chat messages={board.messages} />}

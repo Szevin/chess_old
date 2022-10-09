@@ -1,4 +1,4 @@
-import { Box, HStack, Input } from '@chakra-ui/react'
+import { Avatar, Box, HStack, Input } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Message } from 'chess-common'
 import dayjs from 'dayjs'
@@ -20,7 +20,9 @@ const Chat = ({ messages } : { messages: Message[] }) => {
         {messages && messages.map((message) => (
           <HStack key={message.id} className="chat-message">
             <Box className="chat-message-timestamp">{dayjs(message.timestamp).format('YYYY-MM-DD hh:mm')}</Box>
-            <Box className="chat-message-user">{message.user}</Box>
+            <Box className="chat-message-user">
+              <Avatar name={message.user} />
+            </Box>
             <Box className="chat-message-content">{message.content}</Box>
           </HStack>
         ))}

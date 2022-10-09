@@ -15,8 +15,8 @@ if (!sessionStorage.getItem('user')) {
   sessionStorage.setItem('user', uuid.v4())
 }
 
-if (!sessionStorage.getItem('theme')) {
-  sessionStorage.setItem('theme', 'light')
+if (!localStorage.getItem('theme')) {
+  localStorage.setItem('theme', 'light')
 }
 
 const root = ReactDOM.createRoot(

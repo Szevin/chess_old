@@ -11,7 +11,7 @@ class Position {
   y: number
 
   constructor(ann: Annotation) {
-    this.x = COLS.indexOf(ann[0]) +1
+    this.x = COLS.indexOf(ann[0]) + 1
     this.y = Number(ann[1])
     this.annotation = ann
   }

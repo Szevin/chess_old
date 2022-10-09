@@ -9,13 +9,13 @@ import swaggerUi from 'swagger-ui-express';
 import dotenv from 'dotenv';
 import * as uuid from 'uuid';
 
-import userRoute from './api/routes/user.js';
+import userRoute from './routes/User.js';
 
 dotenv.config()
 const port = process.env.PORT ?? 3030
 const app = express()
 
-mongoose.connect(process.env.ATLAS_URL ?? '').catch(err => {
+mongoose.connect(process.env.MONGODB_URL ?? '').catch(err => {
   console.error(err)
 })
 
@@ -110,22 +110,22 @@ io.on('connection', (socket) => {
 
   socket.on('message', ({content, user}) => {
     const board = boards.find(board => board.players.includes(user))
-    if (board) {
-      board.messages.push({
-        content,
-        user,
-        id: uuid.v4(),
-        timestamp: Date.now(),
-      })
-      io.to(board.id).emit('board', board)
-    }
+    if (!board) return
+
+    board.messages.push({
+      content,
+      user,
+      id: uuid.v4(),
+      timestamp: Date.now(),
+    } as Message)
+    io.to(board.id).emit('board', board)
   })
 
   socket.on('disconnect', () => {
     console.log(`Socket ${socket.id} disconnected`);
     boards = boards.map(board => {
         // board.players = board.players.filter((player) => player !== user)
-        board.players = board.spectators.filter((spectator) => spectator !== socket.id)
+        board.spectators = board.spectators.filter((spectator) => spectator !== socket.id)
         io.to(board.id).emit('board', board)
       return board
     })

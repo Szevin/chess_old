@@ -52,17 +52,6 @@
   margin: auto;
 }
 
-.prev-moves {
-  border: 1px solid #333;
-  background-color: #999;
-}
-
-.prev-moves li {
-  margin: 0 0.5rem;
-  list-style: none;
-  text-align: center;
-}
-
 html {
   -webkit-user-select: none;
   -ms-user-select: none;

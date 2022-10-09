@@ -1,5 +1,4 @@
-import { Annotation } from './Position';
-
+import { Annotation } from './Position'
 
 export interface Move {
   from: Annotation;
