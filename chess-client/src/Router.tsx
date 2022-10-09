@@ -7,18 +7,34 @@ import Login from './pages/Login'
 import Main from './pages/Main'
 import Register from './pages/Register'
 
-const Router = () => (
-  <Routes>
-    <Route path="/" element={<Layout />}>
-      <Route index element={<Main />} />
-      <Route path="board/:id" element={<Game />} />
+const Router = () => {
+  const token = localStorage.getItem('token')
 
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<Register />} />
+  if (!token) {
+    return (
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Main />} />
 
-      <Route path="*" element={<Navigate to="login" replace />} />
-    </Route>
-  </Routes>
-)
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    )
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Main />} />
+        <Route path="board/:id" element={<Game />} />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
+  )
+}
 
 export default Router

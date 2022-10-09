@@ -5,10 +5,19 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
+import * as uuid from 'uuid'
 import { store } from './store'
 
 import Router from './Router'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
+
+if (!sessionStorage.getItem('user')) {
+  sessionStorage.setItem('user', uuid.v4())
+}
+
+if (!sessionStorage.getItem('theme')) {
+  sessionStorage.setItem('theme', 'light')
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

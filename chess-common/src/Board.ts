@@ -178,6 +178,7 @@ export class Board {
         from: piece.position,
         to: move,
         piece: piece.name,
+        player: piece.color,
       })
 
       if (!boardCopy.isCheck) {

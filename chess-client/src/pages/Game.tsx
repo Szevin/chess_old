@@ -4,13 +4,20 @@ import { useSocket } from '../store/socket'
 import BoardNode from '../components/BoardNode'
 
 const Game = () => {
-  const { move, join } = useSocket()
-
+  const { join } = useSocket()
   const { id } = useParams() as { id: string }
+
+  const user = sessionStorage.getItem('user') as string
+
+  if (!user) {
+    console.log(user)
+    return null
+  }
+
   join(id)
 
   return (
-    <BoardNode move={move} />
+    <BoardNode />
   )
 }
 

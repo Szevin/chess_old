@@ -1,6 +1,5 @@
 import { io } from 'socket.io-client'
 import { Move } from 'chess-common'
-import React from 'react'
 import { useAppDispatch } from '..'
 import { setBoard } from '../redux/board'
 
@@ -8,11 +7,8 @@ const socket = io(process.env.SERVER_URL ?? 'http://localhost:3030')
 
 export const useSocket = () => {
   const dispatch = useAppDispatch()
-  const [user, setUser] = React.useState<string>(socket.id)
 
-  socket.onAny(() => {
-    setUser(socket.id)
-  })
+  const user = sessionStorage.getItem('user') ?? ''
 
   socket.on('board', (board) => {
     dispatch(setBoard({
@@ -25,13 +21,13 @@ export const useSocket = () => {
     socket.emit('move', move)
   }
 
-  const join = (id: string) => {
-    socket.emit('join', id)
+  const join = (boardId: string) => {
+    socket.emit('join', { boardId, user })
   }
 
   const message = (message: string) => {
     socket.emit('message', message)
   }
 
-  return { move, join, message, user }
+  return { move, join, message }
 }

@@ -20,9 +20,10 @@ const annotationToCoord = (ann: Annotation) => ({
 const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable }: {
   piece: Piece, setselectedPosition: (pos: Annotation) => void, onMove: (to: Annotation) => void, isDraggable: boolean }) => {
   // TODO fix resize event
-  const [, forceUpdate] = React.useReducer((x) => x + 1, 0)
+  const [, setForceUpdate] = React.useState(0)
   window.onresize = throttle(() => {
-    forceUpdate()
+    console.log('resize')
+    setForceUpdate((prev) => prev + 1)
   }, 100)
 
   return (

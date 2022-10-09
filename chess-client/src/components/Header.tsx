@@ -1,9 +1,8 @@
 import { Heading, Box } from '@chakra-ui/react'
 import React from 'react'
-import { useSocket } from '../store/socket'
 
 const Header = () => {
-  const { user } = useSocket()
+  const user = sessionStorage.getItem('user') ?? ''
 
   return (
     <Box

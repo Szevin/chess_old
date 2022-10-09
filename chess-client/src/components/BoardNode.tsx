@@ -2,9 +2,13 @@ import './Board.css'
 
 import classNames from 'classnames'
 import React from 'react'
-import { Annotation, Move } from 'chess-common'
-import { Grid, GridItem, Heading, useToast } from '@chakra-ui/react'
+import { Annotation } from 'chess-common'
+import {
+  Badge,
+  Box, Grid, GridItem, Heading, HStack, useToast,
+} from '@chakra-ui/react'
 import { useReward } from 'react-rewards'
+import { ViewIcon } from '@chakra-ui/icons'
 import PieceNode from './PieceNode'
 import { useAppSelector } from '../store'
 import Chat from './Chat'
@@ -14,9 +18,10 @@ import { useSocket } from '../store/socket'
 /* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
+const BoardNode = () => {
   const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
+  const { move } = useSocket()
   const toast = useToast()
   const { reward } = useReward('last', 'confetti', {
     lifetime: 300,
@@ -30,7 +35,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
   const [validMoves, setValidMoves] = React.useState<Array<Annotation>>([])
 
   const board = useAppSelector((state) => state.board)
-  const { user } = useSocket()
+  const user = sessionStorage.getItem('user') ?? ''
 
   React.useEffect(() => {
     if (!selectedPosition) {
@@ -62,6 +67,7 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
       from: selectedPosition,
       to,
       piece: piece.unicode,
+      player: user,
     })
     setselectedPosition(null)
   }
@@ -92,6 +98,22 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
     }
   }, [board])
 
+  if (board.players.length !== 2) {
+    return (
+      <Box>
+        <Heading justifyContent="center">
+          <HStack justifyContent="center">
+            <Heading size="lg" marginRight="2">Waiting for opponent</Heading>
+            <Box className="dot-elastic align-self-end" />
+          </HStack>
+        </Heading>
+        <Heading marginTop="2" size="md" display="flex" justifyContent="center">
+          Code: {board.id}
+        </Heading>
+      </Box>
+    )
+  }
+
   return (
     <Grid templateRows="repeat(2, 1fr)" templateColumns="repeat(12, 1fr)" marginLeft={4} justifyContent="start">
       <Heading as="h1" size="xl">
@@ -100,10 +122,14 @@ const BoardNode = ({ move }: { move: (movement: Move) => void }) => {
       <Heading>
         Turn: {board.currentPlayer === 'white' ? 'White' : 'Black'}
       </Heading>
+      <Badge>
+        {board.spectators.length}
+        <ViewIcon />
+      </Badge>
       <GridItem rowSpan={1} colSpan={6} className="board">
         {Array.from(Array(8).keys()).reverse().map((row) => (
           cols.map((letter, col) => (
-            <div
+            <Box
               id={`${letter}${row + 1}` === board.moves.at(-1)?.to ? 'last' : ''}
               className={classNames({
                 white: ((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2)),
