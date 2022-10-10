@@ -59,6 +59,7 @@ module.exports = {
         "@typescript-eslint/no-use-before-define": "off",
         "import/no-cycle": "off",
         "no-nested-ternary": "off",
+        "no-underscore-dangle": "off",
       }
     }
   ]

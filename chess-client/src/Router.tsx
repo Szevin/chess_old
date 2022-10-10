@@ -8,9 +8,9 @@ import Main from './pages/Main'
 import Register from './pages/Register'
 
 const Router = () => {
-  const token = sessionStorage.getItem('user')
+  const user = sessionStorage.getItem('user')
 
-  if (!token) {
+  if (!user) {
     return (
       <Routes>
         <Route path="/" element={<Layout />}>

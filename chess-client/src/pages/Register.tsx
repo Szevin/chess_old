@@ -39,9 +39,8 @@ const Register = () => {
       return
     }
 
-    login(formData)
-
-    navigate('/')
+    sessionStorage.setItem('user', res.data._id)
+    navigate('..')
   }
 
   return (
