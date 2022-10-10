@@ -2,13 +2,14 @@ import { IUser } from 'chess-common'
 import express from 'express'
 import mongoose from 'mongoose'
 import { User } from '../models/User.js'
+import { Encrypt } from '../utils/Encrypt.js'
 const router = express.Router()
 
-const create = (req: { body: IUser }, res) => {
+const create = async (req: { body: IUser }, res) => {
   const user = new User({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
-    password: req.body.password,
+    password: await Encrypt.encrypt(req.body.password),
     email: req.body.email,
     lastLogin: new Date(),
     picture: null,
