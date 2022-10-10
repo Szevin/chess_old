@@ -22,7 +22,6 @@ const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable }: {
   // TODO fix resize event
   const [, setForceUpdate] = React.useState(0)
   window.onresize = throttle(() => {
-    console.log('resize')
     setForceUpdate((prev) => prev + 1)
   }, 100)
 

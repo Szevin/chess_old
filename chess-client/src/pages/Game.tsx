@@ -10,7 +10,6 @@ const Game = () => {
   const user = sessionStorage.getItem('user') as string
 
   if (!user) {
-    console.log(user)
     return null
   }
 
