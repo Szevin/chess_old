@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.ts",
-    "build": "pkg . --target node14-linux-x64 --out-path dist"
+    "build": "pkg . --target latest-linux-x64 --out-path dist"
   },
   "type": "module",
   "author": "Geiger Kevin (FOT0IZ)",
