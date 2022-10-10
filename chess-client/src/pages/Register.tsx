@@ -6,39 +6,57 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useToast,
 } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router'
+import { useCreateUserMutation, useLoginUserMutation } from '../store/rest/user'
 
 const Register = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm()
+  const form = useForm()
+  const navigate = useNavigate()
+  const toast = useToast()
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+
+  const [submitRegister] = useCreateUserMutation()
+  const [login] = useLoginUserMutation()
 
   const [showPassword, setShowPassword] = React.useState(false)
   const togglePassword = () => setShowPassword((prevState) => !prevState)
 
-  const onSubmit = async () => {
+  const onSubmit = async (formData: any) => {
+    const res = await submitRegister(formData)
+    if (!('data' in res)) {
+      toast({
+        title: 'Error',
+        description: 'Something went wrong',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+      return
+    }
 
+    login(formData)
+
+    navigate('/')
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={form.handleSubmit(onSubmit)}>
       <FormControl>
-        <FormLabel htmlFor="fullname">Teljes név*</FormLabel>
+        <FormLabel htmlFor="name">Felhasználónév*</FormLabel>
         <Input
-          id="fullname"
-          {...register('fullname', { required: 'Név megadása kötelező' })}
+          id="name"
+          {...form.register('name', { required: 'Felhasználónév megadása kötelező!' })}
         />
         <ErrorMessage
-          errors={errors}
-          name="fullname"
+          errors={form.formState.errors}
+          name="name"
           render={({ message }) => (
-            <FormLabel className="error" htmlFor="fullname">
+            <FormLabel color="red" htmlFor="name">
               {message}
             </FormLabel>
           )}
@@ -49,16 +67,16 @@ const Register = () => {
         <FormLabel htmlFor="email">Email cím*</FormLabel>
         <Input
           id="email"
-          {...register('email', {
-            required: 'Email megadása kötelező',
+          {...form.register('email', {
+            required: 'Email megadása kötelező!',
             pattern: { value: emailRegex, message: 'Hibás email cím' },
           })}
         />
         <ErrorMessage
-          errors={errors}
+          errors={form.formState.errors}
           name="email"
           render={({ message }) => (
-            <FormLabel className="error" htmlFor="email">
+            <FormLabel color="red" htmlFor="email">
               {message}
             </FormLabel>
           )}
@@ -71,8 +89,8 @@ const Register = () => {
           <Input
             type={showPassword ? 'text' : 'password'}
             id="password"
-            {...register('password', {
-              required: 'Jelszó megadása kötelező',
+            {...form.register('password', {
+              required: 'Jelszó megadása kötelező!',
             })}
           />
           <InputRightElement width="4.5rem">
@@ -82,22 +100,21 @@ const Register = () => {
           </InputRightElement>
         </InputGroup>
         <ErrorMessage
-          errors={errors}
+          errors={form.formState.errors}
           name="password"
           render={({ message }) => (
-            <FormLabel className="error" htmlFor="password">
+            <FormLabel color="red" htmlFor="password">
               {message}
             </FormLabel>
           )}
         />
       </FormControl>
 
-      <Button colorScheme="teal" size="sm" type="submit" marginTop={2}>
+      <Button disabled={form.formState.isSubmitting} colorScheme="teal" size="sm" type="submit" marginTop={2}>
         Regisztráció
       </Button>
     </form>
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/semi
 export default Register

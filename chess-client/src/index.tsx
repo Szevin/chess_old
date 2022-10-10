@@ -11,9 +11,9 @@ import { store } from './store'
 import Router from './Router'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 
-if (!sessionStorage.getItem('user')) {
-  sessionStorage.setItem('user', uuid.v4())
-}
+// if (!sessionStorage.getItem('user')) {
+//   sessionStorage.setItem('user', uuid.v4())
+// }
 
 if (!localStorage.getItem('theme')) {
   localStorage.setItem('theme', 'light')

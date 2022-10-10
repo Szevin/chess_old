@@ -15,7 +15,7 @@ dotenv.config()
 const port = process.env.PORT ?? 3030
 const app = express()
 
-mongoose.connect(process.env.MONGODB_URL ?? '').catch(err => {
+mongoose.connect(process.env.MONGODB_URI).catch(err => {
   console.error(err)
 })
 

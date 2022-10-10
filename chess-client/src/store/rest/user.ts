@@ -5,12 +5,28 @@ import { IUser } from 'chess-common'
 export type Channel = 'redux' | 'general'
 
 export const user = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: '/user' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'api/user' }),
   endpoints: (build) => ({
-    getBoard: build.query<IUser, void>({
-      query: () => '',
+    getUser: build.query<IUser, string>({
+      query: (id) => `${id}`,
+    }),
+
+    createUser: build.mutation<IUser, { name: string, email: string, password: string }>({
+      query: (body) => ({
+        url: '',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    loginUser: build.mutation<IUser, { name: string, password: string }>({
+      query: (body) => ({
+        url: '',
+        method: 'POST',
+        body,
+      }),
     }),
   }),
 })
 
-export const { useGetBoardQuery } = user
+export const { useGetUserQuery, useCreateUserMutation, useLoginUserMutation } = user

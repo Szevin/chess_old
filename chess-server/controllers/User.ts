@@ -9,8 +9,8 @@ const create = (req: { body: IUser }, res) => {
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     password: req.body.password,
+    email: req.body.email,
     lastLogin: new Date(),
-    email: null,
     picture: null,
     matches: [],
   })

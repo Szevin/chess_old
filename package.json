@@ -5,6 +5,7 @@
     "chess-server",
     "chess-common"
   ],
+  "proxy": "http://localhost:3030",
   "private": true,
   "type": "module",
   "scripts": {
