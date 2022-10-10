@@ -12,7 +12,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
-import { useCreateUserMutation, useLoginUserMutation } from '../store/rest/user'
+import { useCreateUserMutation } from '../store/rest/user'
 
 const Register = () => {
   const form = useForm()
@@ -21,7 +21,7 @@ const Register = () => {
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
   const [submitRegister] = useCreateUserMutation()
-  const [login] = useLoginUserMutation()
+  // const [login] = useLoginUserMutation()
 
   const [showPassword, setShowPassword] = React.useState(false)
   const togglePassword = () => setShowPassword((prevState) => !prevState)
