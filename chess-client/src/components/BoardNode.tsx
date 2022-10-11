@@ -35,7 +35,7 @@ const BoardNode = () => {
   const [validMoves, setValidMoves] = React.useState<Array<Annotation>>([])
 
   const board = useAppSelector((state) => state.board)
-  const user = sessionStorage.getItem('user') ?? ''
+  const user = useAppSelector((state) => state.user)
 
   React.useEffect(() => {
     if (!selectedPosition) {
@@ -67,7 +67,8 @@ const BoardNode = () => {
       from: selectedPosition,
       to,
       piece: piece.unicode,
-      player: user,
+      player: user.name,
+      boardId: board._id,
     })
     setselectedPosition(null)
   }
@@ -98,7 +99,7 @@ const BoardNode = () => {
     }
   }, [board])
 
-  if (board.players.length !== 2) {
+  if (board.status === 'waiting') {
     return (
       <Box>
         <Heading justifyContent="center">
@@ -108,7 +109,7 @@ const BoardNode = () => {
           </HStack>
         </Heading>
         <Heading marginTop="2" size="md" display="flex" justifyContent="center">
-          Code: {board.id}
+          Code: {board._id}
         </Heading>
       </Box>
     )
@@ -128,7 +129,7 @@ const BoardNode = () => {
         </Tag>
       </GridItem>
       <GridItem colSpan={1}>
-        <UserNode user={{ name: board.players[0] } as IUser} />
+        <UserNode user={{ name: board.white } as IUser} />
       </GridItem>
       <GridItem rowSpan={1} colSpan={6} className="board">
         {Array.from(Array(8).keys()).reverse().map((row) => (
@@ -151,7 +152,8 @@ const BoardNode = () => {
           <PieceNode
             key={piece.id}
             piece={piece}
-            isDraggable={board.currentPlayer === piece.color && !board.isCheckmate && board.players[board.currentPlayer === 'white' ? 0 : 1] === user && board.players.includes(user)}
+            isDraggable={board.currentPlayer === piece.color && !board.isCheckmate
+              && board[board.currentPlayer] === user._id && [board.white, board.black].includes(user._id)}
             onMove={handleMove}
             setselectedPosition={setselectedPosition}
           />
@@ -167,7 +169,7 @@ const BoardNode = () => {
       </Grid>
 
       <GridItem marginTop={4} rowSpan={1} colSpan={8}>
-        {board.players.includes(user) && <Chat messages={board.messages} />}
+        {[board.white, board.black].includes(user._id) && <Chat messages={board.messages} />}
       </GridItem>
     </Grid>
   )

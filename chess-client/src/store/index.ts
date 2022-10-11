@@ -2,17 +2,22 @@ import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
 
-import { user } from './rest/user'
+import { User } from './rest/user'
+import { Board } from './rest/board'
 import boardReducer from './redux/board'
+import userReducer from './redux/user'
 
 export const store = configureStore({
   reducer: {
-    [user.reducerPath]: user.reducer,
+    [User.reducerPath]: User.reducer,
+    [Board.reducerPath]: Board.reducer,
     board: boardReducer,
+    user: userReducer,
   },
   devTools: process.env.NODE_ENV !== 'production',
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })
-    .concat(user.middleware),
+    .concat(Board.middleware)
+    .concat(User.middleware),
 })
 
 type AppDispatch = typeof store.dispatch

@@ -26,9 +26,11 @@ export const defaultPieceSetup = [
 ] as IPiece[]
 
 export class Board {
-  id: string
+  _id: string
 
-  players: string[] = []
+  white: string
+
+  black: string
 
   spectators: string[] = []
 
@@ -46,12 +48,14 @@ export class Board {
 
   currentPlayer: ColorType = 'white'
 
+  status: 'waiting' | 'playing' | 'finished' = 'waiting'
+
   constructor(id: string, pieces: IPiece[] = defaultPieceSetup, simulated: boolean = false) {
     if (pieces.some((p, i) => pieces.findIndex((p2) => p2.position === p.position) !== i)) {
       throw new Error('Two pieces with same position')
     }
 
-    this.id = id
+    this._id = id
     this.pieces = pieces.map((piece) => new Piece(piece.name, piece.color, piece.position))
 
     if (!simulated) {
@@ -185,6 +189,7 @@ export class Board {
         to: move,
         piece: piece.name,
         player: piece.color,
+        boardId: this._id,
       })
 
       if (!boardCopy.isCheck) {

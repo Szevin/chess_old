@@ -1,11 +1,16 @@
 import { Board } from './Board'
 
 export interface IUser {
-  _id: string;
-  name: string;
-  password: string;
-  lastLogin: Date;
-  email: string;
-  picture: string;
-  matches: Board[];
+  _id: string,
+  name: string,
+  email: string,
+  password: string,
+  avatar: string,
+  elo: number,
+  wins: number,
+  losses: number,
+  draws: number,
+  streak: number,
+  games: Board[],
+  lastLogin: Date,
 }

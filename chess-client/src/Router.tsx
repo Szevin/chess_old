@@ -6,11 +6,13 @@ import Game from './pages/Game'
 import Login from './pages/Login'
 import Main from './pages/Main'
 import Register from './pages/Register'
+import { useAppSelector } from './store'
 
 const Router = () => {
-  const user = sessionStorage.getItem('user')
+  const user = useAppSelector((state) => state.user)
 
-  if (!user) {
+  if (!user._id) {
+    console.log('user not logged in')
     return (
       <Routes>
         <Route path="/" element={<Layout />}>

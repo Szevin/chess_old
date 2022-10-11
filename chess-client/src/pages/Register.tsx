@@ -12,6 +12,8 @@ import { ErrorMessage } from '@hookform/error-message'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
+import { useAppDispatch } from '../store'
+import { setUser } from '../store/redux/user'
 import { useCreateUserMutation } from '../store/rest/user'
 
 const Register = () => {
@@ -20,15 +22,15 @@ const Register = () => {
   const toast = useToast()
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
-  const [submitRegister] = useCreateUserMutation()
-  // const [login] = useLoginUserMutation()
+  const [createUser] = useCreateUserMutation()
+  const dispatch = useAppDispatch()
 
   const [showPassword, setShowPassword] = React.useState(false)
   const togglePassword = () => setShowPassword((prevState) => !prevState)
 
   const onSubmit = async (formData: any) => {
-    const res = await submitRegister(formData)
-    if (!('data' in res)) {
+    const user = await createUser(formData)
+    if (!('data' in user)) {
       toast({
         title: 'Error',
         description: 'Something went wrong',
@@ -39,7 +41,7 @@ const Register = () => {
       return
     }
 
-    sessionStorage.setItem('user', res.data._id)
+    dispatch(setUser(user.data))
     navigate('..')
   }
 

@@ -4,7 +4,8 @@ import { IUser } from 'chess-common'
 
 export type Channel = 'redux' | 'general'
 
-export const user = createApi({
+export const User = createApi({
+  reducerPath: 'api/user',
   baseQuery: fetchBaseQuery({ baseUrl: 'api/user' }),
   endpoints: (build) => ({
     getUser: build.query<IUser, string>({
@@ -21,7 +22,7 @@ export const user = createApi({
 
     loginUser: build.mutation<IUser, { name: string, password: string }>({
       query: (body) => ({
-        url: '',
+        url: '/login',
         method: 'POST',
         body,
       }),
@@ -29,4 +30,4 @@ export const user = createApi({
   }),
 })
 
-export const { useGetUserQuery, useCreateUserMutation, useLoginUserMutation } = user
+export const { useGetUserQuery, useCreateUserMutation, useLoginUserMutation } = User

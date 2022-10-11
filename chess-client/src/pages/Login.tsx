@@ -6,42 +6,62 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useToast,
 } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router'
+import { useAppDispatch } from '../store'
+import { setUser } from '../store/redux/user'
+import { useLoginUserMutation } from '../store/rest/user'
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm()
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+  const form = useForm()
+  const navigate = useNavigate()
+  const [login] = useLoginUserMutation()
+  const toast = useToast()
+  const dispatch = useAppDispatch()
 
   const [showPassword, setShowPassword] = React.useState(false)
   const togglePassword = () => setShowPassword((prevState) => !prevState)
 
-  const onSubmit = async () => {
+  const onSubmit = async (formData: any) => {
+    const user = await login({
+      name: formData.name,
+      password: formData.password,
+    })
 
+    if (!('data' in user)) {
+      toast({
+        title: 'Error',
+        description: 'Invalid name or password',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+      return
+    }
+
+    dispatch(setUser(user.data))
+    navigate('..')
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={form.handleSubmit(onSubmit)}>
       <FormControl>
-        <FormLabel htmlFor="email">Email cím*</FormLabel>
+        <FormLabel htmlFor="name">Felhasználónév*</FormLabel>
         <Input
-          id="email"
-          {...register('email', {
-            pattern: { value: emailRegex, message: 'Hibás email cím' },
-            required: 'Email megadása kötelező',
+          id="name"
+          {...form.register('name', {
+            required: 'Felhasználónév megadása kötelező!',
           })}
         />
         <ErrorMessage
-          errors={errors}
-          name="email"
+          errors={form.formState.errors}
+          name="name"
           render={({ message }) => (
-            <FormLabel className="error" htmlFor="email">
+            <FormLabel color="red" htmlFor="name">
               {message}
             </FormLabel>
           )}
@@ -54,8 +74,8 @@ const Login = () => {
           <Input
             type={showPassword ? 'text' : 'password'}
             id="password"
-            {...register('password', {
-              required: 'Jelszó megadása kötelező',
+            {...form.register('password', {
+              required: 'Jelszó megadása kötelező!',
             })}
           />
           <InputRightElement width="4.5rem">
@@ -65,16 +85,16 @@ const Login = () => {
           </InputRightElement>
         </InputGroup>
         <ErrorMessage
-          errors={errors}
+          errors={form.formState.errors}
           name="password"
           render={({ message }) => (
-            <FormLabel className="error" htmlFor="password">
+            <FormLabel color="red" htmlFor="password">
               {message}
             </FormLabel>
           )}
         />
       </FormControl>
-      <Button colorScheme="teal" size="sm" type="submit" marginTop={2}>
+      <Button disabled={form.formState.isSubmitting} colorScheme="teal" size="sm" type="submit" marginTop={2}>
         Bejelentkezés
       </Button>
     </form>

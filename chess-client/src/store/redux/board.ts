@@ -4,12 +4,13 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { Board } from 'chess-common'
 
 const initialState = {
-  id: '',
-  name: '',
-  players: [],
+  _id: '',
+  white: '',
+  black: '',
   spectators: [],
   moves: [],
-  pieces: [],
+  messages: [],
+  status: 'waiting',
   isCheck: false,
   isCheckmate: false,
   isStalemate: false,
@@ -21,7 +22,7 @@ const boardSlice = createSlice({
   initialState,
   reducers: {
     setBoard(state, action: PayloadAction<Board>) {
-      const board = Object.assign(new Board(action.payload.id, action.payload.pieces, true), action.payload)
+      const board = Object.assign(new Board(action.payload._id, action.payload.pieces, true), action.payload)
       board.currentPlayer = action.payload.currentPlayer
       Object.assign(state, board)
     },

@@ -1,8 +1,11 @@
-import { Heading, Box } from '@chakra-ui/react'
+import { Heading, Box, Button } from '@chakra-ui/react'
 import React from 'react'
+import { useNavigate } from 'react-router'
+import { useAppSelector } from '../store'
 
 const Header = () => {
-  const user = sessionStorage.getItem('user') ?? ''
+  const user = useAppSelector((state) => state.user)
+  const navigate = useNavigate()
 
   return (
     <Box
@@ -18,7 +21,9 @@ const Header = () => {
       <Heading as="h1" size="xl">
         Adaptive Chess
       </Heading>
-      <span>{user}</span>
+      <Button onClick={() => navigate('/login')}>Login</Button>
+      <Button onClick={() => navigate('/register')}>Register</Button>
+      <span>{user._id}</span>
     </Box>
   )
 }

@@ -1,10 +1,11 @@
 import { IUser } from 'chess-common';
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -13,19 +14,44 @@ const UserSchema = new mongoose.Schema({
   lastLogin: {
     type: Date,
     required: true,
+    default: Date.now,
   },
   email: {
     type: String,
     required: true,
   },
-  picture: {
+  avatar: {
     type: String,
     required: false,
   },
-  matches: {
-    type: Array,
-    required: false,
+  elo: {
+    type: Number,
+    required: true,
+    default: 1000,
   },
-})
+  wins: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  losses: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  draws: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  streak: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  games: [
+    {type: Schema.Types.ObjectId, ref: 'Board'}
+  ],
+}, { id: false })
 
-export const User = mongoose.model<IUser>('User', UserSchema);
+export const UserModel = mongoose.model<IUser>('User', UserSchema);
