@@ -1,4 +1,6 @@
-import { Heading, Box, Button } from '@chakra-ui/react'
+import {
+  Heading, Box, Button, GridItem, Grid, Text,
+} from '@chakra-ui/react'
 import React from 'react'
 import { useNavigate } from 'react-router'
 import { useAppSelector } from '../store'
@@ -8,7 +10,7 @@ const Header = () => {
   const navigate = useNavigate()
 
   return (
-    <Box
+    <Grid
       as="header"
       width="100%"
       height="64px"
@@ -17,14 +19,19 @@ const Header = () => {
       display="flex"
       alignItems="center"
       justifyContent="center"
+      templateColumns="repeat(13, 1fr)"
     >
-      <Heading as="h1" size="xl">
-        Adaptive Chess
-      </Heading>
-      <Button onClick={() => navigate('/login')}>Login</Button>
-      <Button onClick={() => navigate('/register')}>Register</Button>
-      <span>{user._id}</span>
-    </Box>
+      <GridItem gridColumn={10}>
+        <Heading color="blueviolet" as="h1" size="xl" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+          Adaptive Chess
+        </Heading>
+      </GridItem>
+      <GridItem gridColumn={1}>
+        <Button color="blueviolet" variant="ghost" onClick={() => navigate('/login')}>Login</Button>
+        <Button color="blueviolet" variant="ghost" onClick={() => navigate('/register')}>Register</Button>
+      </GridItem>
+      <Text gridColumn={1}>{user._id}</Text>
+    </Grid>
   )
 }
 
