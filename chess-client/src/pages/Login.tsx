@@ -1,5 +1,6 @@
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import {
+  Box,
   Button,
   FormControl,
   FormLabel,
@@ -48,56 +49,60 @@ const Login = () => {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      <FormControl>
-        <FormLabel htmlFor="name">Felhasználónév*</FormLabel>
-        <Input
-          id="name"
-          {...form.register('name', {
-            required: 'Felhasználónév megadása kötelező!',
-          })}
-        />
-        <ErrorMessage
-          errors={form.formState.errors}
-          name="name"
-          render={({ message }) => (
-            <FormLabel color="red" htmlFor="name">
-              {message}
-            </FormLabel>
-          )}
-        />
-      </FormControl>
-
-      <FormControl>
-        <FormLabel htmlFor="password">Jelszó*</FormLabel>
-        <InputGroup size="md">
+    <Box width="360px" margin="auto">
+      <form onSubmit={form.handleSubmit(onSubmit)} style={{ width: '100%' }}>
+        <FormControl>
+          <FormLabel htmlFor="name">Felhasználónév*</FormLabel>
           <Input
-            type={showPassword ? 'text' : 'password'}
-            id="password"
-            {...form.register('password', {
-              required: 'Jelszó megadása kötelező!',
+            width="97%"
+            id="name"
+            {...form.register('name', {
+              required: 'Felhasználónév megadása kötelező!',
             })}
           />
-          <InputRightElement width="4.5rem">
-            <Button size="md" onClick={togglePassword}>
-              {showPassword ? <ViewOffIcon /> : <ViewIcon />}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-        <ErrorMessage
-          errors={form.formState.errors}
-          name="password"
-          render={({ message }) => (
-            <FormLabel color="red" htmlFor="password">
-              {message}
-            </FormLabel>
-          )}
-        />
-      </FormControl>
-      <Button disabled={form.formState.isSubmitting} colorScheme="teal" size="sm" type="submit" marginTop={2}>
-        Bejelentkezés
-      </Button>
-    </form>
+          <ErrorMessage
+            errors={form.formState.errors}
+            name="name"
+            render={({ message }) => (
+              <FormLabel color="red" htmlFor="name">
+                {message}
+              </FormLabel>
+            )}
+          />
+        </FormControl>
+
+        <FormControl>
+          <FormLabel htmlFor="password">Jelszó*</FormLabel>
+          <InputGroup size="md">
+            <Input
+              width="91%"
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              {...form.register('password', {
+                required: 'Jelszó megadása kötelező!',
+              })}
+            />
+            <InputRightElement width="4.5rem">
+              <Button size="md" onClick={togglePassword}>
+                {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+          <ErrorMessage
+            errors={form.formState.errors}
+            name="password"
+            render={({ message }) => (
+              <FormLabel color="red" htmlFor="password">
+                {message}
+              </FormLabel>
+            )}
+          />
+        </FormControl>
+        <Button disabled={form.formState.isSubmitting || !form.formState.isValid} colorScheme="teal" size="sm" type="submit" marginTop={2}>
+          Bejelentkezés
+        </Button>
+      </form>
+    </Box>
   )
 }
 

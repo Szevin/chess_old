@@ -19,7 +19,7 @@ const Header = () => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      templateColumns="repeat(13, 1fr)"
+      templateColumns="repeat(12, 1fr)"
     >
       <GridItem gridColumn={10}>
         <Heading color="blueviolet" as="h1" size="xl" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
