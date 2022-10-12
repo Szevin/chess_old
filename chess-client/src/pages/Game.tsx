@@ -6,15 +6,17 @@ import {
 import { ViewIcon } from '@chakra-ui/icons'
 import { IUser } from 'chess-common'
 import BoardNode from '../components/BoardNode'
-import { useAppSelector } from '../store'
+import { useAppDispatch, useAppSelector } from '../store'
 import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
+import { clearBoard } from '../store/redux/board'
 
 const Game = () => {
   const { id } = useParams() as { id: string }
   const board = useAppSelector((state) => state.board)
   const user = useAppSelector((state) => state.user)
   const toast = useToast()
+  const dispatch = useAppDispatch()
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(id)
@@ -26,6 +28,10 @@ const Game = () => {
     })
   }
 
+  React.useEffect(() => () => {
+    dispatch(clearBoard())
+  }, [])
+
   if (board.status === 'waiting') {
     return (
       <Box>
@@ -36,7 +42,7 @@ const Game = () => {
           </HStack>
         </Heading>
         <Heading marginTop="2" size="md" display="flex" justifyContent="center">
-          Code: {board._id} <Button size="xs" backgroundColor="InfoBackground" onClick={handleCopyCode}>Copy</Button>
+          Code: {board.id} <Button size="xs" backgroundColor="InfoBackground" onClick={handleCopyCode}>Copy</Button>
         </Heading>
       </Box>
     )

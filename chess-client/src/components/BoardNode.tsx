@@ -63,7 +63,7 @@ const BoardNode = () => {
       to,
       piece: piece.unicode,
       player: user.name,
-      boardId: board._id,
+      boardId: board.id,
     })
     setselectedPosition(null)
   }

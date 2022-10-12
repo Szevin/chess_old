@@ -24,7 +24,7 @@ export const useSocket = () => {
   }
 
   const message = (content: string) => {
-    socket.emit('message', { content, user: user._id, boardId: board._id })
+    socket.emit('message', { content, user: user._id, boardId: board.id })
   }
 
   return { move, join, message }

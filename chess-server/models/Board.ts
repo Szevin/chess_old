@@ -1,7 +1,12 @@
 import { Board } from 'chess-common';
 import mongoose, { Schema } from 'mongoose';
+import { v1 } from 'uuid';
 
 const BoardSchema = new mongoose.Schema({
+  id: {
+    type: Schema.Types.String,
+    required: true,
+  },
   white: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -20,7 +25,7 @@ const BoardSchema = new mongoose.Schema({
   ],
   messages: [
     {
-      type: String,
+      type: Object,
       required: true,
     },
   ],
@@ -36,6 +41,12 @@ const BoardSchema = new mongoose.Schema({
   spectators: [
     {
       type: String,
+      required: true,
+    },
+  ],
+  pieces: [
+    {
+      type: Object,
       required: true,
     },
   ],

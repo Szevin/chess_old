@@ -1,4 +1,4 @@
-import { Board, Message, Move } from 'chess-common';
+import { Board, Message, Move, Piece } from 'chess-common';
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
@@ -74,20 +74,17 @@ io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
 
   socket.on('join', async ({ boardId, user }) => {
-    if (!mongoose.isValidObjectId(boardId)) {
-      return;
-    }
 
 
-    if (!BoardModel.findById(boardId)) {
+    const board  = await BoardModel.findOne({id:boardId})
+    if (!board) {
       console.log('Board not found!');
       return;
     }
-    const board  = await BoardModel.findById(boardId)
-    await socket.join(boardId)
+    await socket.join(board.id)
 
     if (board.white === user || board.black === user) {
-      socket.emit('board', Object.assign(new Board(board._id), board))
+      socket.emit('board', Object.assign(new Board(board.id), board.toObject()))
       return
     }
 
@@ -100,7 +97,7 @@ io.on('connection', (socket) => {
       console.log(`${user} spectating ${boardId}`)
       board.spectators.push(socket.id)
       await board.save()
-      io.to(board._id).emit('board', board)
+      io.to(board.id).emit('board', board)
       return
     }
 
@@ -119,23 +116,27 @@ io.on('connection', (socket) => {
       board.status = 'playing'
     }
     await board.save()
-    console.log(Object.assign(new Board(board._id), board))
-    io.to(boardId).emit('board', Object.assign(new Board(board._id), board))
+    io.to(boardId).emit('board', Object.assign(new Board(board.id), board.toObject()))
     console.log(`${user} playing ${boardId}`);
   })
 
   socket.on('move', async (move) => {
-    const board = await BoardModel.findById(move.boardId)
+    const board = await BoardModel.findOne({id: move.boardId})
     if (!board) throw Error(`Board not found for ${move.player}`)
-    if (!board.pieces.some(piece => piece.moves.valid.some((valid) => valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${board._id}`)
+    if (!board.pieces.some(piece => piece.moves.valid.some((valid) => valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${board.id}`)
 
-    board.handleMove(move)
+    const boardClass = Object.assign(new Board(board.id), board.toObject())
+    boardClass.pieces = boardClass.pieces.map((piece) => Object.assign(new Piece('pawn', 'black', 'a1'), piece))
+    boardClass.handleMove(move)
+
+    board.pieces = boardClass.pieces
+
     await board.save()
-    io.to(board._id).emit('board', board)
+    io.to(board.id).emit('board', boardClass)
   })
 
   socket.on('message', async ({content, user, boardId}) => {
-    const board = await BoardModel.findById(boardId)
+    const board = await BoardModel.findOne({id: boardId})
     if (!board) return
 
     board.messages.push({
@@ -145,7 +146,7 @@ io.on('connection', (socket) => {
       timestamp: Date.now(),
     } as Message)
     await board.save()
-    io.to(board._id).emit('board', board)
+    io.to(board.id).emit('board', Object.assign(new Board(board.id), board.toObject()))
   })
 
   socket.on('disconnect', () => {
@@ -153,7 +154,7 @@ io.on('connection', (socket) => {
     // boards = boards.map(board => {
     //     // board.players = board.players.filter((player) => player !== user)
     //     board.spectators = board.spectators.filter((spectator) => spectator !== socket.id)
-    //     io.to(board._id).emit('board', board)
+    //     io.to(board.id).emit('board', board)
     //   return board
     // })
   }

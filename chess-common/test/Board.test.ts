@@ -5,7 +5,7 @@ describe('constructor', () => {
   test('empty', () => {
     const board = new Board('1')
     expect(board).toBeDefined()
-    expect(board._id).toBe('1')
+    expect(board.id).toBe('1')
     expect(board.pieces).toBeDefined()
     expect(board.pieces.length).toBe(32)
   })
@@ -18,7 +18,7 @@ describe('constructor', () => {
         { name: 'pawn', color: 'black', position: 'a7' },
       ],
     )
-    expect(board._id).toBe('1')
+    expect(board.id).toBe('1')
     expect(board.pieces.length).toBe(2)
 
     const whitePawn = board.pieces.find((p) => p.color === 'white')

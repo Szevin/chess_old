@@ -26,7 +26,7 @@ export const defaultPieceSetup = [
 ] as IPiece[]
 
 export class Board {
-  _id: string
+  id: string
 
   white: string
 
@@ -55,7 +55,7 @@ export class Board {
       throw new Error('Two pieces with same position')
     }
 
-    this._id = id
+    this.id = id
     this.pieces = pieces.map((piece) => new Piece(piece.name, piece.color, piece.position))
 
     if (!simulated) {
@@ -189,7 +189,7 @@ export class Board {
         to: move,
         piece: piece.name,
         player: piece.color,
-        boardId: this._id,
+        boardId: this.id,
       })
 
       if (!boardCopy.isCheck) {
