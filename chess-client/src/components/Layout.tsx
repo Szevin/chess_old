@@ -9,7 +9,7 @@ const Layout = () => (
     <GridItem gridRow={1}>
       <Header />
     </GridItem>
-    <GridItem gridRow={2} marginTop={10}>
+    <GridItem gridRow={2} marginY={20}>
       <Outlet />
     </GridItem>
     <GridItem gridRow={3}>

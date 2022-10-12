@@ -11,6 +11,7 @@ const Header = () => {
 
   return (
     <Grid
+      className="header fixed-top"
       as="header"
       width="100%"
       height="64px"

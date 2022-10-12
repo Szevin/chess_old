@@ -19,7 +19,7 @@ const BoardSchema = new mongoose.Schema({
   },
   moves: [
     {
-      type: String,
+      type: Object,
       required: true,
     },
   ],
@@ -29,10 +29,28 @@ const BoardSchema = new mongoose.Schema({
       required: true,
     },
   ],
+
   winner: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: false,
+  },
+  isCheck: {
+    type: Schema.Types.Boolean,
+    required: true,
+  },
+  isCheckmate: {
+    type: Schema.Types.Boolean,
+    required: true,
+  },
+  isStalemate: {
+    type: Schema.Types.Boolean,
+    required: true,
+  },
+
+  currentPlayer: {
+    type: Schema.Types.String,
+    required: true,
   },
   status: {
     type: String,

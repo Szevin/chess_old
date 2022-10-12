@@ -130,6 +130,12 @@ io.on('connection', (socket) => {
     boardClass.handleMove(move)
 
     board.pieces = boardClass.pieces
+    board.status = boardClass.status
+    board.currentPlayer = boardClass.currentPlayer
+    board.moves = boardClass.moves
+    board.isCheck = boardClass.isCheck
+    board.isCheck = boardClass.isCheck
+    board.isStalemate = boardClass.isStalemate
 
     await board.save()
     io.to(board.id).emit('board', boardClass)
@@ -152,7 +158,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(`Socket ${socket.id} disconnected`);
     // boards = boards.map(board => {
-    //     // board.players = board.players.filter((player) => player !== user)
+    //     board.players = board.players.filter((player) => player !== user)
     //     board.spectators = board.spectators.filter((spectator) => spectator !== socket.id)
     //     io.to(board.id).emit('board', board)
     //   return board
