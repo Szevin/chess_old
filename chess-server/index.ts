@@ -78,8 +78,9 @@ io.on('connection', (socket) => {
       return;
     }
 
+
     if (!BoardModel.findById(boardId)) {
-      console.log('Board not found');
+      console.log('Board not found!');
       return;
     }
     const board  = await BoardModel.findById(boardId)
@@ -92,26 +93,35 @@ io.on('connection', (socket) => {
 
 
     if (board.white && board.black) {
-      console.log('Board is full');
+      console.log('Board is full!');
       if(board.spectators.find(spectator => spectator === socket.id))
         return
 
       console.log(`${user} spectating ${boardId}`)
       board.spectators.push(socket.id)
+      await board.save()
       io.to(board._id).emit('board', board)
       return
     }
 
     if (!(await UserModel.findById(user))) {
-      console.log('User not logged in');
+      console.log('User not logged in!');
       return
     }
 
-    board.white ? board.black = user : board.white = user
-    console.log(board._id)
+    if(!board.white) {
+      board.white = user
+    } else if(!board.black) {
+      board.black = user
+    }
+
+    if (board.white && board.black) {
+      board.status = 'playing'
+    }
+    await board.save()
+    console.log(Object.assign(new Board(board._id), board))
     io.to(boardId).emit('board', Object.assign(new Board(board._id), board))
     console.log(`${user} playing ${boardId}`);
-    console.log(io.sockets.adapter.rooms)
   })
 
   socket.on('move', async (move) => {

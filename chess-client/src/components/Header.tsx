@@ -1,5 +1,5 @@
 import {
-  Heading, Box, Button, GridItem, Grid, Text,
+  Heading, Button, GridItem, Grid, Text,
 } from '@chakra-ui/react'
 import React from 'react'
 import { useNavigate } from 'react-router'
@@ -26,7 +26,7 @@ const Header = () => {
           Adaptive Chess
         </Heading>
       </GridItem>
-      <GridItem gridColumn={1}>
+      <GridItem gridColumn={1} hidden={!!user._id}>
         <Button color="blueviolet" variant="ghost" onClick={() => navigate('/login')}>Login</Button>
         <Button color="blueviolet" variant="ghost" onClick={() => navigate('/register')}>Register</Button>
       </GridItem>

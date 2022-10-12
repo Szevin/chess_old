@@ -7,6 +7,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useBoolean,
   useToast,
 } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
@@ -18,7 +19,10 @@ import { setUser } from '../store/redux/user'
 import { useCreateUserMutation } from '../store/rest/user'
 
 const Register = () => {
-  const form = useForm()
+  const form = useForm({
+    mode: 'all',
+    reValidateMode: 'onChange',
+  })
   const navigate = useNavigate()
   const toast = useToast()
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -26,8 +30,7 @@ const Register = () => {
   const [createUser] = useCreateUserMutation()
   const dispatch = useAppDispatch()
 
-  const [showPassword, setShowPassword] = React.useState(false)
-  const togglePassword = () => setShowPassword((prevState) => !prevState)
+  const [showPassword, setShowPassword] = useBoolean(false)
 
   const onSubmit = async (formData: any) => {
     const user = await createUser(formData)
@@ -52,6 +55,7 @@ const Register = () => {
         <FormControl>
           <FormLabel htmlFor="name">Felhasználónév*</FormLabel>
           <Input
+            autoFocus
             width="97%"
             id="name"
             {...form.register('name', { required: 'Felhasználónév megadása kötelező!' })}
@@ -92,7 +96,7 @@ const Register = () => {
           <FormLabel htmlFor="password">Jelszó*</FormLabel>
           <InputGroup size="md">
             <Input
-              width="91%"
+              width="97%"
               type={showPassword ? 'text' : 'password'}
               id="password"
               {...form.register('password', {
@@ -100,7 +104,7 @@ const Register = () => {
               })}
             />
             <InputRightElement width="4.5rem">
-              <Button size="md" onClick={togglePassword}>
+              <Button size="md" onClick={setShowPassword.toggle}>
                 {showPassword ? <ViewOffIcon /> : <ViewIcon />}
               </Button>
             </InputRightElement>

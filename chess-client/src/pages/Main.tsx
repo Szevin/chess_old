@@ -14,7 +14,7 @@ const Main = () => {
 
   return (
     <Stack justifyContent="center" alignItems="center">
-      <Button onClick={onOpen} colorScheme="green">Play</Button>
+      <Button autoFocus onClick={onOpen} colorScheme="green">Play</Button>
       <PlayDialog isOpen={isOpen} onClose={onClose} />
     </Stack>
   )

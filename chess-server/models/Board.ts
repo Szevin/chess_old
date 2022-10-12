@@ -33,6 +33,12 @@ const BoardSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  spectators: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
 })
 
 export const BoardModel = mongoose.model<Board>('Board', BoardSchema);

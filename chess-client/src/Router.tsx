@@ -12,7 +12,6 @@ const Router = () => {
   const user = useAppSelector((state) => state.user)
 
   if (!user._id) {
-    console.log('user not logged in')
     return (
       <Routes>
         <Route path="/" element={<Layout />}>

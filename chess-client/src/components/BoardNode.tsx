@@ -2,17 +2,12 @@ import './Board.css'
 
 import classNames from 'classnames'
 import React from 'react'
-import { Annotation, IUser } from 'chess-common'
-import {
-  Box, Grid, GridItem, Heading, HStack, Tag, useToast,
-} from '@chakra-ui/react'
+import { Annotation } from 'chess-common'
+import { Box, useToast } from '@chakra-ui/react'
 import { useReward } from 'react-rewards'
-import { ViewIcon } from '@chakra-ui/icons'
 import PieceNode from './PieceNode'
 import { useAppSelector } from '../store'
-import Chat from './Chat'
 import { useSocket } from '../store/socket'
-import UserNode from './UserNode'
 
 // eslint-disable import/no-named-as-default
 /* eslint-disable no-param-reassign */
@@ -99,79 +94,37 @@ const BoardNode = () => {
     }
   }, [board])
 
-  if (board.status === 'waiting') {
-    return (
-      <Box>
-        <Heading justifyContent="center">
-          <HStack justifyContent="center">
-            <Heading size="lg" marginRight="2">Waiting for opponent</Heading>
-            <Box className="dot-elastic align-self-end" />
-          </HStack>
-        </Heading>
-        <Heading marginTop="2" size="md" display="flex" justifyContent="center">
-          Code: {board._id}
-        </Heading>
-      </Box>
-    )
-  }
-
   return (
-    <Grid templateRows="repeat(30, 0.1fr)" templateColumns="repeat(12, 1fr)" marginLeft={4} justifyContent="start">
-      <GridItem rowSpan={1} colSpan={10} justifyContent="center">
-        <Heading justifyContent="center">
-          Turn: {board.currentPlayer === 'white' ? 'White' : 'Black'}
-        </Heading>
-      </GridItem>
-      <GridItem colSpan={2}>
-        <Tag colorScheme="blue">
-          <ViewIcon marginRight="1" />
-          {board.spectators.length}
-        </Tag>
-      </GridItem>
-      <GridItem colSpan={1}>
-        <UserNode user={{ name: board.white } as IUser} />
-      </GridItem>
-      <GridItem rowSpan={1} colSpan={6} className="board">
-        {Array.from(Array(8).keys()).reverse().map((row) => (
-          cols.map((letter, col) => (
-            <Box
-              id={`${letter}${row + 1}` === board.moves.at(-1)?.to ? 'last' : ''}
-              className={classNames({
-                white: ((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2)),
-                black: !(((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2))),
-                valid: validMoves.includes((letter + (row + 1)) as Annotation),
-                // last: [board.getLastMove()?.to.annotation, board.getLastMove()?.from.annotation].includes((letter + (row + 1)) as Annotation),
-                check: board.isCheck
-                && board.getKing(board.currentPlayer).position === (letter + (row + 1)) as Annotation,
-              })}
-              key={letter + row}
-            />
-          ))
-        ))}
-        { board.pieces.map((piece) => (
-          <PieceNode
-            key={piece.id}
-            piece={piece}
-            isDraggable={board.currentPlayer === piece.color && !board.isCheckmate
-              && board[board.currentPlayer] === user._id && [board.white, board.black].includes(user._id)}
-            onMove={handleMove}
-            setselectedPosition={setselectedPosition}
-          />
-        ))}
-      </GridItem>
-      <Grid width="10rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400" templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
-        { board.moves.map((move) => (
-          // TODO unique keys
-          <GridItem key={move.piece + move.from + move.to}>
-            {`${move.piece}${move.from}-${move.to}`}
-          </GridItem>
-        )) }
-      </Grid>
 
-      <GridItem marginTop={4} rowSpan={1} colSpan={8}>
-        {[board.white, board.black].includes(user._id) && <Chat messages={board.messages} />}
-      </GridItem>
-    </Grid>
+    <>
+      {Array.from(Array(8).keys()).reverse().map((row) => (
+        cols.map((letter, col) => (
+          <Box
+            id={`${letter}${row + 1}` === board.moves.at(-1)?.to ? 'last' : ''}
+            className={classNames({
+              white: ((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2)),
+              black: !(((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2))),
+              valid: validMoves.includes((letter + (row + 1)) as Annotation),
+              last: board.moves.length && [board.moves[board.moves.length - 1].from, board.moves[board.moves.length - 1].to].includes((letter + (row + 1)) as Annotation),
+              check: board.isCheck
+                && board.getKing(board.currentPlayer).position === (letter + (row + 1)) as Annotation,
+            })}
+            key={letter + row}
+          />
+        ))
+      ))}
+      { board.pieces.map((piece) => (
+        <PieceNode
+          key={piece.id}
+          piece={piece}
+          isDraggable={board.currentPlayer === piece.color && !board.isCheckmate
+              && board[board.currentPlayer] === user._id && [board.white, board.black].includes(user._id)}
+          onMove={handleMove}
+          setselectedPosition={setselectedPosition}
+        />
+      ))}
+    </>
+
   )
 }
 

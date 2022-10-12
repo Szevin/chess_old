@@ -7,9 +7,11 @@ import { Encrypt } from '../utils/Encrypt.js'
 const create = async (req: { body: { user: string, color: 'white' | 'black' } }, res) => {
 
   const board = new BoardModel({
-    [req.body.color]: req.body.user,
+    white: null,
+    black: null,
     moves: [],
     messages: [],
+    spectators: [],
     status: 'waiting',
   });
 
