@@ -7,6 +7,11 @@ const BoardSchema = new mongoose.Schema({
     type: Schema.Types.String,
     required: true,
   },
+  createDate: {
+    type: Schema.Types.Date,
+    required: true,
+    default: Date.now,
+  },
   white: {
     type: Schema.Types.String,
     ref: 'User',

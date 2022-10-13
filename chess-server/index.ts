@@ -91,8 +91,10 @@ io.on('connection', (socket) => {
 
     if (board.white && board.black) {
       console.log('Board is full!');
-      if(board.spectators.find(spectator => spectator === socket.id))
+      if(board.spectators.find(spectator => spectator === socket.id)) {
+        io.to(board.id).emit('board', board)
         return
+      }
 
       console.log(`${user} spectating ${board.id}`)
       board.spectators.push(socket.id)

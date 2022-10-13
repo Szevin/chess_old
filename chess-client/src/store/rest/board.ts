@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { ColorTypes, Board as BoardClass } from 'chess-common'
+import dayjs from 'dayjs'
 
 export const Board = createApi({
   reducerPath: 'api/board',
@@ -20,6 +21,7 @@ export const Board = createApi({
         url: '',
         method: 'GET',
       }),
+      transformResponse: (res: BoardClass[]) => res.sort((a, b) => dayjs(b.createDate).diff(dayjs(a.createDate), 'seconds')),
     }),
   }),
 })

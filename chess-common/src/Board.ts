@@ -28,6 +28,8 @@ export const defaultPieceSetup = [
 export class Board {
   id: string
 
+  createDate: Date = new Date()
+
   white: string
 
   black: string
