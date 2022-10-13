@@ -3,7 +3,7 @@ import { Board, Move } from 'chess-common'
 import { useAppDispatch, useAppSelector } from '..'
 import { setBoard } from '../redux/board'
 
-const socket = io(process.env.SERVER_URL ?? 'http://localhost:3030')
+const socket = io(process.env.DEV ? 'http://localhost:3030' : 'http://szevin2.ddns.net:3030')
 
 export const useSocket = () => {
   const dispatch = useAppDispatch()
