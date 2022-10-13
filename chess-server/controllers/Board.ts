@@ -29,4 +29,9 @@ const create = async (req: { body: { user: string, color: 'white' | 'black' } },
   res.send(board.id).status(200)
 }
 
-export default { create }
+const getAll = async (req, res) => {
+  const boards = await BoardModel.find();
+  res.send(boards.filter((board) => board.status !== 'finished')).status(200);
+}
+
+export default { create, getAll }

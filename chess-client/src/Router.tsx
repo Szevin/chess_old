@@ -11,26 +11,18 @@ import { useAppSelector } from './store'
 const Router = () => {
   const user = useAppSelector((state) => state.user)
 
-  if (!user._id) {
-    return (
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Main />} />
-
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
-    )
-  }
-
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Main />} />
         <Route path="board/:id" element={<Game />} />
+
+        { !user._id && (
+        <>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+        </>
+        ) }
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
