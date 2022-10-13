@@ -6,19 +6,17 @@ import {
 import { ViewIcon } from '@chakra-ui/icons'
 import { IUser } from 'chess-common'
 import BoardNode from '../components/BoardNode'
-import { useAppDispatch, useAppSelector } from '../store'
+import { useAppSelector } from '../store'
 import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
-import { clearBoard } from '../store/redux/board'
-import { useSocket } from '../store/socket'
 
 const Game = () => {
   const { id } = useParams() as { id: string }
   const board = useAppSelector((state) => state.board)
   const user = useAppSelector((state) => state.user)
   const toast = useToast()
-  const dispatch = useAppDispatch()
-  const { leave } = useSocket()
+  // const dispatch = useAppDispatch()
+  // const { leave } = useSocket()
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(id)
