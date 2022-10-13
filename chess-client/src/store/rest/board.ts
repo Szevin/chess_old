@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 
 export const Board = createApi({
   reducerPath: 'api/board',
-  baseQuery: fetchBaseQuery({ baseUrl: 'api/board' }),
+  baseQuery: fetchBaseQuery({ baseUrl: process.env.DEV ? '/api/board' : 'http://szevin2.ddns.net:3030/api/board' }),
   refetchOnMountOrArgChange: true,
   endpoints: (build) => ({
     createBoard: build.mutation<string, { user: string, color: ColorTypes }>({
