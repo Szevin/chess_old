@@ -18,7 +18,7 @@ const create = async (req: { body: IUser }, res) => {
     email: req.body.email,
   })
   await user.save()
-  res.send(user).status(200)
+  res.send(user).status(201)
 }
 
 const login = async (req: { body: { name: string, password: string }}, res ) => {
@@ -29,6 +29,8 @@ const login = async (req: { body: { name: string, password: string }}, res ) => 
     return
   }
 
+  user.lastLogin = new Date()
+  await user.save()
   res.send(user).status(200)
 }
 

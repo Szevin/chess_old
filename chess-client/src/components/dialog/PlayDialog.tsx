@@ -34,7 +34,6 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
 
   const handleCreate = async () => {
     const res = await createBoard({ user: user._id, color: 'white' })
-    console.log(res)
 
     if (!('data' in res)) {
       toast({

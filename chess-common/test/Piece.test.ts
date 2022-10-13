@@ -204,37 +204,37 @@ describe('setUnicode', () => {
     test('pawn', () => {
       const piece = new Piece('pawn', 'white', 'e2')
 
-      expect(piece.unicode).toBe('♟')
+      expect(piece.unicode).toBe('♙')
     })
 
     test('rook', () => {
       const piece = new Piece('rook', 'white', 'e2')
 
-      expect(piece.unicode).toBe('♜')
+      expect(piece.unicode).toBe('♖')
     })
 
     test('knight', () => {
       const piece = new Piece('knight', 'white', 'e2')
 
-      expect(piece.unicode).toBe('♞')
+      expect(piece.unicode).toBe('♘')
     })
 
     test('bishop', () => {
       const piece = new Piece('bishop', 'white', 'e2')
 
-      expect(piece.unicode).toBe('♝')
+      expect(piece.unicode).toBe('♗')
     })
 
     test('queen', () => {
       const piece = new Piece('queen', 'white', 'e2')
 
-      expect(piece.unicode).toBe('♛')
+      expect(piece.unicode).toBe('♕')
     })
 
     test('king', () => {
       const piece = new Piece('king', 'white', 'e2')
 
-      expect(piece.unicode).toBe('♚')
+      expect(piece.unicode).toBe('♔')
     })
   })
 
@@ -242,37 +242,37 @@ describe('setUnicode', () => {
     test('pawn', () => {
       const piece = new Piece('pawn', 'black', 'e2')
 
-      expect(piece.unicode).toBe('♙')
+      expect(piece.unicode).toBe('♟')
     })
 
     test('rook', () => {
       const piece = new Piece('rook', 'black', 'e2')
 
-      expect(piece.unicode).toBe('♖')
+      expect(piece.unicode).toBe('♜')
     })
 
     test('knight', () => {
       const piece = new Piece('knight', 'black', 'e2')
 
-      expect(piece.unicode).toBe('♘')
+      expect(piece.unicode).toBe('♞')
     })
 
     test('bishop', () => {
       const piece = new Piece('bishop', 'black', 'e2')
 
-      expect(piece.unicode).toBe('♗')
+      expect(piece.unicode).toBe('♝')
     })
 
     test('queen', () => {
       const piece = new Piece('queen', 'black', 'e2')
 
-      expect(piece.unicode).toBe('♕')
+      expect(piece.unicode).toBe('♛')
     })
 
     test('king', () => {
       const piece = new Piece('king', 'black', 'e2')
 
-      expect(piece.unicode).toBe('♔')
+      expect(piece.unicode).toBe('♚')
     })
   })
 })

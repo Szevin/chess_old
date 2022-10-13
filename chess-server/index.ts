@@ -52,6 +52,7 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
   move: (move: Move) => void;
   join: ({boardId, user}: { boardId: string, user: string }) => void;
+  leave: ({boardId, user}: { boardId: string, user: string }) => void;
   message: ({ content, user, boardId }: { content: string, user: string, boardId: string }) => void;
 }
 
@@ -76,7 +77,7 @@ io.on('connection', (socket) => {
   socket.on('join', async ({ boardId, user }) => {
 
 
-    const board  = await BoardModel.findOne({id:boardId})
+    const board  = await BoardModel.findOne({ id: boardId })
     if (!board) {
       console.log('Board not found!');
       return;
@@ -88,20 +89,19 @@ io.on('connection', (socket) => {
       return
     }
 
-
     if (board.white && board.black) {
       console.log('Board is full!');
       if(board.spectators.find(spectator => spectator === socket.id))
         return
 
-      console.log(`${user} spectating ${boardId}`)
+      console.log(`${user} spectating ${board.id}`)
       board.spectators.push(socket.id)
       await board.save()
       io.to(board.id).emit('board', board)
       return
     }
 
-    if (!(await UserModel.findById(user))) {
+    if (!(await UserModel.findOne({ name: user }))) {
       console.log('User not logged in!');
       return
     }
@@ -116,8 +116,8 @@ io.on('connection', (socket) => {
       board.status = 'playing'
     }
     await board.save()
-    io.to(boardId).emit('board', Object.assign(new Board(board.id), board.toObject()))
-    console.log(`${user} playing ${boardId}`);
+    io.to(board.id).emit('board', Object.assign(new Board(board.id), board.toObject()))
+    console.log(`${user} playing ${board.id}`);
   })
 
   socket.on('move', async (move) => {
@@ -155,16 +155,28 @@ io.on('connection', (socket) => {
     io.to(board.id).emit('board', Object.assign(new Board(board.id), board.toObject()))
   })
 
-  socket.on('disconnect', () => {
+  socket.on('leave', async ({boardId, user}) => {
+    const board = await BoardModel.findOne({id: boardId})
+    if (!board) return
+
+    board.spectators = board.spectators.filter(spectator => spectator !== socket.id)
+    board.save()
+    socket.leave(board.id)
+    io.to(board.id).emit('board', Object.assign(new Board(board.id), board.toObject()))
+    console.log(`${user} left ${board.id}`);
+  })
+
+  socket.on('disconnect', async () => {
     console.log(`Socket ${socket.id} disconnected`);
-    // boards = boards.map(board => {
-    //     board.players = board.players.filter((player) => player !== user)
-    //     board.spectators = board.spectators.filter((spectator) => spectator !== socket.id)
-    //     io.to(board.id).emit('board', board)
-    //   return board
-    // })
-  }
-  )
+
+    const boards = await BoardModel.find({spectators: socket.id})
+
+    boards.forEach(async (board) => {
+      board.spectators = board.spectators.filter(spectator => spectator !== socket.id)
+      await board.save()
+      io.to(board.id).emit('board', Object.assign(new Board(board.id), board.toObject()))
+    })
+  })
 })
 
 io.listen(server)

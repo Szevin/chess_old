@@ -160,18 +160,18 @@ export class Piece {
   private setUnicode = (name: PieceType, color: ColorType): PieceUnicode => {
     switch (name) {
       case 'rook':
-        return color === 'white' ? '♜' : '♖'
+        return color === 'white' ? '♖' : '♜'
       case 'knight':
-        return color === 'white' ? '♞' : '♘'
+        return color === 'white' ? '♘' : '♞'
       case 'bishop':
-        return color === 'white' ? '♝' : '♗'
+        return color === 'white' ? '♗' : '♝'
       case 'queen':
-        return color === 'white' ? '♛' : '♕'
+        return color === 'white' ? '♕' : '♛'
       case 'king':
-        return color === 'white' ? '♚' : '♔'
+        return color === 'white' ? '♔' : '♚'
       case 'pawn':
       default:
-        return color === 'white' ? '♟' : '♙'
+        return color === 'white' ? '♙' : '♟'
     }
   }
 

@@ -1,5 +1,5 @@
 import {
-  Box, Button, Stack, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, useDisclosure,
+  Box, Button, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, useDisclosure,
 } from '@chakra-ui/react'
 import React from 'react'
 import { useNavigate } from 'react-router'
@@ -14,11 +14,16 @@ const Main = () => {
   const { join } = useSocket()
 
   const user = useAppSelector((state) => state.user)
-  const { data: boards } = useGetAllBoardsQuery()
+  const { data: boards, refetch: refetchBoards } = useGetAllBoardsQuery()
+
+  const autoFetch = setInterval(() => {
+    refetchBoards()
+  }, 60_000)
 
   const handleJoin = (id: string) => {
     join(id)
     navigate(`/board/${id}`)
+    clearInterval(autoFetch)
   }
 
   return (
@@ -34,6 +39,7 @@ const Main = () => {
               <Th>ID</Th>
               <Th>White</Th>
               <Th>Black</Th>
+              <Th>Views</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -42,6 +48,7 @@ const Main = () => {
                 <Td>{board.id}</Td>
                 <Td>{board.white}</Td>
                 <Td>{board.black}</Td>
+                <Td>{board.spectators.length}</Td>
                 <Td><Button onClick={() => handleJoin(board.id)}>{ user._id && board.status === 'waiting' ? 'Join' : 'Watch' }</Button></Td>
               </Tr>
             ))}

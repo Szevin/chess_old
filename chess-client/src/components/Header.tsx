@@ -1,6 +1,4 @@
-import {
-  Heading, Button, GridItem, Grid, Text,
-} from '@chakra-ui/react'
+import { Heading, Button, GridItem, Grid } from '@chakra-ui/react'
 import React from 'react'
 import { useNavigate } from 'react-router'
 import { useAppSelector } from '../store'
@@ -31,7 +29,7 @@ const Header = () => {
         <Button color="blueviolet" variant="ghost" onClick={() => navigate('/login')}>Login</Button>
         <Button color="blueviolet" variant="ghost" onClick={() => navigate('/register')}>Register</Button>
       </GridItem>
-      <Text gridColumn={1}>{user._id}</Text>
+      <Heading marginLeft={2} gridColumn={1}>{user.name}</Heading>
     </Grid>
   )
 }

@@ -118,7 +118,7 @@ const BoardNode = () => {
           key={piece.id}
           piece={piece}
           isDraggable={board.currentPlayer === piece.color && !board.isCheckmate
-              && board[board.currentPlayer] === user._id && [board.white, board.black].includes(user._id)}
+              && board[board.currentPlayer] === user.name && [board.white, board.black].includes(user.name)}
           onMove={handleMove}
           setselectedPosition={setselectedPosition}
         />

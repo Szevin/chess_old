@@ -3,6 +3,9 @@
   height: 528px;
   margin: auto;
   border: 0.5rem solid #333;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .black, .white {
   float: left;
@@ -50,12 +53,6 @@
   justify-content: center;
   width: 528px;
   margin: auto;
-}
-
-html {
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 .last {

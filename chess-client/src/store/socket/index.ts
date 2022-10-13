@@ -20,12 +20,16 @@ export const useSocket = () => {
   }
 
   const join = (boardId: string) => {
-    socket.emit('join', { boardId, user: user._id })
+    socket.emit('join', { boardId, user: user.name })
+  }
+
+  const leave = (boardId: string) => {
+    socket.emit('leave', { boardId, user: user.name })
   }
 
   const message = (content: string) => {
-    socket.emit('message', { content, user: user._id, boardId: board.id })
+    socket.emit('message', { content, user: user.name, boardId: board.id })
   }
 
-  return { move, join, message }
+  return { move, join, message, leave }
 }

@@ -8,12 +8,12 @@ const BoardSchema = new mongoose.Schema({
     required: true,
   },
   white: {
-    type: Schema.Types.ObjectId,
+    type: Schema.Types.String,
     ref: 'User',
     required: false,
   },
   black: {
-    type: Schema.Types.ObjectId,
+    type: Schema.Types.String,
     ref: 'User',
     required: false,
   },
@@ -31,7 +31,7 @@ const BoardSchema = new mongoose.Schema({
   ],
 
   winner: {
-    type: Schema.Types.ObjectId,
+    type: Schema.Types.String,
     ref: 'User',
     required: false,
   },

@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../store'
 import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
 import { clearBoard } from '../store/redux/board'
+import { useSocket } from '../store/socket'
 
 const Game = () => {
   const { id } = useParams() as { id: string }
@@ -17,6 +18,7 @@ const Game = () => {
   const user = useAppSelector((state) => state.user)
   const toast = useToast()
   const dispatch = useAppDispatch()
+  const { leave } = useSocket()
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(id)
@@ -28,9 +30,10 @@ const Game = () => {
     })
   }
 
-  React.useEffect(() => () => {
-    dispatch(clearBoard())
-  }, [])
+  // React.useEffect(() => () => {
+  //   dispatch(clearBoard())
+  //   leave(id)
+  // }, [])
 
   if (board.status === 'waiting') {
     return (
@@ -49,22 +52,18 @@ const Game = () => {
   }
 
   return (
-    <Grid templateRows="repeat(30, 0.1fr)" templateColumns="repeat(12, 1fr)" marginLeft={4} justifyContent="start">
-      <GridItem rowSpan={1} colSpan={10} justifyContent="center">
-        <Heading justifyContent="center">
-          Turn: {board.currentPlayer === 'white' ? 'White' : 'Black'}
-        </Heading>
+    <Grid templateRows="repeat(4, 0.1fr)" templateColumns="repeat(12, 1fr)" marginLeft={4} justifyContent="start">
+      <GridItem colStart={3} marginBottom={2}>
+        <UserNode current={board.currentPlayer} color="black" user={{ name: board.white } as IUser} />
       </GridItem>
-      <GridItem colSpan={2}>
+      <GridItem colSpan={2} colStart={9}>
         <Tag colorScheme="blue">
           <ViewIcon marginRight="1" />
           {board.spectators.length}
         </Tag>
       </GridItem>
-      <GridItem colSpan={1}>
-        <UserNode user={{ name: board.white } as IUser} />
-      </GridItem>
-      <GridItem rowSpan={1} colSpan={6} className="board">
+
+      <GridItem colStart={3} colSpan={6} className="board">
         <BoardNode />
       </GridItem>
       <Grid width="10rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400" templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
@@ -75,8 +74,11 @@ const Game = () => {
           </GridItem>
         )) }
       </Grid>
+      <GridItem marginTop={2} colStart={3} rowStart={3}>
+        <UserNode current={board.currentPlayer} color="white" user={{ name: board.black } as IUser} />
+      </GridItem>
 
-      <GridItem marginTop={4} rowSpan={1} colSpan={8}>
+      <GridItem marginTop={4} rowSpan={1}>
         {[board.white, board.black].includes(user._id) && <Chat messages={board.messages} />}
       </GridItem>
     </Grid>
