@@ -24,13 +24,8 @@ const create = async (req: { body: IUser }, res) => {
 const login = async (req: { body: { name: string, password: string }}, res ) => {
   const user = await UserModel.findOne({ name: req.body.name })
 
-  if (!user) {
-    res.send('User not found!').status(404)
-    return
-  }
-
-  if(!(await Encrypt.compare(req.body.password, user.password))) {
-    res.send('Invalid password!').status(412)
+  if(!user || !(await Encrypt.compare(req.body.password, user.password))) {
+    res.send('Invalid username or password!').status(404)
     return
   }
 
