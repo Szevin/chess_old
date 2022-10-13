@@ -54,7 +54,7 @@ const Game = () => {
   return (
     <Grid templateRows="repeat(4, 0.1fr)" templateColumns="repeat(12, 1fr)" marginLeft={4} justifyContent="start">
       <GridItem colStart={3} marginBottom={2}>
-        <UserNode current={board.currentPlayer} color="black" user={{ name: board.white } as IUser} />
+        <UserNode current={board.currentPlayer} color="black" user={{ name: board.black } as IUser} />
       </GridItem>
       <GridItem colSpan={2} colStart={9}>
         <Tag colorScheme="blue">
@@ -75,7 +75,7 @@ const Game = () => {
         )) }
       </Grid>
       <GridItem marginTop={2} colStart={3} rowStart={3}>
-        <UserNode current={board.currentPlayer} color="white" user={{ name: board.black } as IUser} />
+        <UserNode current={board.currentPlayer} color="white" user={{ name: board.white } as IUser} />
       </GridItem>
 
       <GridItem marginTop={4} rowSpan={1}>
