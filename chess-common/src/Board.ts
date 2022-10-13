@@ -70,7 +70,7 @@ export class Board {
   }
 
   handleMove = (move: Move) => {
-    this.pieces = this.pieces.filter((piece) => piece.position !== move.to)
+    this.removePiece(move.to)
     const piece = this.pieces.find((piece) => piece.position === move.from)
     if (!piece) throw Error('Piece not found!')
 
@@ -88,7 +88,7 @@ export class Board {
   }
 
   simulateMove = (move: Move) => {
-    this.pieces = this.pieces.filter((piece) => piece.position !== move.to)
+    this.removePiece(move.to)
     const piece = this.getPiece(move.from)
     if (!piece) throw Error('Piece not found!')
 
@@ -109,7 +109,7 @@ export class Board {
 
   getOwnPieces = () => this.pieces.filter((piece) => piece.color === this.currentPlayer)
 
-  getPiece = (at: Annotation) => this.pieces.find((piece) => piece.position === at)
+  getPiece = (at: Annotation): Piece | undefined => this.pieces.find((piece) => piece.position === at)
 
   getKing = (color: ColorType) => this.pieces.find((piece) => piece.name === 'king' && piece.color === color)
 
@@ -139,7 +139,7 @@ export class Board {
       while (
         (!piece.isBlockable || (piece.isBlockable && this.getPiece(position.annotation)?.color !== piece.color))
         && position.isValid()
-        && directionRange < piece.range
+        && directionRange < piece.range.move
       ) {
         if (this.getPiece(position.annotation) && this.getPiece(position.annotation)?.color !== piece.color) {
           break
@@ -155,6 +155,7 @@ export class Board {
 
   getCaptureMoves = (piece: Piece): Annotation[] => {
     const captures: Position[] = []
+
     piece.directions.capture.forEach((direction) => {
       const position = new Position(piece.position)
       position.addDirections(direction)
@@ -162,12 +163,23 @@ export class Board {
       while (
         (!piece.isBlockable || (piece.isBlockable && this.getPiece(position.annotation)?.color !== piece.color))
         && position.isValid()
-        && directionRange < piece.range
+        && directionRange < piece.range.capture
       ) {
-        if (this.getPiece(position.annotation) && this.getPiece(position.annotation)?.color !== piece.color) {
+        if (this.getPiece(position.annotation) && (this.getPiece(position.annotation)?.color !== piece.color || piece.canTakeOwn)) {
           captures.push(new Position(position.annotation))
           break
         }
+
+        // En passant
+        if (piece.name === 'pawn') {
+          const enPassantPosition = new Position(position.annotation).addDirection(piece.color === 'white' ? 'down' : 'up')
+          const lastMove = this.moves[this.moves.length - 1]
+          if (lastMove && this.getPiece(enPassantPosition.annotation)?.name === 'pawn' && lastMove.to === enPassantPosition.annotation) {
+            captures.push(new Position(position.annotation))
+            break
+          }
+        }
+
         position.addDirections(direction)
         directionRange += 1
       }
@@ -221,5 +233,9 @@ export class Board {
     })
 
     return moves
+  }
+
+  removePiece = (at: Annotation) => {
+    this.pieces = this.pieces.filter((piece) => piece.position !== at)
   }
 }

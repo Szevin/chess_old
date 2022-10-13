@@ -165,37 +165,37 @@ describe('setRange', () => {
   test('pawn', () => {
     const pawn = new Piece('pawn', 'white', 'e2')
 
-    expect(pawn.range).toBe(2)
+    expect(pawn.range).toStrictEqual({ move: 2, capture: 1 })
   })
 
   test('rook', () => {
     const rook = new Piece('rook', 'white', 'e2')
 
-    expect(rook.range).toBe(8)
+    expect(rook.range).toStrictEqual({ move: 8, capture: 8 })
   })
 
   test('knight', () => {
     const knight = new Piece('knight', 'white', 'e2')
 
-    expect(knight.range).toBe(1)
+    expect(knight.range).toStrictEqual({ move: 1, capture: 1 })
   })
 
   test('bishop', () => {
     const bishop = new Piece('bishop', 'white', 'e2')
 
-    expect(bishop.range).toBe(8)
+    expect(bishop.range).toStrictEqual({ move: 8, capture: 8 })
   })
 
   test('queen', () => {
     const queen = new Piece('queen', 'white', 'e2')
 
-    expect(queen.range).toBe(8)
+    expect(queen.range).toStrictEqual({ move: 8, capture: 8 })
   })
 
   test('king', () => {
     const king = new Piece('king', 'white', 'e2')
 
-    expect(king.range).toBe(1)
+    expect(king.range).toStrictEqual({ move: 1, capture: 1 })
   })
 })
 

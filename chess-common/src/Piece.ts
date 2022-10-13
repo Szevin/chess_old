@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-prototype-builtins */
 import * as uuid from 'uuid'
 import { Board } from './Board'
@@ -60,7 +61,10 @@ export class Piece {
 
   isBlockable = true
 
-  range: number
+  range: {
+    move: number;
+    capture: number;
+  }
 
   hasMoved = false
 
@@ -137,23 +141,33 @@ export class Piece {
           ['down', 'left'],
           ['left'],
         ]
+      // eslint-disable-next-line no-fallthrough
       default:
         return { move: directions, capture: directions }
     }
   }
 
-  private setRange = (name: PieceType): number => {
+  private setRange = (name: PieceType) => {
     switch (name) {
       case 'rook':
       case 'bishop':
       case 'queen':
-        return 8
+        return {
+          move: 8,
+          capture: 8,
+        }
       case 'pawn':
-        return 2
+        return {
+          move: 2,
+          capture: 1,
+        }
       case 'knight':
       case 'king':
       default:
-        return 1
+        return {
+          move: 1,
+          capture: 1,
+        }
     }
   }
 
@@ -180,16 +194,25 @@ export class Piece {
     this.hasMoved = true
 
     if (this.name === 'pawn') {
-      this.range = 1
+      this.range.move = 1
 
+      // Promotion
       if ((this.color === 'white' && this.position[1] === '8') || (this.color === 'black' && this.position[1] === '1')) {
         this.name = 'queen'
         this.directions = this.setDirections(this.name, this.color)
         this.range = this.setRange(this.name)
         this.unicode = this.setUnicode(this.name, this.color)
       }
+
+      // En passant
+      const enPassantPosition = new Position(to).addDirection(this.color === 'white' ? 'down' : 'up')
+      const lastMove = board.moves[board.moves.length - 1]
+      if (lastMove && board.getPiece(enPassantPosition.annotation)?.name === 'pawn' && lastMove.to === enPassantPosition.annotation) {
+        board.removePiece(enPassantPosition.annotation)
+      }
     }
 
+    // Castling
     if (this.name === 'king' && this.moves.castle.includes(to)) {
       this.position = to
       const rookPos = ((to[0] === 'g' ? 'h' : 'a') + to[1]) as Annotation
