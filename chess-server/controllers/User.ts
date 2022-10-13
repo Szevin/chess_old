@@ -29,7 +29,7 @@ const login = async (req: { body: { name: string, password: string }}, res ) => 
     return
   }
 
-  if(!Encrypt.compare(user.password, req.body.password)) {
+  if(!(await Encrypt.compare(req.body.password, user.password))) {
     res.send('Invalid password!').status(412)
     return
   }
