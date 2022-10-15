@@ -28,6 +28,7 @@
     "react-chess-pieces": "^1.0.5",
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.34.2",
+    "react-icons": "^4.6.0",
     "react-redux": "^8.0.4",
     "react-rewards": "^2.0.4",
     "react-rnd": "^10.3.7",

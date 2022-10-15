@@ -76,8 +76,8 @@ const Game = () => {
         <UserNode current={board.currentPlayer} color="white" user={{ name: board.white } as IUser} />
       </GridItem>
 
-      <GridItem marginTop={4} rowSpan={1}>
-        {[board.white, board.black].includes(user._id) && <Chat messages={board.messages} />}
+      <GridItem marginTop={4} rowSpan={1} hidden={![board.white, board.black].includes(user._id)}>
+        <Chat messages={board.messages} readonly={board.status !== 'playing'} />
       </GridItem>
     </Grid>
   )

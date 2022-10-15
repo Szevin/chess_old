@@ -5,6 +5,7 @@ import Layout from './components/Layout'
 import Game from './pages/Game'
 import Login from './pages/Login'
 import Main from './pages/Main'
+import Profile from './pages/Profile'
 import Register from './pages/Register'
 import { useAppSelector } from './store'
 
@@ -23,6 +24,8 @@ const Router = () => {
           <Route path="register" element={<Register />} />
         </>
         ) }
+
+        <Route path="profile/:id" element={<Profile />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

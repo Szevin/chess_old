@@ -48,6 +48,8 @@ export class Board {
 
   isStalemate: boolean = false
 
+  winner: ColorType | 'draw' | null = null
+
   currentPlayer: ColorType = 'white'
 
   status: 'waiting' | 'playing' | 'finished' = 'waiting'

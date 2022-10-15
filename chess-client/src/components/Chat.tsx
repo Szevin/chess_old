@@ -4,7 +4,7 @@ import { Message } from 'chess-common'
 import dayjs from 'dayjs'
 import { useSocket } from '../store/socket'
 
-const Chat = ({ messages } : { messages: Message[] }) => {
+const Chat = ({ messages, readonly } : { messages: Message[], readonly: boolean }) => {
   const [newMessage, setNewMessage] = useState('')
   const { message } = useSocket()
 
@@ -29,6 +29,7 @@ const Chat = ({ messages } : { messages: Message[] }) => {
       </Box>
       <form onSubmit={handleSubmit}>
         <Input
+          disabled={readonly}
           className="chat-input"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}

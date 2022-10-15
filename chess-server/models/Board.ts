@@ -37,7 +37,6 @@ const BoardSchema = new mongoose.Schema({
 
   winner: {
     type: Schema.Types.String,
-    ref: 'User',
     required: false,
   },
   isCheck: {
