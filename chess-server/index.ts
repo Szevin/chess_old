@@ -76,7 +76,19 @@ io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
 
   socket.on('join', async ({ boardId, userId }) => {
-    const board  = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>(['white', 'black'])
+    const board  = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>([
+      {
+        path: 'white black',
+        model: 'User',
+      }, {
+        path: 'messages',
+        populate: {
+          path: 'user',
+          model: 'User',
+        },
+      }
+    ])
+
     if (!board) {
       console.log('Board not found!');
       return;
@@ -107,7 +119,7 @@ io.on('connection', (socket) => {
     } catch (error) {
 
       console.log(`${userId} spectator joined`);
-      board.spectators.push(userId.toString())
+      board.spectators.push(userId)
       await board.save()
       io.to(boardId).emit('board', Object.assign(new Board(boardId), board.toObject()))
       return
@@ -115,7 +127,19 @@ io.on('connection', (socket) => {
   })
 
   socket.on('move', async (move) => {
-    let board = await BoardModel.findById(move.boardId).populate<{white: IUser, black: IUser}>(['white', 'black'])
+    let board = await BoardModel.findById(move.boardId).populate<{white: IUser, black: IUser}>([
+      {
+        path: 'white black',
+        model: 'User',
+      }, {
+        path: 'messages',
+        populate: {
+          path: 'user',
+          model: 'User',
+        },
+      }
+    ])
+
     if (!board) throw Error(`Board not found for ${move.player}`)
     if(board.status !== 'playing') throw Error(`Board not playing for ${move.player}`)
     if (!board.pieces.some(piece => piece.moves.valid.some((valid) => piece.position === move.from && piece.name === move.piece && valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${move.boardId}`)
@@ -141,9 +165,21 @@ io.on('connection', (socket) => {
   })
 
   socket.on('message', async ({content, boardId, userId}) => {
-    const board = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>(['white', 'black'])
+    let board = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>([
+      {
+        path: 'white black',
+        model: 'User',
+      }, {
+        path: 'messages',
+        populate: {
+          path: 'user',
+          model: 'User',
+        },
+      }
+    ])
+
     if (!board) throw Error(`Board not found for ID ${boardId}`)
-    if (board.white._id !== userId && board.black._id !== userId) throw Error(`User ${userId} not playing on board ${boardId}`)
+    if (board.white._id.toString() !== userId && board.black._id.toString() !== userId) throw Error(`User ${userId} not playing on board ${boardId}`)
     if (board.status !== 'playing') throw Error(`Board not playing for ${userId}`)
 
     board.messages.push({
@@ -154,11 +190,36 @@ io.on('connection', (socket) => {
       timestamp: Date.now(),
     } as unknown as Message)
     await board.save()
+    board = await board.populate<{white: IUser, black: IUser}>([
+      {
+        path: 'white black',
+        model: 'User',
+      }, {
+        path: 'messages',
+        populate: {
+          path: 'user',
+          model: 'User',
+        },
+      }
+    ])
+
     io.to(boardId).emit('board', Object.assign(new Board(boardId), board.toObject()))
   })
 
   socket.on('leave', async ({boardId, userId}) => {
-    const board = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>(['white', 'black'])
+    const board = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>([
+      {
+        path: 'white black',
+        model: 'User',
+      }, {
+        path: 'messages',
+        populate: {
+          path: 'user',
+          model: 'User',
+        },
+      }
+    ])
+
     if (!board) return
 
     board.spectators = board.spectators.filter(spectator => spectator !== socket.id)
@@ -170,14 +231,16 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', async () => {
     console.log(`Socket ${socket.id} disconnected`);
-
-    const boards = await BoardModel.find({spectators: socket.id})
-
-    boards.forEach(async (board) => {
-      board.spectators = board.spectators.filter(spectator => spectator !== socket.id)
-      await board.save()
-      io.to(board._id.toString()).emit('board', Object.assign(new Board(board._id.toString()), board.toObject()))
-    })
+    try {
+      const boards = await BoardModel.find({spectators: socket.id})
+      boards.forEach(async (board) => {
+        board.spectators = board.spectators.filter(spectator => spectator !== socket.id)
+        await board.save()
+        io.to(board._id.toString()).emit('board', Object.assign(new Board(board._id.toString()), board.toObject()))
+      })
+    } catch (error) {
+      return
+    }
   })
 })
 
@@ -188,7 +251,18 @@ server.listen(port, () => {
 })
 
 const scoreBoard = async (boardId: string): Promise<boolean> => {
-  let board = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>(['white', 'black'])
+  let board = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>([
+    {
+      path: 'white black',
+      model: 'User',
+    }, {
+      path: 'messages',
+      populate: {
+        path: 'user',
+        model: 'User',
+      },
+    }
+  ])
 
   if(board.isCheckmate) {
     board.status = 'finished'

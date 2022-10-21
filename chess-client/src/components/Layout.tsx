@@ -5,7 +5,7 @@ import Footer from './Footer'
 import Header from './Header'
 
 const Layout = () => (
-  <Grid templateRows="(repeat(3, 1fr))">
+  <Grid height="100vh" templateRows="(repeat(3, 1fr))">
     <GridItem gridRow={1}>
       <Header />
     </GridItem>

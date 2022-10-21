@@ -5,6 +5,7 @@ import {
 } from '@chakra-ui/react'
 import { ViewIcon } from '@chakra-ui/icons'
 import { IUser } from 'chess-common'
+import throttle from 'throttleit'
 import BoardNode from '../components/BoardNode'
 import { useAppSelector } from '../store'
 import Chat from '../components/Chat'
@@ -43,9 +44,18 @@ const Game = () => {
             <Box className="dot-elastic align-self-end" />
           </HStack>
         </Heading>
-        <Heading marginTop="2" size="md" display="flex" justifyContent="center">
-          Code: {board._id} <Button size="xs" backgroundColor="InfoBackground" onClick={handleCopyCode}>Copy</Button>
-        </Heading>
+        <Box marginTop="2" display="flex" justifyContent="center">
+          <Grid templateRows="repeat(2, 1fr)">
+            <GridItem>
+              <Heading size="md">
+                Code: {board._id}
+              </Heading>
+            </GridItem>
+            <GridItem display="flex" justifyContent="center">
+              <Button size="md" backgroundColor="InfoBackground" onClick={handleCopyCode}>Copy</Button>
+            </GridItem>
+          </Grid>
+        </Box>
       </Box>
     )
   }
@@ -78,7 +88,7 @@ const Game = () => {
       </GridItem>
 
       <GridItem marginTop={4} colStart={3} colEnd={10} rowStart={4} rowSpan={1} hidden={![(board.white as IUser)._id, (board.black as IUser)._id].includes(user._id)}>
-        <Chat messages={board.messages} readonly={board.status !== 'playing'} />
+        <Chat messages={board.messages} readonly={board.status !== 'playing'} blackId={board.black._id.toString()} whiteId={board.white._id.toString()} />
       </GridItem>
     </Grid>
   )

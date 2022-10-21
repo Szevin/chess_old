@@ -1,10 +1,10 @@
-import { Avatar, Box, HStack, Input } from '@chakra-ui/react'
+import { Box, HStack, Input, Tag } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { IUser, Message } from 'chess-common'
 import dayjs from 'dayjs'
 import { useSocket } from '../store/socket'
 
-const Chat = ({ messages, readonly } : { messages: Message[], readonly: boolean }) => {
+const Chat = ({ messages, readonly, blackId, whiteId } : { messages: Message[], readonly: boolean, blackId: string, whiteId: string }) => {
   const [newMessage, setNewMessage] = useState('')
   const { message } = useSocket()
 
@@ -12,25 +12,31 @@ const Chat = ({ messages, readonly } : { messages: Message[], readonly: boolean 
     e.preventDefault()
     message(newMessage)
     setNewMessage('')
+    window.scrollTo(0, document.body.scrollHeight)
   }
 
   return (
-    <Box className="chat">
-      <Box className="chat-messages">
+    <Box>
+      <Box>
         {messages && messages.map((m) => (
-          <HStack key={m.id} className="chat-message">
-            <Box className="chat-message-timestamp">{dayjs(m.timestamp).format('YYYY-MM-DD hh:mm')}</Box>
-            <Box className="chat-message-user">
-              <Avatar name={(m.user as IUser)?.name} />
+          <HStack key={m.id}>
+            <Box>{dayjs(m.timestamp).format('YYYY-MM-DD hh:mm')}</Box>
+            <Box>
+              <Tag
+                color={m.user._id === whiteId ? 'black' : m.user._id === blackId ? 'white' : 'white'}
+                backgroundColor={m.user._id === whiteId ? 'white' : m.user._id === blackId ? 'black' : 'red'}
+              >{(m.user as IUser)?.name}
+              </Tag>
             </Box>
-            <Box className="chat-message-content">{m.content}</Box>
+            <Box>{m.content}</Box>
           </HStack>
         ))}
       </Box>
       <form onSubmit={handleSubmit}>
         <Input
+          marginTop="1rem"
+          marginBottom="6rem"
           disabled={readonly}
-          className="chat-input"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type a message..."

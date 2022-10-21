@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/lines-between-class-members */
 import React from 'react'
 import { Rnd } from 'react-rnd'
-import throttle from 'throttleit'
 import { ColorTypes, PieceTypes, Piece, Annotation } from 'chess-common'
 import BishopSvg from '../assets/pieces/BishopSvg'
 import KingSvg from '../assets/pieces/KingSvg'
@@ -18,14 +17,7 @@ const annotationToCoord = (ann: Annotation) => ({
 })
 
 const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable }: {
-  piece: Piece, setselectedPosition: (pos: Annotation) => void, onMove: (to: Annotation) => void, isDraggable: boolean }) => {
-  // TODO fix resize event
-  const [, setForceUpdate] = React.useState(0)
-  window.onresize = throttle(() => {
-    setForceUpdate((prev) => prev + 1)
-  }, 100)
-
-  return (
+  piece: Piece, setselectedPosition: (pos: Annotation) => void, onMove: (to: Annotation) => void, isDraggable: boolean }) => (
     <Rnd
       className="piece"
       enableResizing={false}
@@ -38,12 +30,9 @@ const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable }: {
       position={{ x: (annotationToCoord(piece.position).x * 64) - 50,
         y: (annotationToCoord(piece.position).y * -64) + 525 }}
     >
-      <span style={{ fontSize: piece.color === 'white' || piece.name !== 'pawn' ? '3.5rem' : '2.5rem' }}>
-        {getRender(piece.name, piece.color)}
-      </span>
+      {getRender(piece.name, piece.color)}
     </Rnd>
-  )
-}
+)
 
 const getRender = (name: PieceTypes, color: ColorTypes) => {
   switch (name) {

@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
+import './index.css'
 
 import { ChakraProvider } from '@chakra-ui/react'
 import React from 'react'

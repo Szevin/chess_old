@@ -19,20 +19,20 @@ const Header = () => {
       height="64px"
       backgroundColor="#F7BB38"
       color="blueviolet"
-      alignItems="center"
+      alignContent="center"
       templateColumns="repeat(12, 1fr)"
-      templateRows="repeat(1, 1fr)"
+      templateRows="repeat(1, 64px)"
     >
-      <GridItem gridColumnStart={1} gridColumn={10} gridRowStart={1} justifyContent="center">
+      <GridItem gridColumnStart={1} gridColumnEnd={10} gridRowStart={1} display="flex" alignItems="center" justifyContent="center">
         <Heading as="h1" size="xl" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
           Adaptive Chess
         </Heading>
       </GridItem>
-      <GridItem gridColumnStart={11} gridColumn={2} gridRowStart={1}>
+      <GridItem gridColumnStart={11} gridColumn={2} gridRowStart={1} display="flex" alignItems="center">
         <Button hidden={!!user._id} variant="ghost" onClick={() => navigate('/login')}>Login</Button>
         <Button hidden={!!user._id} variant="ghost" onClick={() => navigate('/register')}>Register</Button>
         <UserNode hidden={!user._id} user={user} />
-        <Button hidden={!user._id} variant="ghost" onClick={() => dispatch(setUser(null))}><MdExitToApp /></Button>
+        <Button hidden={!user._id} variant="solid" colorScheme="pink" marginLeft="1rem" onClick={() => dispatch(setUser(null))}><MdExitToApp /></Button>
       </GridItem>
     </Grid>
   )

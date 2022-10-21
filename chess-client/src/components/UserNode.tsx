@@ -10,11 +10,11 @@ const UserNode = ({ user, active, hidden }: { user: IUser, active?: boolean, hid
   if (hidden) return null
 
   return (
-    <Box cursor="pointer" onClick={() => navigate(`/profile/${user._id}`)}>
+    <Box cursor="pointer" onClick={() => navigate(`/profile/${user._id}`)} display="flex">
       <Avatar name={user.name}>
         <AvatarBadge boxSize="1.25em" bg="green.500" hidden={!active} />
       </Avatar>
-      <Tag>{user.name}</Tag>
+      <Tag height="50%" display="flex" alignSelf="center" marginLeft="0.2rem">{user.name}</Tag>
     </Box>
   )
 }
