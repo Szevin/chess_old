@@ -76,11 +76,6 @@ io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
 
   socket.on('join', async ({ boardId, userId }) => {
-
-    const user = await UserModel.findById(userId)
-
-    console.log(user._id)
-
     const board  = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>(['white', 'black'])
     if (!board) {
       console.log('Board not found!');
@@ -88,32 +83,35 @@ io.on('connection', (socket) => {
     }
     await socket.join(boardId)
 
-    if (!user) {
+    try {
+      const user = await UserModel.findById(userId)
+
+      if (board.white?._id.toString() === userId || board.black?._id.toString() === userId) {
+        console.log(`User ${user.name} is already in the game!`);
+        io.to(boardId).emit('board', Object.assign(new Board(boardId), board.toObject()))
+        return
+      }
+
+      if(!board.white) {
+        board.white = user
+      } else if(!board.black) {
+        board.black = user
+      }
+
+      if (board.white && board.black) {
+        board.status = 'playing'
+      }
+      await board.save()
+      io.to(boardId).emit('board', Object.assign(new Board(boardId), board.toObject()))
+      console.log(`${user.name} playing ${boardId}`);
+    } catch (error) {
+
       console.log(`${userId} spectator joined`);
       board.spectators.push(userId.toString())
       await board.save()
-      socket.emit('board', Object.assign(new Board(boardId), board.toObject()))
+      io.to(boardId).emit('board', Object.assign(new Board(boardId), board.toObject()))
       return
     }
-
-    if (board.white?._id.toString() === userId || board.black?._id.toString() === userId) {
-      console.log(`User ${user.name} is already in the game!`);
-      socket.emit('board', Object.assign(new Board(boardId), board.toObject()))
-      return
-    }
-
-    if(!board.white) {
-      board.white = user
-    } else if(!board.black) {
-      board.black = user
-    }
-
-    if (board.white && board.black) {
-      board.status = 'playing'
-    }
-    await board.save()
-    io.to(boardId).emit('board', Object.assign(new Board(boardId), board.toObject()))
-    console.log(`${user.name} playing ${boardId}`);
   })
 
   socket.on('move', async (move) => {
