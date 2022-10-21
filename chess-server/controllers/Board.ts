@@ -5,11 +5,11 @@ import { BoardModel } from '../models/Board.js'
 import { Encrypt } from '../utils/Encrypt.js'
 import { v4 } from 'uuid'
 
-const create = async (req: { body: { user: string, color: 'white' | 'black' } }, res) => {
+const create = async (req: { body: { user: string, color: 'white' | 'black', boardId: mongoose.Types.ObjectId } }, res) => {
 
   const boardClass = new Board('-1')
   const board = new BoardModel({
-    id: (Math.floor(Math.random() * 100000000)).toString(),
+    _id: new mongoose.Types.ObjectId(),
     white: null,
     black: null,
     moves: [],
@@ -25,12 +25,12 @@ const create = async (req: { body: { user: string, color: 'white' | 'black' } },
   });
 
   await board.save();
-  console.log(board.id)
-  res.send(board.id).status(200)
+  console.log(board._id)
+  res.send(board._id).status(200)
 }
 
 const getAll = async (req, res) => {
-  const boards = await BoardModel.find();
+  const boards = await BoardModel.find().populate(['white', 'black']);
   res.send(boards.filter((board) => board.status !== 'finished')).status(200);
 }
 

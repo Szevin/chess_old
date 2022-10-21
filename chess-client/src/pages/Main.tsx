@@ -1,6 +1,7 @@
 import {
   Box, Button, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, useDisclosure,
 } from '@chakra-ui/react'
+import { IUser } from 'chess-common'
 import React from 'react'
 import { useNavigate } from 'react-router'
 import PlayDialog from '../components/dialog/PlayDialog'
@@ -44,12 +45,16 @@ const Main = () => {
           </Thead>
           <Tbody>
             {boards && (user._id ? boards : boards.filter((board) => board.status !== 'waiting')).map((board) => (
-              <Tr key={board.id} backgroundColor={user._id && board.status === 'waiting' ? 'teal.400' : 'telegram.400'}>
-                <Td>{board.id}</Td>
-                <Td>{board.white}</Td>
-                <Td>{board.black}</Td>
+              <Tr key={board._id} backgroundColor={user._id && board.status === 'waiting' ? 'teal.400' : 'telegram.400'}>
+                <Td>{board._id}</Td>
+                <Td>{(board.white as IUser)?.name}</Td>
+                <Td>{(board.black as IUser)?.name}</Td>
                 <Td>{board.spectators.length}</Td>
-                <Td><Button onClick={() => handleJoin(board.id)}>{ user._id && board.status === 'waiting' ? 'Join' : 'Watch' }</Button></Td>
+                <Td>
+                  <Button onClick={() => handleJoin(board._id)}>
+                    { [board.black?._id, board.white?._id].includes(user._id) ? 'Reconnect' : user._id && board.status === 'waiting' ? 'Join' : 'Watch' }
+                  </Button>
+                </Td>
               </Tr>
             ))}
           </Tbody>

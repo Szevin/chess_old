@@ -3,7 +3,7 @@ import { Board, Move } from 'chess-common'
 import { useAppDispatch, useAppSelector } from '..'
 import { setBoard } from '../redux/board'
 
-const socket = io(process.env.DEV ? 'http://localhost:3030' : 'http://szevin2.ddns.net:3030')
+const socket = io('http://localhost:3030')
 
 export const useSocket = () => {
   const dispatch = useAppDispatch()
@@ -20,15 +20,15 @@ export const useSocket = () => {
   }
 
   const join = (boardId: string) => {
-    socket.emit('join', { boardId, user: user.name })
+    socket.emit('join', { boardId, userId: user._id ?? socket.id })
   }
 
   const leave = (boardId: string) => {
-    socket.emit('leave', { boardId, user: user.name })
+    socket.emit('leave', { boardId, userId: user._id ?? socket.id })
   }
 
   const message = (content: string) => {
-    socket.emit('message', { content, user: user.name, boardId: board.id })
+    socket.emit('message', { content, boardId: board._id, userId: user._id })
   }
 
   return { move, join, message, leave }

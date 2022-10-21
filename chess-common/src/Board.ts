@@ -3,6 +3,8 @@ import Position, { Annotation, Direction } from './Position'
 import Piece, { ColorType, PieceMoves, IPiece } from './Piece'
 import { Move } from './Move'
 import { Message } from './Message'
+import mongoose from 'mongoose';
+import { IUser } from './User';
 
 export const defaultPieceSetup = [
   { name: 'rook', color: 'white', position: 'a1' },
@@ -26,13 +28,13 @@ export const defaultPieceSetup = [
 ] as IPiece[]
 
 export class Board {
-  id: string
+  _id: string
 
   createDate: Date = new Date()
 
-  white: string
+  white: mongoose.Types.ObjectId | IUser
 
-  black: string
+  black: mongoose.Types.ObjectId | IUser
 
   spectators: string[] = []
 
@@ -48,7 +50,8 @@ export class Board {
 
   isStalemate: boolean = false
 
-  winner: ColorType | 'draw' | null = null
+  winner: mongoose.Types.ObjectId | IUser | null = null
+  loser: mongoose.Types.ObjectId | IUser | null = null
 
   currentPlayer: ColorType = 'white'
 
@@ -59,7 +62,7 @@ export class Board {
       throw new Error('Two pieces with same position')
     }
 
-    this.id = id
+    this._id = id
     this.pieces = pieces.map((piece) => new Piece(piece.name, piece.color, piece.position))
 
     if (!simulated) {
@@ -205,7 +208,7 @@ export class Board {
         to: move,
         piece: piece.name,
         player: piece.color,
-        boardId: this.id,
+        boardId: this._id,
       })
 
       if (!boardCopy.isCheck) {

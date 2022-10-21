@@ -2,7 +2,7 @@ import './Board.css'
 
 import classNames from 'classnames'
 import React from 'react'
-import { Annotation } from 'chess-common'
+import { Annotation, IUser } from 'chess-common'
 import { Box, useToast } from '@chakra-ui/react'
 import { useReward } from 'react-rewards'
 import PieceNode from './PieceNode'
@@ -61,9 +61,9 @@ const BoardNode = () => {
     move({
       from: selectedPosition,
       to,
-      piece: piece.unicode,
+      piece: piece.name,
       player: user.name,
-      boardId: board.id,
+      boardId: board._id,
     })
     setselectedPosition(null)
   }
@@ -92,7 +92,7 @@ const BoardNode = () => {
 
       reward()
     }
-  }, [board])
+  }, [board.isCheckmate, board.isStalemate])
 
   return (
 
@@ -118,7 +118,7 @@ const BoardNode = () => {
           key={piece.id}
           piece={piece}
           isDraggable={board.currentPlayer === piece.color && !board.isCheckmate
-              && board[board.currentPlayer] === user.name && [board.white, board.black].includes(user.name)}
+              && (board[board.currentPlayer] as IUser)._id === user._id && [(board.white as IUser)._id, (board.black as IUser)._id].includes(user._id)}
           onMove={handleMove}
           setselectedPosition={setselectedPosition}
         />

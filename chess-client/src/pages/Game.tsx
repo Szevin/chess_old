@@ -9,6 +9,7 @@ import BoardNode from '../components/BoardNode'
 import { useAppSelector } from '../store'
 import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
+// import UserNode from '../components/UserNode'
 
 const Game = () => {
   const { id } = useParams() as { id: string }
@@ -43,16 +44,16 @@ const Game = () => {
           </HStack>
         </Heading>
         <Heading marginTop="2" size="md" display="flex" justifyContent="center">
-          Code: {board.id} <Button size="xs" backgroundColor="InfoBackground" onClick={handleCopyCode}>Copy</Button>
+          Code: {board._id} <Button size="xs" backgroundColor="InfoBackground" onClick={handleCopyCode}>Copy</Button>
         </Heading>
       </Box>
     )
   }
 
   return (
-    <Grid templateRows="repeat(4, 0.1fr)" templateColumns="repeat(12, 1fr)" marginLeft={4} justifyContent="start">
+    <Grid templateRows="repeat(4, 0.1fr)" templateColumns="repeat(12, 1fr)" marginLeft={0} justifyContent="start">
       <GridItem colStart={3} marginBottom={2}>
-        <UserNode current={board.currentPlayer} color="black" user={{ name: board.black } as IUser} />
+        <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
       </GridItem>
       <GridItem colSpan={2} colStart={9}>
         <Tag colorScheme="blue">
@@ -64,7 +65,7 @@ const Game = () => {
       <GridItem colStart={3} colSpan={6} className="board">
         <BoardNode />
       </GridItem>
-      <Grid width="10rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400" templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
+      <Grid width="14rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400" templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
         { board.moves.map((move) => (
         // TODO unique keys
           <GridItem key={move.piece + move.from + move.to}>
@@ -73,10 +74,10 @@ const Game = () => {
         )) }
       </Grid>
       <GridItem marginTop={2} colStart={3} rowStart={3}>
-        <UserNode current={board.currentPlayer} color="white" user={{ name: board.white } as IUser} />
+        <UserNode active={board.currentPlayer === 'white'} user={board.white as unknown as IUser} />
       </GridItem>
 
-      <GridItem marginTop={4} rowSpan={1} hidden={![board.white, board.black].includes(user._id)}>
+      <GridItem marginTop={4} colStart={3} colEnd={10} rowStart={4} rowSpan={1} hidden={![(board.white as IUser)._id, (board.black as IUser)._id].includes(user._id)}>
         <Chat messages={board.messages} readonly={board.status !== 'playing'} />
       </GridItem>
     </Grid>

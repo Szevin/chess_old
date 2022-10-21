@@ -6,7 +6,7 @@ export type Channel = 'redux' | 'general'
 
 export const User = createApi({
   reducerPath: 'api/user',
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.DEV ? 'http://szevin2.ddns.net:3030/api/user' : '/api/user' }),
+  baseQuery: fetchBaseQuery({ baseUrl: '/api/user' }),
   endpoints: (build) => ({
     getUser: build.query<IUser, string>({
       query: (id) => `${id}`,

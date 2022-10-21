@@ -12,7 +12,7 @@ const create = async (req: { body: IUser }, res) => {
   }
 
   const user = new UserModel({
-    id: new mongoose.Types.ObjectId(),
+    _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     password: await Encrypt.encrypt(req.body.password),
     email: req.body.email,
@@ -34,14 +34,10 @@ const login = async (req: { body: { name: string, password: string }}, res ) => 
   res.send(user).status(200)
 }
 
-const get = (req: { params: { id: string } }, res) => {
-  UserModel.findById(req.params.id, (err, user) => {
-    if (err) {
-      res.send('Invalid ID').status(400)
-    }
+const get = async (req: { params: { id: string } }, res) => {
+  const user = await UserModel.findById(req.params.id)
 
-    res.send(user)
-  })
+  res.send(user)
 }
 
 export default { create, login, get }
