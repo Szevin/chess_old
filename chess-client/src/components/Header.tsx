@@ -31,6 +31,7 @@ const Header = () => {
       <GridItem gridColumnStart={11} gridColumn={2} gridRowStart={1} display="flex" alignItems="center">
         <Button hidden={!!user._id} variant="ghost" onClick={() => navigate('/login')}>Login</Button>
         <Button hidden={!!user._id} variant="ghost" onClick={() => navigate('/register')}>Register</Button>
+        <Button variant="ghost" onClick={() => navigate('/leaderboard')}>Leaderboard</Button>
         <UserNode hidden={!user._id} user={user} />
         <Button hidden={!user._id} variant="solid" colorScheme="pink" marginLeft="1rem" onClick={() => dispatch(setUser(null))}><MdExitToApp /></Button>
       </GridItem>

@@ -40,4 +40,10 @@ const get = async (req: { params: { id: string } }, res) => {
   res.send(user)
 }
 
-export default { create, login, get }
+const getAll = async (req, res) => {
+  const users = await UserModel.find()
+
+  res.send(users)
+}
+
+export default { create, login, get, getAll }

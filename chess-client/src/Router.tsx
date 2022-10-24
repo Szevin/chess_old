@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router'
 
 import Layout from './components/Layout'
 import Game from './pages/Game'
+import Leaderboard from './pages/Leaderboard'
 import Login from './pages/Login'
 import Main from './pages/Main'
 import Profile from './pages/Profile'
@@ -26,6 +27,7 @@ const Router = () => {
         ) }
 
         <Route path="profile/:id" element={<Profile />} />
+        <Route path="leaderboard" element={<Leaderboard />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

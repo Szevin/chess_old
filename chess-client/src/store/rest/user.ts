@@ -12,6 +12,10 @@ export const User = createApi({
       query: (id) => `${id}`,
     }),
 
+    getAllUsers: build.query<IUser[], void>({
+      query: () => '',
+    }),
+
     createUser: build.mutation<IUser, { name: string, email: string, password: string }>({
       query: (body) => ({
         url: '',
@@ -30,4 +34,4 @@ export const User = createApi({
   }),
 })
 
-export const { useGetUserQuery, useCreateUserMutation, useLoginUserMutation } = User
+export const { useGetUserQuery, useGetAllUsersQuery, useCreateUserMutation, useLoginUserMutation } = User
