@@ -1,3 +1,4 @@
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
 import {
   TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Tfoot,
 } from '@chakra-ui/react'
@@ -33,12 +34,12 @@ const Leaderboard = () => {
         <TableCaption>Leaderboard</TableCaption>
         <Thead>
           <Tr>
-            <Th cursor="pointer" onClick={() => sort('name')}>Name</Th>
-            <Th cursor="pointer" onClick={() => sort('elo')}>Elo</Th>
-            <Th cursor="pointer" onClick={() => sort('wins')}>Wins</Th>
-            <Th cursor="pointer" onClick={() => sort('losses')}>Losses</Th>
-            <Th cursor="pointer" onClick={() => sort('draws')}>Draws</Th>
-            <Th cursor="pointer" onClick={() => sort('streak')}>Streak</Th>
+            <Th cursor="pointer" fontWeight={sortBy === 'name' ? 'extrabold' : 'none'} onClick={() => sort('name')}>Name <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'name'} /></Th>
+            <Th cursor="pointer" fontWeight={sortBy === 'elo' ? 'extrabold' : 'none'} onClick={() => sort('elo')}>Elo <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'elo'} /></Th>
+            <Th cursor="pointer" fontWeight={sortBy === 'wins' ? 'extrabold' : 'none'} onClick={() => sort('wins')}>Wins <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'wins'} /></Th>
+            <Th cursor="pointer" fontWeight={sortBy === 'losses' ? 'extrabold' : 'none'} onClick={() => sort('losses')}>Losses <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'losses'} /></Th>
+            <Th cursor="pointer" fontWeight={sortBy === 'draws' ? 'extrabold' : 'none'} onClick={() => sort('draws')}>Draws <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'draws'} /></Th>
+            <Th cursor="pointer" fontWeight={sortBy === 'streak' ? 'extrabold' : 'none'} onClick={() => sort('streak')}>Streak <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'streak'} /></Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -56,6 +57,15 @@ const Leaderboard = () => {
         <Tfoot />
       </Table>
     </TableContainer>
+  )
+}
+
+const SortIcon = ({ hidden, sortOrder }: { hidden: boolean, sortOrder : 'asc' | 'desc' }) => {
+  if (hidden) return null
+  return sortOrder === 'asc' ? (
+    <ChevronUpIcon marginLeft={0} w="1.5rem" h="1.5rem" />
+  ) : (
+    <ChevronDownIcon marginLeft={0} w="1.5rem" h="1.5rem" />
   )
 }
 
