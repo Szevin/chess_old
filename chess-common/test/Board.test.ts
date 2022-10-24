@@ -1,43 +1,31 @@
+/* eslint-disable no-underscore-dangle */
 import { describe, expect, test } from '@jest/globals'
 import { Board } from '../src/Board'
 
 describe('constructor', () => {
-  test('empty', () => {
+  test('default', () => {
     const board = new Board('1')
     expect(board).toBeDefined()
     expect(board._id).toBe('1')
     expect(board.pieces).toBeDefined()
-    expect(board.pieces.length).toBe(32)
+    expect(board.pieces.size).toBe(32)
   })
 
   test('2 pawns', () => {
     const board = new Board(
       '1',
-      [
-        { name: 'pawn', color: 'white', position: 'a2' },
-        { name: 'pawn', color: 'black', position: 'a7' },
-      ],
+      '8/p7/8/8/8/8/P7/8',
     )
     expect(board._id).toBe('1')
-    expect(board.pieces.length).toBe(2)
+    expect(board.pieces.size).toBe(2)
 
-    const whitePawn = board.pieces.find((p) => p.color === 'white')
+    const whitePawn = [...board.pieces.values()].find((p) => p.color === 'white')
     expect(whitePawn).toBeDefined()
     expect(whitePawn?.position).toBe('a2')
 
-    const blackPawn = board.pieces.find((p) => p.color === 'black')
+    const blackPawn = [...board.pieces.values()].find((p) => p.color === 'black')
     expect(blackPawn).toBeDefined()
     expect(blackPawn?.position).toBe('a7')
-  })
-
-  test('Error when two pieces with same position', () => {
-    expect(() => new Board(
-      '1',
-      [
-        { name: 'pawn', color: 'white', position: 'a2' },
-        { name: 'pawn', color: 'black', position: 'a2' },
-      ],
-    )).toThrowError()
   })
 })
 
@@ -135,5 +123,21 @@ describe('getOwnPieces', () => {
     expect(pieces.length).toBe(16)
     expect(pieces.filter((p) => p.color === 'white').length).toBe(0)
     expect(pieces.filter((p) => p.color === 'black').length).toBe(16)
+  })
+
+  describe('FEN', () => {
+    test('FENtoMap', () => {
+      const fen = '8/p7/8/8/8/8/P7/8'
+      const map = Board.FENtoMap(fen)
+      expect(map.size).toBe(2)
+      expect(map.get('a2')).toBeDefined()
+      expect(map.get('a7')).toBeDefined()
+    })
+
+    test('MaptoFEN', () => {
+      const fen = '11111111/1p111111/11111111/11111111/11111111/11111111/1P111111/11111111'
+      const map = Board.FENtoMap(fen)
+      expect(Board.MaptoFEN(map)).toBe(fen)
+    })
   })
 })

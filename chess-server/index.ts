@@ -1,4 +1,4 @@
-import { Board, ChessStats, IUser, Message, Move, Piece } from 'chess-common';
+import { Annotation, Board, ChessStats, IUser, Message, Move, Piece } from 'chess-common';
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
@@ -142,13 +142,22 @@ io.on('connection', (socket) => {
 
     if (!board) throw Error(`Board not found for ${move.player}`)
     if(board.status !== 'playing') throw Error(`Board not playing for ${move.player}`)
-    if (!board.pieces.some(piece => piece.moves.valid.some((valid) => piece.position === move.from && piece.name === move.piece && valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${move.boardId}`)
+    if (!Object.values(board.pieces).some(piece => piece.moves.valid.some((valid) => piece.position === move.from && piece.name === move.piece && valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${move.boardId}`)
 
     const boardClass = Object.assign(new Board(move.boardId), board.toObject())
-    boardClass.pieces = boardClass.pieces.map((piece) => Object.assign(new Piece('pawn', 'black', 'a1'), piece))
+    boardClass.pieces = new Map<Annotation, Piece>()
+    Object.values(board.pieces).forEach((piece) => {
+      boardClass.pieces.set(piece.position, Object.assign(new Piece('p', 'a1'), piece))
+    })
+
     boardClass.handleMove(move)
 
-    board.pieces = boardClass.pieces
+    console.log(board.pieces)
+    board.pieces = new Map<Annotation, Piece>()
+    boardClass.pieces.forEach((piece, annotation) => {
+      board.pieces.set(annotation, Object.assign(new Piece('p', 'a1'), piece))
+    })
+    console.log(board.pieces)
     board.status = boardClass.status
     board.currentPlayer = boardClass.currentPlayer
     board.moves = boardClass.moves
@@ -161,7 +170,7 @@ io.on('connection', (socket) => {
 
     board = await BoardModel.findById(move.boardId).populate<{white: IUser, black: IUser}>(['white', 'black'])
 
-    io.to(move.boardId).emit('board', boardClass)
+    io.to(move.boardId).emit('board', Object.assign(new Board(move.boardId), board.toObject()))
   })
 
   socket.on('message', async ({content, boardId, userId}) => {

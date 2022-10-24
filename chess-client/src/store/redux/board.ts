@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { Board } from 'chess-common'
+import { Annotation, Board, Piece } from 'chess-common'
 
 const initialState = {
   _id: '',
@@ -22,7 +22,11 @@ const boardSlice = createSlice({
   initialState,
   reducers: {
     setBoard(state, action: PayloadAction<Board>) {
-      const board = Object.assign(new Board(action.payload._id.toString(), action.payload.pieces, true), action.payload)
+      const board = Object.assign(new Board(action.payload._id.toString()), action.payload)
+      board.pieces = new Map<Annotation, Piece>()
+      Object.values(action.payload.pieces).forEach((piece) => {
+        board.pieces.set(piece.position as Annotation, Object.assign(new Piece('p', 'a1'), piece))
+      })
       board.currentPlayer = action.payload.currentPlayer
       Object.assign(state, board)
     },

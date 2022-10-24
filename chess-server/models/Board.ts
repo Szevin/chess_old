@@ -64,12 +64,10 @@ const BoardSchema = new mongoose.Schema(
       required: true,
     },
   ],
-  pieces: [
-    {
-      type: Object,
-      required: true,
-    },
-  ],
+  pieces: {
+    type: Object,
+    required: true,
+  },
   type: {
     type: String,
     required: true,

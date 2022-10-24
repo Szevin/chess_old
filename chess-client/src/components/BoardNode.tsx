@@ -113,7 +113,7 @@ const BoardNode = () => {
           />
         ))
       ))}
-      { board.pieces.map((piece) => (
+      { [...board.pieces.values()].map((piece) => (
         <PieceNode
           key={piece.id}
           piece={piece}

@@ -5,7 +5,7 @@ import { Annotation } from '../src/Position'
 
 describe('constructor', () => {
   test('pawn', () => {
-    const piece = new Piece('pawn', 'white', 'a2')
+    const piece = new Piece('P', 'a2')
     expect(piece).toBeDefined()
     expect(piece.name).toBe('pawn')
     expect(piece.color).toBe('white')
@@ -13,7 +13,7 @@ describe('constructor', () => {
   })
 
   test('rook', () => {
-    const piece = new Piece('rook', 'white', 'a2')
+    const piece = new Piece('R', 'a2')
     expect(piece).toBeDefined()
     expect(piece.name).toBe('rook')
     expect(piece.color).toBe('white')
@@ -21,7 +21,7 @@ describe('constructor', () => {
   })
 
   test('knight', () => {
-    const piece = new Piece('knight', 'white', 'a2')
+    const piece = new Piece('N', 'a2')
     expect(piece).toBeDefined()
     expect(piece.name).toBe('knight')
     expect(piece.color).toBe('white')
@@ -29,7 +29,7 @@ describe('constructor', () => {
   })
 
   test('bishop', () => {
-    const piece = new Piece('bishop', 'white', 'a2')
+    const piece = new Piece('B', 'a2')
     expect(piece).toBeDefined()
     expect(piece.name).toBe('bishop')
     expect(piece.color).toBe('white')
@@ -37,7 +37,7 @@ describe('constructor', () => {
   })
 
   test('queen', () => {
-    const piece = new Piece('queen', 'white', 'a2')
+    const piece = new Piece('Q', 'a2')
     expect(piece).toBeDefined()
     expect(piece.name).toBe('queen')
     expect(piece.color).toBe('white')
@@ -45,7 +45,7 @@ describe('constructor', () => {
   })
 
   test('king', () => {
-    const piece = new Piece('king', 'white', 'a2')
+    const piece = new Piece('K', 'a2')
     expect(piece).toBeDefined()
     expect(piece.name).toBe('king')
     expect(piece.color).toBe('white')
@@ -53,43 +53,39 @@ describe('constructor', () => {
   })
 
   test('black', () => {
-    const piece = new Piece('king', 'black', 'a2')
+    const piece = new Piece('k', 'a2')
     expect(piece).toBeDefined()
     expect(piece.name).toBe('king')
     expect(piece.color).toBe('black')
     expect(piece.position).toBe('a2')
   })
 
-  test('invalid name', () => {
-    expect(() => new Piece('invalid' as any, 'white', 'a2')).toThrowError()
-  })
-
-  test('invalid color', () => {
-    expect(() => new Piece('king', 'invalid' as any, 'a2')).toThrowError()
+  test('invalid piece', () => {
+    expect(() => new Piece('invalid' as any, 'a2')).toThrowError()
   })
 
   test('invalid position', () => {
-    expect(() => new Piece('king', 'white', 'invalid' as Annotation)).toThrowError()
+    expect(() => new Piece('k', 'invalid' as Annotation)).toThrowError()
   })
 })
 
 describe('setDirections', () => {
   describe('pawn', () => {
     test('white', () => {
-      const piece = new Piece('pawn', 'white', 'a2')
+      const piece = new Piece('P', 'a2')
       expect(piece.directions.move).toEqual([['up']])
       expect(piece.directions.capture).toEqual([['up', 'left'], ['up', 'right']])
     })
 
     test('black', () => {
-      const piece = new Piece('pawn', 'black', 'a2')
+      const piece = new Piece('p', 'a2')
       expect(piece.directions.move).toEqual([['down']])
       expect(piece.directions.capture).toEqual([['down', 'left'], ['down', 'right']])
     })
   })
 
   test('rook', () => {
-    const rook = new Piece('rook', 'white', 'e2')
+    const rook = new Piece('R', 'e2')
     const directions = [['up'], ['right'], ['down'], ['left']]
 
     expect(rook.directions.move).toEqual(directions)
@@ -97,7 +93,7 @@ describe('setDirections', () => {
   })
 
   test('knight', () => {
-    const knight = new Piece('knight', 'white', 'e2')
+    const knight = new Piece('N', 'e2')
     const directions = [
       ['up', 'up', 'left'],
       ['up', 'up', 'right'],
@@ -114,7 +110,7 @@ describe('setDirections', () => {
   })
 
   test('bishop', () => {
-    const bishop = new Piece('bishop', 'white', 'e2')
+    const bishop = new Piece('B', 'e2')
     const directions = [
       ['up', 'left'],
       ['up', 'right'],
@@ -127,7 +123,7 @@ describe('setDirections', () => {
   })
 
   test('queen', () => {
-    const queen = new Piece('queen', 'white', 'e2')
+    const queen = new Piece('Q', 'e2')
     const directions = [
       ['up', 'left'],
       ['up'],
@@ -144,7 +140,7 @@ describe('setDirections', () => {
   })
 
   test('king', () => {
-    const king = new Piece('king', 'white', 'e2')
+    const king = new Piece('K', 'e2')
     const directions = [
       ['up', 'left'],
       ['up'],
@@ -163,37 +159,37 @@ describe('setDirections', () => {
 
 describe('setRange', () => {
   test('pawn', () => {
-    const pawn = new Piece('pawn', 'white', 'e2')
+    const pawn = new Piece('P', 'e2')
 
     expect(pawn.range).toStrictEqual({ move: 2, capture: 1 })
   })
 
   test('rook', () => {
-    const rook = new Piece('rook', 'white', 'e2')
+    const rook = new Piece('R', 'e2')
 
     expect(rook.range).toStrictEqual({ move: 8, capture: 8 })
   })
 
   test('knight', () => {
-    const knight = new Piece('knight', 'white', 'e2')
+    const knight = new Piece('N', 'e2')
 
     expect(knight.range).toStrictEqual({ move: 1, capture: 1 })
   })
 
   test('bishop', () => {
-    const bishop = new Piece('bishop', 'white', 'e2')
+    const bishop = new Piece('B', 'e2')
 
     expect(bishop.range).toStrictEqual({ move: 8, capture: 8 })
   })
 
   test('queen', () => {
-    const queen = new Piece('queen', 'white', 'e2')
+    const queen = new Piece('Q', 'e2')
 
     expect(queen.range).toStrictEqual({ move: 8, capture: 8 })
   })
 
   test('king', () => {
-    const king = new Piece('king', 'white', 'e2')
+    const king = new Piece('K', 'e2')
 
     expect(king.range).toStrictEqual({ move: 1, capture: 1 })
   })
@@ -202,37 +198,37 @@ describe('setRange', () => {
 describe('setUnicode', () => {
   describe('white', () => {
     test('pawn', () => {
-      const piece = new Piece('pawn', 'white', 'e2')
+      const piece = new Piece('P', 'e2')
 
       expect(piece.unicode).toBe('♙')
     })
 
     test('rook', () => {
-      const piece = new Piece('rook', 'white', 'e2')
+      const piece = new Piece('R', 'e2')
 
       expect(piece.unicode).toBe('♖')
     })
 
     test('knight', () => {
-      const piece = new Piece('knight', 'white', 'e2')
+      const piece = new Piece('N', 'e2')
 
       expect(piece.unicode).toBe('♘')
     })
 
     test('bishop', () => {
-      const piece = new Piece('bishop', 'white', 'e2')
+      const piece = new Piece('B', 'e2')
 
       expect(piece.unicode).toBe('♗')
     })
 
     test('queen', () => {
-      const piece = new Piece('queen', 'white', 'e2')
+      const piece = new Piece('Q', 'e2')
 
       expect(piece.unicode).toBe('♕')
     })
 
     test('king', () => {
-      const piece = new Piece('king', 'white', 'e2')
+      const piece = new Piece('K', 'e2')
 
       expect(piece.unicode).toBe('♔')
     })
@@ -240,37 +236,37 @@ describe('setUnicode', () => {
 
   describe('black', () => {
     test('pawn', () => {
-      const piece = new Piece('pawn', 'black', 'e2')
+      const piece = new Piece('p', 'e2')
 
       expect(piece.unicode).toBe('♟')
     })
 
     test('rook', () => {
-      const piece = new Piece('rook', 'black', 'e2')
+      const piece = new Piece('r', 'e2')
 
       expect(piece.unicode).toBe('♜')
     })
 
     test('knight', () => {
-      const piece = new Piece('knight', 'black', 'e2')
+      const piece = new Piece('n', 'e2')
 
       expect(piece.unicode).toBe('♞')
     })
 
     test('bishop', () => {
-      const piece = new Piece('bishop', 'black', 'e2')
+      const piece = new Piece('b', 'e2')
 
       expect(piece.unicode).toBe('♝')
     })
 
     test('queen', () => {
-      const piece = new Piece('queen', 'black', 'e2')
+      const piece = new Piece('q', 'e2')
 
       expect(piece.unicode).toBe('♛')
     })
 
     test('king', () => {
-      const piece = new Piece('king', 'black', 'e2')
+      const piece = new Piece('k', 'e2')
 
       expect(piece.unicode).toBe('♚')
     })
@@ -279,8 +275,8 @@ describe('setUnicode', () => {
 
 describe('moveTo', () => {
   test('normal', () => {
-    const board = new Board('1', [{ name: 'pawn', color: 'white', position: 'e2' }])
-    const piece = board.pieces[0]
+    const board = new Board('1', '8/8/8/8/8/8/4P3/8')
+    const piece = [...board.pieces.values()][0]
 
     piece.moveTo('e4', board)
 
@@ -289,8 +285,8 @@ describe('moveTo', () => {
 
   describe('promotion', () => {
     test('white', () => {
-      const board = new Board('1', [{ name: 'pawn', color: 'white', position: 'e7' }])
-      const piece = board.pieces[0]
+      const board = new Board('1', '8/4P3/8/8/8/8/8/8')
+      const piece = [...board.pieces.values()][0]
 
       piece.moveTo('e8', board)
 
@@ -299,8 +295,8 @@ describe('moveTo', () => {
     })
 
     test('black', () => {
-      const board = new Board('1', [{ name: 'pawn', color: 'black', position: 'e2' }])
-      const piece = board.pieces[0]
+      const board = new Board('1', '8/8/8/8/8/8/4p3/8')
+      const piece = [...board.pieces.values()][0]
 
       piece.moveTo('e1', board)
 
@@ -315,7 +311,7 @@ describe('moveTo', () => {
   //       { name: 'pawn', color: 'white', position: 'e5' },
   //       { name: 'pawn', color: 'black', position: 'd5' },
   //     ]);
-  //     const piece = board.pieces[0];
+  //     const piece = [...board.pieces.values()][0];
 
   //     piece.moveTo('d6', board);
 
@@ -337,57 +333,45 @@ describe('moveTo', () => {
   describe('castling', () => {
     describe('king side', () => {
       test('white', () => {
-        const board = new Board('1', [
-          { name: 'king', color: 'white', position: 'e1' },
-          { name: 'rook', color: 'white', position: 'h1' },
-        ])
-        const piece = board.pieces[0]
+        const board = new Board('1', '8/8/8/8/8/8/8/4K2R')
+        const piece = [...board.pieces.values()][0]
 
         piece.moveTo('g1', board)
 
         expect(piece.position).toBe('g1')
-        expect(board.pieces[1].position).toBe('f1')
+        expect([...board.pieces.values()][1].position).toBe('f1')
       })
 
       test('black', () => {
-        const board = new Board('1', [
-          { name: 'king', color: 'black', position: 'e8' },
-          { name: 'rook', color: 'black', position: 'h8' },
-        ])
-        const piece = board.pieces[0]
+        const board = new Board('1', '4k2r/8/8/8/8/8/8/8')
+        const piece = [...board.pieces.values()][0]
 
         piece.moveTo('g8', board)
 
         expect(piece.position).toBe('g8')
-        expect(board.pieces[1].position).toBe('f8')
+        expect([...board.pieces.values()][1].position).toBe('f8')
       })
     })
 
     describe('queen side', () => {
       test('white', () => {
-        const board = new Board('1', [
-          { name: 'king', color: 'white', position: 'e1' },
-          { name: 'rook', color: 'white', position: 'a1' },
-        ])
-        const piece = board.pieces[0]
+        const board = new Board('1', '8/8/8/8/8/8/8/R3K3')
+        const piece = [...board.pieces.values()][0]
 
         piece.moveTo('c1', board)
 
         expect(piece.position).toBe('c1')
-        expect(board.pieces[1].position).toBe('d1')
+        expect([...board.pieces.values()][1].position).toBe('d1')
       })
 
       test('black', () => {
-        const board = new Board('1', [
-          { name: 'king', color: 'black', position: 'e8' },
-          { name: 'rook', color: 'black', position: 'a8' },
-        ])
-        const piece = board.pieces[0]
+        const board = new Board('1', 'r3k3/8/8/8/8/8/8/8')
+        const piece = [...board.pieces.values()][0]
 
         piece.moveTo('c8', board)
 
         expect(piece.position).toBe('c8')
-        expect(board.pieces[1].position).toBe('d8')
+        expect([...board.pieces.values()][1].position).toBe('d8')
       })
     })
   })

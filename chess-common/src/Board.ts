@@ -1,32 +1,14 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-named-as-default */
 import mongoose from 'mongoose'
-import Position, { Annotation, Direction } from './Position'
-import Piece, { ColorType, PieceMoves, IPiece } from './Piece'
+import Position, { Annotation, COLS, Direction } from './Position'
+import Piece, { ColorType, PieceCodeType, PieceMoves } from './Piece'
 import { Move } from './Move'
 import { Message } from './Message'
 import { IUser } from './User'
 
-export const defaultPieceSetup = [
-  { name: 'rook', color: 'white', position: 'a1' },
-  { name: 'knight', color: 'white', position: 'b1' },
-  { name: 'bishop', color: 'white', position: 'c1' },
-  { name: 'queen', color: 'white', position: 'd1' },
-  { name: 'king', color: 'white', position: 'e1' },
-  { name: 'bishop', color: 'white', position: 'f1' },
-  { name: 'knight', color: 'white', position: 'g1' },
-  { name: 'rook', color: 'white', position: 'h1' },
-  { name: 'rook', color: 'black', position: 'a8' },
-  { name: 'knight', color: 'black', position: 'b8' },
-  { name: 'bishop', color: 'black', position: 'c8' },
-  { name: 'queen', color: 'black', position: 'd8' },
-  { name: 'king', color: 'black', position: 'e8' },
-  { name: 'bishop', color: 'black', position: 'f8' },
-  { name: 'knight', color: 'black', position: 'g8' },
-  { name: 'rook', color: 'black', position: 'h8' },
-  ...Array.from({ length: 8 }, (_, i) => ({ name: 'pawn', color: 'white', position: `${String.fromCharCode(97 + i)}2` })),
-  ...Array.from({ length: 8 }, (_, i) => ({ name: 'pawn', color: 'black', position: `${String.fromCharCode(97 + i)}7` })),
-] as IPiece[]
+export const defaultPieceSetup = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'
 
 export type GameType = 'normal' | 'adaptive' | 'custom'
 
@@ -47,7 +29,7 @@ export class Board {
 
   moves: Move[] = []
 
-  pieces: Piece[]
+  pieces: Map<Annotation, Piece> = new Map()
 
   isCheck: boolean = false
 
@@ -63,16 +45,13 @@ export class Board {
 
   status: 'waiting' | 'playing' | 'finished' = 'waiting'
 
-  constructor(id: string, pieces: IPiece[] = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false) {
-    if (pieces.some((p, i) => pieces.findIndex((p2) => p2.position === p.position) !== i)) {
-      throw new Error('Two pieces with same position')
-    }
-
+  constructor(id: string, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false) {
     this._id = id
-    this.pieces = pieces.map((piece) => new Piece(piece.name, piece.color, piece.position))
+    this.type = type
+    this.pieces = Board.FENtoMap(FEN)
 
     if (!simulated) {
-      this.pieces.forEach((piece) => {
+      [...this.pieces.values()].forEach((piece) => {
         this.calcPieceValidMoves(piece)
       })
     }
@@ -84,14 +63,14 @@ export class Board {
 
   handleMove = (move: Move) => {
     this.removePiece(move.to)
-    const piece = this.pieces.find((piece) => piece.position === move.from)
-    if (!piece) throw Error('Piece not found!')
+    const piece = this.getPiece(move.from)
+    if (!piece) throw Error(`Piece not found at ${move.from}!`)
 
     piece.moveTo(move.to, this)
 
     this.moves.push(move)
-    this.currentPlayer = this.getEnemyColor()
-    this.pieces.forEach((piece) => {
+    this.currentPlayer = this.getEnemyColor();
+    [...this.pieces.values()].forEach((piece) => {
       this.calcPieceValidMoves(piece)
     })
 
@@ -103,7 +82,10 @@ export class Board {
   simulateMove = (move: Move) => {
     this.removePiece(move.to)
     const piece = this.getPiece(move.from)
-    if (!piece) throw Error('Piece not found!')
+    if (!piece) {
+      console.log(move)
+      throw Error(`Piece not found at ${move.from}!`)
+    }
 
     piece.position = move.to
     const attacks: Annotation[] = []
@@ -118,13 +100,11 @@ export class Board {
     piece.moves = this.getMoves(piece)
   }
 
-  getEnemyPieces = () => this.pieces.filter((piece) => piece.color === this.getEnemyColor())
+  getEnemyPieces = () => [...this.pieces.values()].filter((piece) => piece.color === this.getEnemyColor())
 
-  getOwnPieces = () => this.pieces.filter((piece) => piece.color === this.currentPlayer)
+  getOwnPieces = () => [...this.pieces.values()].filter((piece) => piece.color === this.currentPlayer)
 
-  getPiece = (at: Annotation): Piece | undefined => this.pieces.find((piece) => piece.position === at)
-
-  getKing = (color: ColorType) => this.pieces.find((piece) => piece.name === 'king' && piece.color === color)
+  getKing = (color: ColorType) => [...this.pieces.values()].find((piece) => piece.name === 'king' && piece.color === color)
 
   getMoves = (piece: Piece): PieceMoves => {
     const moves = {
@@ -206,7 +186,7 @@ export class Board {
     if (!moves) return filteredMoves
 
     moves.forEach((move) => {
-      const boardCopy = new Board('-1', this.pieces, this.type, true)
+      const boardCopy = new Board('-1', Board.MaptoFEN(this.pieces), this.type, true)
       boardCopy.currentPlayer = this.currentPlayer
 
       boardCopy.simulateMove({
@@ -248,7 +228,35 @@ export class Board {
     return moves
   }
 
-  removePiece = (at: Annotation) => {
-    this.pieces = this.pieces.filter((piece) => piece.position !== at)
+  getPiece = (at: Annotation) => this.pieces.get(at)
+
+  removePiece = (at: Annotation) => this.pieces.delete(at)
+
+  static MaptoFEN = (pieces: Map<Annotation, Piece>) => {
+    const fen = new Array(8).fill([]).map(() => new Array(8).fill('1'));
+    [...pieces.values()].forEach((piece) => {
+      const position = new Position(piece.position)
+      fen[8 - position.y][position.x - 1] = piece.encodePiece()
+    })
+
+    return fen.map((row) => row.join('')).join('/')
+  }
+
+  static FENtoMap = (FEN: string) => {
+    const pieces = new Map<Annotation, Piece>()
+    const rows = FEN.split('/')
+    rows.forEach((row, rowIndex) => {
+      let column = 0
+      row.split('').forEach((piece) => {
+        if (!Number.isInteger(Number(piece))) {
+          pieces.set((`${COLS[column]}${8 - rowIndex}`) as Annotation, new Piece(piece as PieceCodeType, (`${COLS[column]}${8 - rowIndex}`) as Annotation))
+          column += 1
+        } else {
+          column += parseInt(piece, 10)
+        }
+      })
+    })
+
+    return pieces
   }
 }

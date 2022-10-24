@@ -4,6 +4,20 @@ import * as uuid from 'uuid'
 import { Board } from './Board'
 import Position, { Annotation, Direction } from './Position'
 
+const PieceCodeTypes = {
+  p: '',
+  P: '',
+  r: '',
+  R: '',
+  n: '',
+  N: '',
+  b: '',
+  B: '',
+  q: '',
+  Q: '',
+  k: '',
+  K: '',
+}
 const pieceTypes = {
   pawn: '',
   rook: '',
@@ -31,6 +45,7 @@ const pieceUnicodes = {
   '♚': '',
 }
 
+export type PieceCodeType = keyof typeof PieceCodeTypes
 export type PieceType = keyof typeof pieceTypes
 export type ColorType = keyof typeof colorTypes
 export type PieceUnicode = keyof typeof pieceUnicodes
@@ -82,9 +97,59 @@ export class Piece {
     capture: Direction[][];
   }
 
-  constructor(name: PieceType, color: ColorType, position: Annotation) {
-    if (!pieceTypes.hasOwnProperty(name)) throw new Error(`Invalid piece name: ${name}`)
-    if (!colorTypes.hasOwnProperty(color)) throw new Error(`Invalid piece color: ${color}`)
+  parsePiece = (piece: PieceCodeType): { name: PieceType; color: ColorType } => {
+    switch (piece) {
+      case 'p':
+        return { name: 'pawn', color: 'black' }
+      case 'P':
+        return { name: 'pawn', color: 'white' }
+      case 'r':
+        return { name: 'rook', color: 'black' }
+      case 'R':
+        return { name: 'rook', color: 'white' }
+      case 'n':
+        return { name: 'knight', color: 'black' }
+      case 'N':
+        return { name: 'knight', color: 'white' }
+      case 'b':
+        return { name: 'bishop', color: 'black' }
+      case 'B':
+        return { name: 'bishop', color: 'white' }
+      case 'q':
+        return { name: 'queen', color: 'black' }
+      case 'Q':
+        return { name: 'queen', color: 'white' }
+      case 'k':
+        return { name: 'king', color: 'black' }
+      case 'K':
+        return { name: 'king', color: 'white' }
+      default:
+        throw Error('Invalid piece')
+    }
+  }
+
+  encodePiece = (): PieceCodeType => {
+    switch (this.name) {
+      case 'pawn':
+        return this.color === 'black' ? 'p' : 'P'
+      case 'rook':
+        return this.color === 'black' ? 'r' : 'R'
+      case 'knight':
+        return this.color === 'black' ? 'n' : 'N'
+      case 'bishop':
+        return this.color === 'black' ? 'b' : 'B'
+      case 'queen':
+        return this.color === 'black' ? 'q' : 'Q'
+      case 'king':
+        return this.color === 'black' ? 'k' : 'K'
+      default:
+        throw Error('Invalid piece')
+    }
+  }
+
+  constructor(piece: PieceCodeType, position: Annotation) {
+    const { name, color } = this.parsePiece(piece)
+    if (!pieceTypes.hasOwnProperty(name) || !colorTypes.hasOwnProperty(color)) throw new Error(`Invalid piece: ${piece}`)
     if (!new Position(position).isValid()) throw new Error(`Invalid piece position: ${position}`)
 
     this.id = uuid.v4()
