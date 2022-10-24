@@ -5,7 +5,7 @@ import { BoardModel } from '../models/Board.js'
 import { Encrypt } from '../utils/Encrypt.js'
 import { v4 } from 'uuid'
 
-const create = async (req: { body: { user: string, color: 'white' | 'black', boardId: mongoose.Types.ObjectId } }, res) => {
+const create = async (req: { body: { user: string, color: 'white' | 'black', pieces: string } }, res) => {
 
   const boardClass = new Board('-1')
   const board = new BoardModel({

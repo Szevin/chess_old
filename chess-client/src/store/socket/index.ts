@@ -16,7 +16,7 @@ export const useSocket = () => {
   const board = useAppSelector((state) => state.board)
 
   socket.on('board', (board: Board) => {
-    playSound()
+    // playSound()
     dispatch(setBoard(board))
   })
 

@@ -63,7 +63,7 @@ export class Board {
 
   status: 'waiting' | 'playing' | 'finished' = 'waiting'
 
-  constructor(id: string, pieces: IPiece[] = defaultPieceSetup, simulated: boolean = false) {
+  constructor(id: string, pieces: IPiece[] = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false) {
     if (pieces.some((p, i) => pieces.findIndex((p2) => p2.position === p.position) !== i)) {
       throw new Error('Two pieces with same position')
     }
@@ -206,7 +206,7 @@ export class Board {
     if (!moves) return filteredMoves
 
     moves.forEach((move) => {
-      const boardCopy = new Board('-1', this.pieces, true)
+      const boardCopy = new Board('-1', this.pieces, this.type, true)
       boardCopy.currentPlayer = this.currentPlayer
 
       boardCopy.simulateMove({

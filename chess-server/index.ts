@@ -1,4 +1,4 @@
-import { Board, IUser, Message, Move, Piece } from 'chess-common';
+import { Board, ChessStats, IUser, Message, Move, Piece } from 'chess-common';
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
@@ -157,7 +157,7 @@ io.on('connection', (socket) => {
     board.isStalemate = boardClass.isStalemate
     await board.save()
 
-    if(await scoreBoard(move.boardId)) return
+    if (board.isCheckmate || board.isStalemate) await scoreBoard(move.boardId)
 
     board = await BoardModel.findById(move.boardId).populate<{white: IUser, black: IUser}>(['white', 'black'])
 
@@ -250,7 +250,7 @@ server.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
 
-const scoreBoard = async (boardId: string): Promise<boolean> => {
+const scoreBoard = async (boardId: string) => {
   let board = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>([
     {
       path: 'white black',
@@ -269,20 +269,18 @@ const scoreBoard = async (boardId: string): Promise<boolean> => {
     board.winner = board.currentPlayer === 'white' ? board.black : board.white
     board.loser = board.currentPlayer === 'black' ? board.black : board.white
 
-    if(!board.winner || !board.loser) throw Error('Winner or loser not found!')
+    const winnerPlayer = await UserModel.findById(board.winner._id)
+    const loserPlayer = await UserModel.findById(board.loser._id)
 
-    board.winner.stats[board.type].wins += 1
-    const winnerExpectedScore = 1 / (1 + 10 ** ((board.loser.stats[board.type].elo - board.winner.stats[board.type].elo) / 400))
-    board.winner.stats[board.type].elo += 32 * (1 - winnerExpectedScore)
-    board.winner.stats[board.type].streak += 1
+    if(!winnerPlayer || !loserPlayer) throw Error('Winner or loser not found!')
 
-    board.loser.stats[board.type].losses += 1
-    const loserExpectedScore = 1 / (1 + 10 ** ((board.winner.stats[board.type].elo - board.loser.stats[board.type].elo) / 400))
-    board.loser.stats[board.type].elo += 32 * (0 - loserExpectedScore)
-    board.loser.stats[board.type].streak = 0
+    winnerPlayer.stats[board.type] = calculateStats(board.winner.stats[board.type], board.loser.stats[board.type], 1)
+    await winnerPlayer.save()
+
+    loserPlayer.stats[board.type] = calculateStats(board.loser.stats[board.type], board.winner.stats[board.type], 0)
+    await loserPlayer.save()
 
     await board.save()
-    return true;
   }
 
   if(board.isStalemate) {
@@ -290,26 +288,31 @@ const scoreBoard = async (boardId: string): Promise<boolean> => {
     board.winner = null
     board.loser = null
 
-    const whitePlayer = await UserModel.findOne({ name: board.white })
-    const blackPlayer = await UserModel.findOne({ name: board.black })
+    const whitePlayer = await UserModel.findById(board.white._id)
+    const blackPlayer = await UserModel.findById(board.white._id)
 
     if(!whitePlayer || !blackPlayer) throw Error('White or black not found!')
 
-    whitePlayer.stats[board.type].draws += 1
-    const whiteExpectedScore = 1 / (1 + 10 ** ((blackPlayer.stats[board.type].elo - whitePlayer.stats[board.type].elo) / 400))
-    whitePlayer.stats[board.type].elo += 32 * (0.5 - whiteExpectedScore)
-    whitePlayer.stats[board.type].streak = 0
+    whitePlayer.stats[board.type] = calculateStats(whitePlayer.stats[board.type], blackPlayer[board.type], 0.5)
     await whitePlayer.save()
 
-    blackPlayer.stats[board.type].draws += 1
-    const blackExpectedScore = 1 / (1 + 10 ** ((whitePlayer.stats[board.type].elo - blackPlayer.stats[board.type].elo) / 400))
-    blackPlayer.stats[board.type].elo += 32 * (0.5 - blackExpectedScore)
-    blackPlayer.stats[board.type].streak = 0
+    blackPlayer.stats[board.type] = calculateStats(blackPlayer.stats[board.type], whitePlayer[board.type], 0.5)
     await blackPlayer.save()
 
     await board.save()
-    return true;
   }
+}
 
-  return false;
+const calculateStats = (prevStats: ChessStats, enemyPrevStats: ChessStats, result: (0 | 0.5 | 1)): ChessStats => {
+  const expectedScore = 1 / (1 + 10 ** ((enemyPrevStats.elo - prevStats.elo) / 400))
+  const newElo = Math.floor(prevStats.elo + 32 * (result - expectedScore))
+  const newStreak = result === 1 ? prevStats.streak + 1 : 0
+
+  return {
+    elo: newElo,
+    wins: prevStats.wins + (result === 1 ? 1 : 0),
+    losses: prevStats.losses + (result === 0 ? 1 : 0),
+    draws: prevStats.draws + (result === 0.5 ? 1 : 0),
+    streak: newStreak,
+  }
 }
