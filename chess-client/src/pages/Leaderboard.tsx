@@ -4,9 +4,13 @@ import {
 } from '@chakra-ui/react'
 import { IUser } from 'chess-common'
 import React from 'react'
+import { useNavigate } from 'react-router'
 import { useGetAllUsersQuery } from '../store/rest/user'
+import './Leaderboard.css'
 
 const Leaderboard = () => {
+  const navigate = useNavigate()
+
   const [sortBy, setSortBy] = React.useState<keyof IUser>('elo')
   const [sortOrder, setSortOrder] = React.useState<'asc' | 'desc'>('desc')
   const { data: users } = useGetAllUsersQuery()
@@ -30,7 +34,7 @@ const Leaderboard = () => {
 
   return (
     <TableContainer>
-      <Table variant="striped" colorScheme="teal">
+      <Table>
         <TableCaption>Leaderboard</TableCaption>
         <Thead>
           <Tr>
@@ -44,7 +48,7 @@ const Leaderboard = () => {
         </Thead>
         <Tbody>
           {sortedUsers?.map((user: IUser) => (
-            <Tr key={user._id}>
+            <Tr key={user._id} cursor="pointer" className="user" onClick={() => navigate(`../profile/${user._id}`)}>
               <Td>{user.name}</Td>
               <Td>{user.elo}</Td>
               <Td>{user.wins}</Td>
