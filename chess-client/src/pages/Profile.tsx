@@ -36,11 +36,12 @@ const Profile = () => {
         </Heading>
       </Avatar>
       <Text>{user.email}</Text>
-      <Text>{user.elo}</Text>
-      <Text>{user.wins}</Text>
-      <Text>{user.losses}</Text>
-      <Text>{user.draws}</Text>
-      <Text>{user.streak}</Text>
+      {/* TODO any game type */}
+      <Text>{user.stats.normal.elo}</Text>
+      <Text>{user.stats.normal.wins}</Text>
+      <Text>{user.stats.normal.losses}</Text>
+      <Text>{user.stats.normal.draws}</Text>
+      <Text>{user.stats.normal.streak}</Text>
     </Box>
   )
 }

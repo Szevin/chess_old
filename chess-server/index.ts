@@ -271,15 +271,15 @@ const scoreBoard = async (boardId: string): Promise<boolean> => {
 
     if(!board.winner || !board.loser) throw Error('Winner or loser not found!')
 
-    board.winner.wins += 1
-    const winnerExpectedScore = 1 / (1 + 10 ** ((board.loser.elo - board.winner.elo) / 400))
-    board.winner.elo += 32 * (1 - winnerExpectedScore)
-    board.winner.streak += 1
+    board.winner.stats[board.type].wins += 1
+    const winnerExpectedScore = 1 / (1 + 10 ** ((board.loser.stats[board.type].elo - board.winner.stats[board.type].elo) / 400))
+    board.winner.stats[board.type].elo += 32 * (1 - winnerExpectedScore)
+    board.winner.stats[board.type].streak += 1
 
-    board.loser.losses += 1
-    const loserExpectedScore = 1 / (1 + 10 ** ((board.winner.elo - board.loser.elo) / 400))
-    board.loser.elo += 32 * (0 - loserExpectedScore)
-    board.loser.streak = 0
+    board.loser.stats[board.type].losses += 1
+    const loserExpectedScore = 1 / (1 + 10 ** ((board.winner.stats[board.type].elo - board.loser.stats[board.type].elo) / 400))
+    board.loser.stats[board.type].elo += 32 * (0 - loserExpectedScore)
+    board.loser.stats[board.type].streak = 0
 
     await board.save()
     return true;
@@ -295,16 +295,16 @@ const scoreBoard = async (boardId: string): Promise<boolean> => {
 
     if(!whitePlayer || !blackPlayer) throw Error('White or black not found!')
 
-    whitePlayer.draws += 1
-    const whiteExpectedScore = 1 / (1 + 10 ** ((blackPlayer.elo - whitePlayer.elo) / 400))
-    whitePlayer.elo += 32 * (0.5 - whiteExpectedScore)
-    whitePlayer.streak = 0
+    whitePlayer.stats[board.type].draws += 1
+    const whiteExpectedScore = 1 / (1 + 10 ** ((blackPlayer.stats[board.type].elo - whitePlayer.stats[board.type].elo) / 400))
+    whitePlayer.stats[board.type].elo += 32 * (0.5 - whiteExpectedScore)
+    whitePlayer.stats[board.type].streak = 0
     await whitePlayer.save()
 
-    blackPlayer.draws += 1
-    const blackExpectedScore = 1 / (1 + 10 ** ((whitePlayer.elo - blackPlayer.elo) / 400))
-    blackPlayer.elo += 32 * (0.5 - blackExpectedScore)
-    blackPlayer.streak = 0
+    blackPlayer.stats[board.type].draws += 1
+    const blackExpectedScore = 1 / (1 + 10 ** ((whitePlayer.stats[board.type].elo - blackPlayer.stats[board.type].elo) / 400))
+    blackPlayer.stats[board.type].elo += 32 * (0.5 - blackExpectedScore)
+    blackPlayer.stats[board.type].streak = 0
     await blackPlayer.save()
 
     await board.save()

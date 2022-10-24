@@ -1,10 +1,11 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-named-as-default */
+import mongoose from 'mongoose'
 import Position, { Annotation, Direction } from './Position'
 import Piece, { ColorType, PieceMoves, IPiece } from './Piece'
 import { Move } from './Move'
 import { Message } from './Message'
-import mongoose from 'mongoose';
-import { IUser } from './User';
+import { IUser } from './User'
 
 export const defaultPieceSetup = [
   { name: 'rook', color: 'white', position: 'a1' },
@@ -27,8 +28,12 @@ export const defaultPieceSetup = [
   ...Array.from({ length: 8 }, (_, i) => ({ name: 'pawn', color: 'black', position: `${String.fromCharCode(97 + i)}7` })),
 ] as IPiece[]
 
+export type GameType = 'normal' | 'adaptive' | 'custom'
+
 export class Board {
   _id: string
+
+  type: GameType = 'normal'
 
   createDate: Date = new Date()
 
@@ -51,6 +56,7 @@ export class Board {
   isStalemate: boolean = false
 
   winner: mongoose.Types.ObjectId | IUser | null = null
+
   loser: mongoose.Types.ObjectId | IUser | null = null
 
   currentPlayer: ColorType = 'white'

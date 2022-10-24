@@ -37,7 +37,7 @@ const Main = () => {
           <TableCaption>Ongoing games</TableCaption>
           <Thead>
             <Tr>
-              <Th>ID</Th>
+              <Th>Type</Th>
               <Th>White</Th>
               <Th>Black</Th>
               <Th>Views</Th>
@@ -46,7 +46,7 @@ const Main = () => {
           <Tbody>
             {boards && (user._id ? boards : boards.filter((board) => board.status !== 'waiting')).map((board) => (
               <Tr key={board._id} backgroundColor={user._id && board.status === 'waiting' ? 'teal.400' : 'telegram.400'}>
-                <Td>{board._id}</Td>
+                <Td>{board.type}</Td>
                 <Td>{(board.white as IUser)?.name}</Td>
                 <Td>{(board.black as IUser)?.name}</Td>
                 <Td>{board.spectators.length}</Td>

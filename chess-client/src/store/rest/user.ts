@@ -7,6 +7,7 @@ export type Channel = 'redux' | 'general'
 export const User = createApi({
   reducerPath: 'api/user',
   baseQuery: fetchBaseQuery({ baseUrl: '/api/user' }),
+  refetchOnMountOrArgChange: true,
   endpoints: (build) => ({
     getUser: build.query<IUser, string>({
       query: (id) => `${id}`,

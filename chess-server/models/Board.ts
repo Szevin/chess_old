@@ -70,6 +70,11 @@ const BoardSchema = new mongoose.Schema(
       required: true,
     },
   ],
+  type: {
+    type: String,
+    required: true,
+    default: 'normal',
+  },
 }, { id: false });
 
 export const BoardModel = mongoose.model<Board>('Board', BoardSchema);
