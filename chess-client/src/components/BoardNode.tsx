@@ -57,7 +57,6 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
       setselectedPosition(null)
       return
     }
-
     move({
       from: selectedPosition,
       to,

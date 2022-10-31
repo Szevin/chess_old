@@ -25,7 +25,9 @@ const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable, whiteView 
       disableDragging={!isDraggable}
       enableUserSelectHack={false}
       onDragStart={() => setselectedPosition(piece.position)}
-      onDragStop={(e, d) => onMove(`${'abcdefgh'[(Math.floor(d.x / 60))]}${Math.floor(8 - ((d.y + 16) / 60)) + 1}` as Annotation)}
+      onDragStop={(e, d) => onMove(
+        `${(whiteView ? 'abcdefgh' : 'ghfedcba')[(Math.floor(d.x / 60))]}${(whiteView ? Math.floor(8 - ((d.y + 16) / 60)) : 7 - Math.floor(8 - (d.y + 16) / 60)) + 1}` as Annotation,
+      )}
       size={{ width: 50, height: 50 }}
       position={{ x: ((whiteView ? annotationToCoord(piece.position).x : 9 - annotationToCoord(piece.position).x) * 64) - 50,
         y: ((whiteView ? annotationToCoord(piece.position).y : 9 - annotationToCoord(piece.position).y) * -64) + 525 }}
