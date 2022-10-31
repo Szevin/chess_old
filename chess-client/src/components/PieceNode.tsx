@@ -16,8 +16,8 @@ const annotationToCoord = (ann: Annotation) => ({
   y: Number(ann[1]),
 })
 
-const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable }: {
-  piece: Piece, setselectedPosition: (pos: Annotation) => void, onMove: (to: Annotation) => void, isDraggable: boolean }) => (
+const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable, whiteView }: {
+  piece: Piece, setselectedPosition: (pos: Annotation) => void, onMove: (to: Annotation) => void, isDraggable: boolean, whiteView: boolean }) => (
     <Rnd
       className="piece"
       enableResizing={false}
@@ -27,8 +27,8 @@ const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable }: {
       onDragStart={() => setselectedPosition(piece.position)}
       onDragStop={(e, d) => onMove(`${'abcdefgh'[(Math.floor(d.x / 60))]}${Math.floor(8 - ((d.y + 16) / 60)) + 1}` as Annotation)}
       size={{ width: 50, height: 50 }}
-      position={{ x: (annotationToCoord(piece.position).x * 64) - 50,
-        y: (annotationToCoord(piece.position).y * -64) + 525 }}
+      position={{ x: ((whiteView ? annotationToCoord(piece.position).x : 9 - annotationToCoord(piece.position).x) * 64) - 50,
+        y: ((whiteView ? annotationToCoord(piece.position).y : 9 - annotationToCoord(piece.position).y) * -64) + 525 }}
     >
       {getRender(piece.name, piece.color)}
     </Rnd>

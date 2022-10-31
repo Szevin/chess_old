@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router'
 import {
-  Heading, HStack, Button, Grid, GridItem, Tag, Box, useToast,
+  Heading, HStack, Button, Grid, GridItem, Tag, Box, useToast, useBoolean,
 } from '@chakra-ui/react'
 import { ViewIcon } from '@chakra-ui/icons'
 import { IUser } from 'chess-common'
@@ -17,6 +17,7 @@ const Game = () => {
   const board = useAppSelector((state) => state.board)
   const user = useAppSelector((state) => state.user)
   const toast = useToast()
+  const [whiteView, setWhiteView] = useBoolean(board.black._id !== user._id)
   // const dispatch = useAppDispatch()
   // const { leave } = useSocket()
 
@@ -65,6 +66,18 @@ const Game = () => {
       <GridItem colStart={3} marginBottom={2}>
         <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
       </GridItem>
+      <GridItem>
+        {/* toggle white view */}
+        <Button
+          size="sm"
+          backgroundColor={whiteView ? 'white' : 'gray.400'}
+          onClick={throttle(setWhiteView.toggle, 1000)}
+          marginTop={2}
+          marginLeft={2}
+        >
+          <ViewIcon />
+        </Button>
+      </GridItem>
       <GridItem colSpan={2} colStart={9}>
         <Tag colorScheme="blue">
           <ViewIcon marginRight="1" />
@@ -73,7 +86,7 @@ const Game = () => {
       </GridItem>
 
       <GridItem colStart={3} colSpan={6} className="board">
-        <BoardNode />
+        <BoardNode whiteView={whiteView} />
       </GridItem>
       <Grid width="14rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400" templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
         { board.moves.map((move) => (

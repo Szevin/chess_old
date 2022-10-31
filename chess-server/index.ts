@@ -152,12 +152,10 @@ io.on('connection', (socket) => {
 
     boardClass.handleMove(move)
 
-    console.log(board.pieces)
     board.pieces = new Map<Annotation, Piece>()
     boardClass.pieces.forEach((piece, annotation) => {
       board.pieces.set(annotation, Object.assign(new Piece('p', 'a1'), piece))
     })
-    console.log(board.pieces)
     board.status = boardClass.status
     board.currentPlayer = boardClass.currentPlayer
     board.moves = boardClass.moves

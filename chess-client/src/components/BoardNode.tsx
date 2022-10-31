@@ -13,9 +13,9 @@ import { useSocket } from '../store/socket'
 /* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-const BoardNode = () => {
-  const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-
+const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
+  const cols = whiteView ? ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'] : ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']
+  const rows = whiteView ? [7, 6, 5, 4, 3, 2, 1, 0] : [0, 1, 2, 3, 4, 5, 6, 7]
   const { move } = useSocket()
   const toast = useToast()
   const { reward } = useReward('last', 'confetti', {
@@ -97,7 +97,7 @@ const BoardNode = () => {
   return (
 
     <>
-      {Array.from(Array(8).keys()).reverse().map((row) => (
+      {rows.map((row) => (
         cols.map((letter, col) => (
           <Box
             id={`${letter}${row + 1}` === board.moves.at(-1)?.to ? 'last' : ''}
@@ -115,6 +115,7 @@ const BoardNode = () => {
       ))}
       { [...board.pieces.values()].map((piece) => (
         <PieceNode
+          whiteView={whiteView}
           key={piece.id}
           piece={piece}
           isDraggable={board.currentPlayer === piece.color && !board.isCheckmate
