@@ -158,6 +158,7 @@ io.on('connection', (socket) => {
     board.isCheckmate = boardClass.isCheckmate
     board.isStalemate = boardClass.isStalemate
     board.pieces = boardClass.pieces
+    board.round = boardClass.round
     await board.save()
 
     if (board.isCheckmate || board.isStalemate) await scoreBoard(move.boardId)

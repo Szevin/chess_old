@@ -58,7 +58,7 @@ export class Board {
 
   round: number = 0
 
-  rule_frequency = 3
+  rule_frequency = 6
 
   constructor(id: string, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false, rules: Rule[] = []) {
     this._id = id
@@ -299,19 +299,21 @@ export class Board {
   setRules = () => {
     this.resetRules()
 
-    switch (this.rules[this.rules.length % (this.round / this.rule_frequency)]) {
+    const piecesArray = Object.values(this.pieces)
+
+    switch (this.rules[Math.floor((this.round / this.rule_frequency) % this.rules.length)]) {
       case Rule.FOG_OF_WAR:
         this.getEnemyPieces().forEach((piece) => {
           piece.hidden = true
         })
         break
       case Rule.NO_CAPTURE:
-        Object.values(this.pieces).forEach((piece) => {
+        piecesArray.forEach((piece) => {
           piece.moves.captures = []
         })
         break
       case Rule.NO_PAWNS:
-        Object.values(this.pieces).forEach((piece) => {
+        piecesArray.forEach((piece) => {
           if (piece.name !== 'pawn') return
           piece.moves.valid = []
           piece.moves.captures = []
@@ -320,7 +322,7 @@ export class Board {
         })
         break
       case Rule.NO_RETREAT:
-        Object.values(this.pieces).forEach((piece) => {
+        piecesArray.forEach((piece) => {
           piece.moves.empty = piece.moves.empty.filter((move) => {
             const p = new Position(move)
             return piece.color === 'white' ? p.y > new Position(piece.position).y : p.y < new Position(piece.position).y
@@ -335,6 +337,11 @@ export class Board {
       default:
         break
     }
+
+    this.pieces = piecesArray.reduce((acc, piece) => {
+      acc[piece.position] = piece
+      return acc
+    }, {} as Record<string, Piece>)
   }
 
   resetRules = () => {

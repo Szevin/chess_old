@@ -82,7 +82,7 @@ const BoardSchema = new mongoose.Schema(
   round: {
     type: Number,
     required: true,
-    default: 1,
+    default: 0,
   }
 }, { id: false });
 
