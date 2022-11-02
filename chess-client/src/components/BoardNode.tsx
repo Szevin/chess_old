@@ -112,7 +112,7 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
           />
         ))
       ))}
-      { [...board.pieces.values()].map((piece) => (
+      { [...Object.values(board.pieces)].map((piece) => (
         <PieceNode
           whiteView={whiteView}
           key={piece.id}

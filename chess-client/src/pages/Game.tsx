@@ -17,7 +17,7 @@ const Game = () => {
   const board = useAppSelector((state) => state.board)
   const user = useAppSelector((state) => state.user)
   const toast = useToast()
-  const [whiteView, setWhiteView] = useBoolean(board.black._id !== user._id)
+  const [whiteView, setWhiteView] = useBoolean(board.black?._id !== user._id)
   // const dispatch = useAppDispatch()
   // const { leave } = useSocket()
 
@@ -77,6 +77,9 @@ const Game = () => {
         >
           <ViewIcon />
         </Button>
+        <span>
+          {board.rules[board.rules.length % (board.round / board.rule_frequency)]}
+        </span>
       </GridItem>
       <GridItem colSpan={2} colStart={9}>
         <Tag colorScheme="blue">

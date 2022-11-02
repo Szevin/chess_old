@@ -73,6 +73,17 @@ const BoardSchema = new mongoose.Schema(
     required: true,
     default: 'normal',
   },
+  rules: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+  round: {
+    type: Number,
+    required: true,
+    default: 1,
+  }
 }, { id: false });
 
 export const BoardModel = mongoose.model<Board>('Board', BoardSchema);

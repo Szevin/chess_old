@@ -145,23 +145,19 @@ io.on('connection', (socket) => {
     if (!Object.values(board.pieces).some(piece => piece.moves.valid.some((valid) => piece.position === move.from && piece.name === move.piece && valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${move.boardId}`)
 
     const boardClass = Object.assign(new Board(move.boardId), board.toObject())
-    boardClass.pieces = new Map<Annotation, Piece>()
+    boardClass.pieces = {}
     Object.values(board.pieces).forEach((piece) => {
-      boardClass.pieces.set(piece.position, Object.assign(new Piece('p', 'a1'), piece))
+      boardClass.pieces[piece.position] = Object.assign(new Piece('p', 'a1'), piece)
     })
 
     boardClass.handleMove(move)
 
-    board.pieces = new Map<Annotation, Piece>()
-    boardClass.pieces.forEach((piece, annotation) => {
-      board.pieces.set(annotation, Object.assign(new Piece('p', 'a1'), piece))
-    })
-    board.status = boardClass.status
     board.currentPlayer = boardClass.currentPlayer
     board.moves = boardClass.moves
     board.isCheck = boardClass.isCheck
     board.isCheckmate = boardClass.isCheckmate
     board.isStalemate = boardClass.isStalemate
+    board.pieces = boardClass.pieces
     await board.save()
 
     if (board.isCheckmate || board.isStalemate) await scoreBoard(move.boardId)

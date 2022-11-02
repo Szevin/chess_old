@@ -12,6 +12,15 @@ export const defaultPieceSetup = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'
 
 export type GameType = 'normal' | 'adaptive' | 'custom'
 
+export enum Rule {
+  NO_RETREAT = 'no-retreat',
+  NO_CAPTURE = 'no-capture',
+  RENDER_SWAP = 'render-swap',
+  FOG_OF_WAR = 'fog-of-war',
+  NO_PAWNS = 'no-pawns',
+  ONLY_X_CAN_MOVE = 'only-x-can-move',
+}
+
 export class Board {
   _id: string
 
@@ -29,7 +38,7 @@ export class Board {
 
   moves: Move[] = []
 
-  pieces: Map<Annotation, Piece> = new Map()
+  pieces: Record<string, Piece> = {}
 
   isCheck: boolean = false
 
@@ -45,15 +54,23 @@ export class Board {
 
   status: 'waiting' | 'playing' | 'finished' = 'waiting'
 
-  constructor(id: string, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false) {
+  rules: Rule[] = []
+
+  round: number = 0
+
+  rule_frequency = 3
+
+  constructor(id: string, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false, rules: Rule[] = []) {
     this._id = id
     this.type = type
     this.pieces = Board.FENtoMap(FEN)
+    this.rules = rules
 
     if (!simulated) {
-      [...this.pieces.values()].forEach((piece) => {
+      [...Object.values(this.pieces)].forEach((piece) => {
         this.calcPieceValidMoves(piece)
       })
+      this.setRules()
     }
   }
 
@@ -69,42 +86,60 @@ export class Board {
     piece.moveTo(move.to, this)
 
     this.moves.push(move)
-    this.currentPlayer = this.getEnemyColor();
-    [...this.pieces.values()].forEach((piece) => {
+    this.currentPlayer = this.getEnemyColor()
+    Object.keys(this.pieces).forEach((key) => {
+      if (this.pieces[key].position !== key) {
+        const temp = Object.assign(new Piece('p', 'a1'), this.pieces[key])
+        delete this.pieces[key]
+        this.pieces[piece.position] = temp
+      }
+    });
+    [...Object.values(this.pieces)].forEach((piece) => {
       this.calcPieceValidMoves(piece)
     })
+    this.setRules()
 
     this.isCheck = this.getEnemyPieces().map((piece) => piece.moves.captures).some((moves) => moves.includes(this.getKing(this.currentPlayer).position))
     this.isCheckmate = this.isCheck && this.getOwnPieces().every((piece) => piece.moves.valid.length === 0)
     this.isStalemate = !this.isCheck && this.getOwnPieces().every((piece) => piece.moves.valid.length === 0)
+    this.round += 1
   }
 
   simulateMove = (move: Move) => {
     this.removePiece(move.to)
     const piece = this.getPiece(move.from)
     if (!piece) {
-      console.log(move)
       throw Error(`Piece not found at ${move.from}!`)
     }
 
     piece.position = move.to
+    Object.keys(this.pieces).forEach((key) => {
+      if (this.pieces[key].position !== key) {
+        const temp = Object.assign(new Piece('p', 'a1'), this.pieces[key])
+        delete this.pieces[key]
+        this.pieces[piece.position] = temp
+      }
+    })
+
     const attacks: Annotation[] = []
     this.getEnemyPieces().forEach((piece) => {
       attacks.push(...this.getCaptureMoves(piece))
     })
+    this.setRules()
 
     this.isCheck = this.getKing(this.currentPlayer) && attacks.includes(this.getKing(this.currentPlayer).position)
+    this.round += 1
   }
 
   calcPieceValidMoves = (piece: Piece) => {
     piece.moves = this.getMoves(piece)
   }
 
-  getEnemyPieces = () => [...this.pieces.values()].filter((piece) => piece.color === this.getEnemyColor())
+  getEnemyPieces = () => [...Object.values(this.pieces)].filter((piece) => piece.color === this.getEnemyColor())
 
-  getOwnPieces = () => [...this.pieces.values()].filter((piece) => piece.color === this.currentPlayer)
+  getOwnPieces = () => [...Object.values(this.pieces)].filter((piece) => piece.color === this.currentPlayer)
 
-  getKing = (color: ColorType) => [...this.pieces.values()].find((piece) => piece.name === 'king' && piece.color === color)
+  getKing = (color: ColorType) => [...Object.values(this.pieces)].find((piece) => piece.name === 'king' && piece.color === color)
 
   getMoves = (piece: Piece): PieceMoves => {
     const moves = {
@@ -134,9 +169,10 @@ export class Board {
         && position.isValid()
         && directionRange < piece.range.move
       ) {
-        if (this.getPiece(position.annotation) && this.getPiece(position.annotation)?.color !== piece.color) {
+        if (this.getPiece(position.annotation)) {
           break
         }
+
         moves.push(new Position(position.annotation))
         position.addDirections(direction)
         directionRange += 1
@@ -163,18 +199,17 @@ export class Board {
           break
         }
 
-        // En passant
-        if (piece.name === 'pawn') {
-          const enPassantPosition = new Position(position.annotation).addDirection(piece.color === 'white' ? 'down' : 'up')
-          const lastMove = this.moves[this.moves.length - 1]
-          if (lastMove && this.getPiece(enPassantPosition.annotation)?.name === 'pawn' && lastMove.to === enPassantPosition.annotation) {
-            captures.push(new Position(position.annotation))
-            break
-          }
-        }
-
         position.addDirections(direction)
         directionRange += 1
+      }
+
+      // En passant
+      if (piece.name === 'pawn') {
+        const enPassantPosition = new Position(position.annotation).addDirection(piece.color === 'white' ? 'down' : 'up')
+        const lastMove = this.moves[this.moves.length - 1]
+        if (lastMove && this.getPiece(enPassantPosition.annotation)?.name === 'pawn' && lastMove.to === enPassantPosition.annotation) {
+          captures.push(new Position(position.annotation))
+        }
       }
     })
 
@@ -186,7 +221,8 @@ export class Board {
     if (!moves) return filteredMoves
 
     moves.forEach((move) => {
-      const boardCopy = new Board('-1', Board.MaptoFEN(this.pieces), this.type, true)
+      const boardCopy = new Board('-1', Board.MaptoFEN(this.pieces), this.type, true, this.rules)
+      boardCopy.round = this.round
       boardCopy.currentPlayer = this.currentPlayer
 
       boardCopy.simulateMove({
@@ -228,13 +264,13 @@ export class Board {
     return moves
   }
 
-  getPiece = (at: Annotation) => this.pieces.get(at)
+  getPiece = (at: Annotation) => this.pieces[at]
 
-  removePiece = (at: Annotation) => this.pieces.delete(at)
+  removePiece = (at: Annotation) => delete this.pieces[at]
 
-  static MaptoFEN = (pieces: Map<Annotation, Piece>) => {
+  static MaptoFEN = (pieces: Record<string, Piece>) => {
     const fen = new Array(8).fill([]).map(() => new Array(8).fill('1'));
-    [...pieces.values()].forEach((piece) => {
+    [...Object.values(pieces)].forEach((piece) => {
       const position = new Position(piece.position)
       fen[8 - position.y][position.x - 1] = piece.encodePiece()
     })
@@ -243,13 +279,13 @@ export class Board {
   }
 
   static FENtoMap = (FEN: string) => {
-    const pieces = new Map<Annotation, Piece>()
+    const pieces: Record<string, Piece> = {}
     const rows = FEN.split('/')
     rows.forEach((row, rowIndex) => {
       let column = 0
       row.split('').forEach((piece) => {
         if (!Number.isInteger(Number(piece))) {
-          pieces.set((`${COLS[column]}${8 - rowIndex}`) as Annotation, new Piece(piece as PieceCodeType, (`${COLS[column]}${8 - rowIndex}`) as Annotation))
+          pieces[(`${COLS[column]}${8 - rowIndex}`) as Annotation] = new Piece(piece as PieceCodeType, (`${COLS[column]}${8 - rowIndex}`) as Annotation)
           column += 1
         } else {
           column += parseInt(piece, 10)
@@ -258,5 +294,53 @@ export class Board {
     })
 
     return pieces
+  }
+
+  setRules = () => {
+    this.resetRules()
+
+    switch (this.rules[this.rules.length % (this.round / this.rule_frequency)]) {
+      case Rule.FOG_OF_WAR:
+        this.getEnemyPieces().forEach((piece) => {
+          piece.hidden = true
+        })
+        break
+      case Rule.NO_CAPTURE:
+        Object.values(this.pieces).forEach((piece) => {
+          piece.moves.captures = []
+        })
+        break
+      case Rule.NO_PAWNS:
+        Object.values(this.pieces).forEach((piece) => {
+          if (piece.name !== 'pawn') return
+          piece.moves.valid = []
+          piece.moves.captures = []
+          piece.moves.empty = []
+          piece.takeable = false
+        })
+        break
+      case Rule.NO_RETREAT:
+        Object.values(this.pieces).forEach((piece) => {
+          piece.moves.empty = piece.moves.empty.filter((move) => {
+            const p = new Position(move)
+            return piece.color === 'white' ? p.y > new Position(piece.position).y : p.y < new Position(piece.position).y
+          })
+        })
+        break
+      case Rule.ONLY_X_CAN_MOVE:
+        break
+      case Rule.RENDER_SWAP:
+        break
+
+      default:
+        break
+    }
+  }
+
+  resetRules = () => {
+    Object.values(this.pieces).forEach((piece) => {
+      piece.hidden = false
+      piece.takeable = true
+    })
   }
 }

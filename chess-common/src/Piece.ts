@@ -85,6 +85,10 @@ export class Piece {
 
   unicode: PieceUnicode
 
+  takeable = true
+
+  hidden = false
+
   moves = {
     empty: [] as Annotation[],
     captures: [] as Annotation[],

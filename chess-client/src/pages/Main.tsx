@@ -19,7 +19,7 @@ const Main = () => {
 
   const autoFetch = setInterval(() => {
     refetchBoards()
-  }, 60_000)
+  }, 5_000)
 
   const handleJoin = (id: string) => {
     join(id)

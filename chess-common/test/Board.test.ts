@@ -8,7 +8,7 @@ describe('constructor', () => {
     expect(board).toBeDefined()
     expect(board._id).toBe('1')
     expect(board.pieces).toBeDefined()
-    expect(board.pieces.size).toBe(32)
+    expect(Object.values(board.pieces).length).toBe(32)
   })
 
   test('2 pawns', () => {
@@ -17,13 +17,13 @@ describe('constructor', () => {
       '8/p7/8/8/8/8/P7/8',
     )
     expect(board._id).toBe('1')
-    expect(board.pieces.size).toBe(2)
+    expect(Object.values(board.pieces).length).toBe(2)
 
-    const whitePawn = [...board.pieces.values()].find((p) => p.color === 'white')
+    const whitePawn = [...Object.values(board.pieces)].find((p) => p.color === 'white')
     expect(whitePawn).toBeDefined()
     expect(whitePawn?.position).toBe('a2')
 
-    const blackPawn = [...board.pieces.values()].find((p) => p.color === 'black')
+    const blackPawn = [...Object.values(board.pieces)].find((p) => p.color === 'black')
     expect(blackPawn).toBeDefined()
     expect(blackPawn?.position).toBe('a7')
   })
@@ -129,9 +129,9 @@ describe('getOwnPieces', () => {
     test('FENtoMap', () => {
       const fen = '8/p7/8/8/8/8/P7/8'
       const map = Board.FENtoMap(fen)
-      expect(map.size).toBe(2)
-      expect(map.get('a2')).toBeDefined()
-      expect(map.get('a7')).toBeDefined()
+      expect(Object.values(map).length).toBe(2)
+      expect(map.a2).toBeDefined()
+      expect(map.a7).toBeDefined()
     })
 
     test('MaptoFEN', () => {

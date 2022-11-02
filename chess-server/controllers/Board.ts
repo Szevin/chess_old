@@ -1,13 +1,14 @@
-import { Board, IUser } from 'chess-common'
+import { Board, GameType, IUser } from 'chess-common'
 import express from 'express'
 import mongoose from 'mongoose'
 import { BoardModel } from '../models/Board.js'
 import { Encrypt } from '../utils/Encrypt.js'
 import { v4 } from 'uuid'
+import { Rule } from 'chess-common/lib/Board.js'
 
-const create = async (req: { body: { user: string, color: 'white' | 'black', pieces: string } }, res) => {
+const create = async (req: { body: { pieces: string, type: GameType, rules: Rule[] } }, res) => {
 
-  const boardClass = new Board('-1')
+  const boardClass = new Board('-1', req.body.pieces, req.body.type, false, req.body.rules)
   const board = new BoardModel({
     _id: new mongoose.Types.ObjectId(),
     white: null,
@@ -22,10 +23,11 @@ const create = async (req: { body: { user: string, color: 'white' | 'black', pie
     currentPlayer: 'white',
     pieces: boardClass.pieces,
     status: 'waiting',
+    rules: req.body.rules,
+    type: req.body.type,
   });
 
   await board.save();
-  console.log(board._id)
   res.send(board._id).status(200)
 }
 

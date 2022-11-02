@@ -1,6 +1,8 @@
 import {
   useToast, Input, Button, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Divider, HStack,
 } from '@chakra-ui/react'
+import { GameType } from 'chess-common'
+import { Rule } from 'chess-common/lib/Board'
 import React from 'react'
 import { useNavigate } from 'react-router'
 import { useAppSelector } from '../../store'
@@ -32,8 +34,8 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
     navigate(`/board/${id}`)
   }
 
-  const handleCreate = async () => {
-    const res = await createBoard({ user: user._id, color: 'white' })
+  const handleCreate = async (FEN: string, type: GameType, rules: Rule[]) => {
+    const res = await createBoard({ FEN, type, rules })
 
     if (!('data' in res)) {
       toast({
@@ -64,7 +66,7 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
 
             <HStack verticalAlign="center" justifyContent="center" marginTop={4}>
               <Button width="100%" onClick={handleJoin} colorScheme="blue" disabled={!id}>Join</Button>
-              <Button width="100%" colorScheme="green" onClick={handleCreate}>Create</Button>
+              <Button width="100%" colorScheme="green" onClick={() => handleCreate('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR', 'custom', [Rule.NO_RETREAT, Rule.FOG_OF_WAR])}>Create</Button>
             </HStack>
           </ModalBody>
         </ModalContent>

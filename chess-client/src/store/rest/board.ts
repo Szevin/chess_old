@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { ColorTypes, Board as BoardClass } from 'chess-common'
+import { Board as BoardClass, GameType } from 'chess-common'
+import { Rule } from 'chess-common/lib/Board'
 import dayjs from 'dayjs'
 
 export const Board = createApi({
@@ -8,7 +9,7 @@ export const Board = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/api/board' }),
   refetchOnMountOrArgChange: true,
   endpoints: (build) => ({
-    createBoard: build.mutation<string, { user: string, color: ColorTypes }>({
+    createBoard: build.mutation<string, { FEN: string, type: GameType, rules: Rule[] }>({
       query: (body) => ({
         url: '',
         method: 'POST',
