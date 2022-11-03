@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router'
 import {
-  Heading, HStack, Button, Grid, GridItem, Tag, Box, useToast, useBoolean,
+  Heading, HStack, Button, Grid, GridItem, Tag, Box, useToast, useBoolean, Text,
 } from '@chakra-ui/react'
 import { ViewIcon } from '@chakra-ui/icons'
 import { IUser } from 'chess-common'
@@ -67,7 +67,6 @@ const Game = () => {
         <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
       </GridItem>
       <GridItem>
-        {/* toggle white view */}
         <Button
           size="sm"
           backgroundColor={whiteView ? 'white' : 'gray.400'}
@@ -77,9 +76,9 @@ const Game = () => {
         >
           <ViewIcon />
         </Button>
-        <span>
-          {board.rules[board.rules.length % (board.round / board.rule_frequency)]}
-        </span>
+        <Text>
+          {board.rules[Math.floor((board.round / board.rule_frequency) % board.rules.length)]}
+        </Text>
       </GridItem>
       <GridItem colSpan={2} colStart={9}>
         <Tag colorScheme="blue">
@@ -104,7 +103,7 @@ const Game = () => {
       </GridItem>
 
       <GridItem marginTop={4} colStart={3} colEnd={10} rowStart={4} rowSpan={1} hidden={![(board.white as IUser)._id, (board.black as IUser)._id].includes(user._id)}>
-        <Chat messages={board.messages} readonly={board.status !== 'playing'} blackId={board.black._id.toString()} whiteId={board.white._id.toString()} />
+        <Chat messages={board.messages} readonly={board.status !== 'playing'} blackId={board?.black._id.toString() ?? ''} whiteId={board?.white._id.toString() ?? ''} />
       </GridItem>
     </Grid>
   )

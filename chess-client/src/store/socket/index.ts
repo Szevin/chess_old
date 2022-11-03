@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { io } from 'socket.io-client'
 import { Board, Move } from 'chess-common'
 import useSound from 'use-sound'
@@ -17,6 +18,18 @@ export const useSocket = () => {
 
   socket.on('board', (board: Board) => {
     // playSound()
+    if (Object.values(board.pieces).some((piece) => piece.hidden)) {
+      let piecesArray = Object.values(board.pieces)
+      const hiddenColor = board.white._id === user._id ? 'black' : board.black._id === user._id ? 'white' : null
+      piecesArray = piecesArray.map((piece) => {
+        if (piece.color !== hiddenColor) {
+          piece.hidden = false
+        }
+        return piece
+      })
+
+      board.pieces = Object.fromEntries(piecesArray.map((piece) => [piece.position, piece]))
+    }
     dispatch(setBoard(board))
   })
 

@@ -4,6 +4,7 @@
 import React from 'react'
 import { Rnd } from 'react-rnd'
 import { ColorTypes, PieceTypes, Piece, Annotation } from 'chess-common'
+import { QuestionIcon } from '@chakra-ui/icons'
 import BishopSvg from '../assets/pieces/BishopSvg'
 import KingSvg from '../assets/pieces/KingSvg'
 import KnightSvg from '../assets/pieces/KnightSvg'
@@ -19,7 +20,7 @@ const annotationToCoord = (ann: Annotation) => ({
 const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable, whiteView }: {
   piece: Piece, setselectedPosition: (pos: Annotation) => void, onMove: (to: Annotation) => void, isDraggable: boolean, whiteView: boolean }) => (
     <Rnd
-      className="piece"
+      className="piece flex justify-center items-center"
       enableResizing={false}
       bounds=".board"
       disableDragging={!isDraggable}
@@ -32,11 +33,14 @@ const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable, whiteView 
       position={{ x: ((whiteView ? annotationToCoord(piece.position).x : 9 - annotationToCoord(piece.position).x) * 64) - 50,
         y: ((whiteView ? annotationToCoord(piece.position).y : 9 - annotationToCoord(piece.position).y) * -64) + 525 }}
     >
-      {getRender(piece.name, piece.color)}
+      {getRender(piece)}
     </Rnd>
 )
 
-const getRender = (name: PieceTypes, color: ColorTypes) => {
+const getRender = (piece: Piece) => {
+  const { hidden, name, color } = piece
+  if (hidden) return <QuestionIcon />
+
   switch (name) {
     case 'rook':
       return RookSvg({ color })

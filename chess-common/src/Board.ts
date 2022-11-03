@@ -97,12 +97,12 @@ export class Board {
     [...Object.values(this.pieces)].forEach((piece) => {
       this.calcPieceValidMoves(piece)
     })
+    this.round += 1
     this.setRules()
 
     this.isCheck = this.getEnemyPieces().map((piece) => piece.moves.captures).some((moves) => moves.includes(this.getKing(this.currentPlayer).position))
     this.isCheckmate = this.isCheck && this.getOwnPieces().every((piece) => piece.moves.valid.length === 0)
     this.isStalemate = !this.isCheck && this.getOwnPieces().every((piece) => piece.moves.valid.length === 0)
-    this.round += 1
   }
 
   simulateMove = (move: Move) => {
@@ -296,37 +296,43 @@ export class Board {
     return pieces
   }
 
-  setRules = () => {
+  private setRules = () => {
     this.resetRules()
 
-    const piecesArray = Object.values(this.pieces)
+    let piecesArray = Object.values(this.pieces)
 
     switch (this.rules[Math.floor((this.round / this.rule_frequency) % this.rules.length)]) {
       case Rule.FOG_OF_WAR:
-        this.getEnemyPieces().forEach((piece) => {
+        piecesArray = piecesArray.map((piece) => {
           piece.hidden = true
+          return piece
         })
         break
       case Rule.NO_CAPTURE:
-        piecesArray.forEach((piece) => {
+        piecesArray = piecesArray.map((piece) => {
           piece.moves.captures = []
+          return piece
         })
         break
       case Rule.NO_PAWNS:
-        piecesArray.forEach((piece) => {
-          if (piece.name !== 'pawn') return
+        piecesArray = piecesArray.map((piece) => {
+          if (piece.name !== 'pawn') return piece
           piece.moves.valid = []
           piece.moves.captures = []
           piece.moves.empty = []
           piece.takeable = false
+          return piece
         })
         break
       case Rule.NO_RETREAT:
-        piecesArray.forEach((piece) => {
+        piecesArray = piecesArray.map((piece) => {
           piece.moves.empty = piece.moves.empty.filter((move) => {
             const p = new Position(move)
-            return piece.color === 'white' ? p.y > new Position(piece.position).y : p.y < new Position(piece.position).y
+            return piece.color === 'white' ? p.y >= new Position(piece.position).y : p.y <= new Position(piece.position).y
           })
+          piece.moves.valid = [...piece.moves.captures, ...piece.moves.empty, ...piece.moves.captures]
+
+          return piece
         })
         break
       case Rule.ONLY_X_CAN_MOVE:
@@ -345,9 +351,11 @@ export class Board {
   }
 
   resetRules = () => {
-    Object.values(this.pieces).forEach((piece) => {
+    this.pieces = Object.values(this.pieces).reduce((acc, piece) => {
       piece.hidden = false
       piece.takeable = true
-    })
+      acc[piece.position] = piece
+      return acc
+    }, {} as Record<string, Piece>)
   }
 }

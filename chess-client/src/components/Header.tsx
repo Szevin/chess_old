@@ -33,7 +33,7 @@ const Header = () => {
         <Button hidden={!!user._id} variant="ghost" onClick={() => navigate('/login')}>Login</Button>
         <Button hidden={!!user._id} variant="ghost" onClick={() => navigate('/register')}>Register</Button>
         <UserNode hidden={!user._id} user={user} />
-        <Button hidden={!user._id} variant="solid" colorScheme="pink" marginLeft="1rem" onClick={() => dispatch(setUser(null))}><MdExitToApp /></Button>
+        <Button hidden={!user._id} variant="solid" colorScheme="pink" marginLeft="1rem" onClick={() => { dispatch(setUser(null)); navigate('/login') }}><MdExitToApp /></Button>
       </GridItem>
     </Grid>
   )
