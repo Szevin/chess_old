@@ -1,5 +1,5 @@
 import {
-  Box, Button, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, useDisclosure,
+  Box, Button, HStack, Input, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, useDisclosure, useToast,
 } from '@chakra-ui/react'
 import { IUser } from 'chess-common'
 import React from 'react'
@@ -14,22 +14,45 @@ const Main = () => {
   const navigate = useNavigate()
   const { join } = useSocket()
 
+  const [id, setId] = React.useState<string>()
+  const toast = useToast()
   const user = useAppSelector((state) => state.user)
   const { data: boards, refetch: refetchBoards } = useGetAllBoardsQuery()
 
-  const autoFetch = setInterval(() => {
-    refetchBoards()
-  }, 5_000)
+  // const autoFetch = setInterval(() => {
+  //   refetchBoards()
+  // }, 5_000)
+
+  const handleJoinOngoing = () => {
+    if (!id) {
+      toast({
+        title: 'Invalid ID',
+        description: 'Please enter a valid ID',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+      return
+    }
+
+    join(id)
+
+    navigate(`/board/${id}`)
+  }
 
   const handleJoin = (id: string) => {
     join(id)
     navigate(`/board/${id}`)
-    clearInterval(autoFetch)
+    // clearInterval(autoFetch)
   }
 
   return (
     <Box width="920px" margin="auto">
-      <Button autoFocus onClick={onOpen} colorScheme="green" width="100%" marginBottom="2rem" disabled={!user._id}>Play</Button>
+      <Input placeholder="ID" autoFocus={!!user._id} disabled={!user._id} onChange={(e) => setId(e.target.value)} onKeyDown={(e) => (e.key === 'Enter' ? handleJoinOngoing() : null)} />
+      <HStack>
+        <Button width="100%" onClick={handleJoinOngoing} colorScheme="blue" disabled={!id}>Join</Button>
+        <Button autoFocus onClick={onOpen} colorScheme="green" width="100%" marginBottom="2rem" disabled={!user._id}>Play</Button>
+      </HStack>
       <PlayDialog isOpen={isOpen} onClose={onClose} />
 
       <TableContainer>

@@ -1,41 +1,36 @@
 import {
-  useToast, Input, Button, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Divider, HStack,
+  useToast, Input, Button, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Divider, HStack, FormControl, FormLabel, Select,
 } from '@chakra-ui/react'
-import { GameType } from 'chess-common'
-import { Rule } from 'chess-common/lib/Board'
+import { GameType, Rule } from 'chess-common/lib/Board'
 import React from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
-import { useAppSelector } from '../../store'
 import { useCreateBoardMutation } from '../../store/rest/board'
 import { useSocket } from '../../store/socket'
 
 const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
   const navigate = useNavigate()
   const toast = useToast()
-  const [id, setId] = React.useState<string>()
   const [createBoard] = useCreateBoardMutation()
   const { join } = useSocket()
-  const user = useAppSelector((state) => state.user)
 
-  const handleJoin = () => {
-    if (!id) {
-      toast({
-        title: 'Invalid ID',
-        description: 'Please enter a valid ID',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
-      return
-    }
+  const form = useForm({
+    defaultValues: {
+      type: 'normal' as GameType,
+      fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
+    },
+  })
 
-    join(id)
-
-    navigate(`/board/${id}`)
-  }
-
-  const handleCreate = async (FEN: string, type: GameType, rules: Rule[]) => {
-    const res = await createBoard({ FEN, type, rules })
+  const handleSubmit = async () => {
+    const { fen, type } = form.getValues()
+    const allRules = [Rule.FOG_OF_WAR, Rule.NO_CAPTURE, Rule.NO_PAWNS, Rule.NO_RETREAT, Rule.RENDER_SWAP]
+    const firstRandomRuleIndex = Math.floor(Math.random() * allRules.length)
+    const secondRandomRuleIndex = Math.floor(Math.random() * allRules.length)
+    const res = await createBoard({
+      FEN: ['normal', 'adaptive'].includes(type) ? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR' : fen,
+      type,
+      rules: [allRules[firstRandomRuleIndex], allRules[secondRandomRuleIndex]],
+    })
 
     if (!('data' in res)) {
       toast({
@@ -62,11 +57,33 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
             <Divider />
           </ModalHeader>
           <ModalBody>
-            <Input autoFocus onChange={(e) => setId(e.target.value)} onKeyDown={(e) => (e.key === 'Enter' ? handleJoin() : null)} />
+            <FormControl>
+              <FormLabel htmlFor="type">Type</FormLabel>
+              <Select
+                autoFocus
+                width="97%"
+                id="type"
+                defaultValue="normal"
+                {...form.register('type')}
+              >
+                <option value="normal">normal</option>
+                <option value="adaptive">adaptive</option>
+                <option value="custom">custom</option>
+              </Select>
+            </FormControl>
+
+            <FormControl hidden={['normal', 'adaptive'].includes(form.watch('type'))}>
+              <FormLabel htmlFor="fen">FEN</FormLabel>
+              <Input
+                width="97%"
+                id="fen"
+                defaultValue="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+                {...form.register('fen')}
+              />
+            </FormControl>
 
             <HStack verticalAlign="center" justifyContent="center" marginTop={4}>
-              <Button width="100%" onClick={handleJoin} colorScheme="blue" disabled={!id}>Join</Button>
-              <Button width="100%" colorScheme="green" onClick={() => handleCreate('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR', 'custom', [Rule.RENDER_SWAP, Rule.NO_PAWNS])}>Create</Button>
+              <Button width="100%" colorScheme="green" onClick={handleSubmit}>Create</Button>
             </HStack>
           </ModalBody>
         </ModalContent>
