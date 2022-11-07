@@ -38,10 +38,10 @@ const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable, whiteView 
 )
 
 const getRender = (piece: Piece) => {
-  const { hidden, name, color } = piece
+  const { hidden, renderName, color } = piece
   if (hidden) return <QuestionIcon />
 
-  switch (name) {
+  switch (renderName) {
     case 'rook':
       return RookSvg({ color })
     case 'knight':

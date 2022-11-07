@@ -66,7 +66,7 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
 
             <HStack verticalAlign="center" justifyContent="center" marginTop={4}>
               <Button width="100%" onClick={handleJoin} colorScheme="blue" disabled={!id}>Join</Button>
-              <Button width="100%" colorScheme="green" onClick={() => handleCreate('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR', 'custom', [Rule.FOG_OF_WAR, Rule.NO_RETREAT])}>Create</Button>
+              <Button width="100%" colorScheme="green" onClick={() => handleCreate('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR', 'custom', [Rule.RENDER_SWAP, Rule.NO_PAWNS])}>Create</Button>
             </HStack>
           </ModalBody>
         </ModalContent>

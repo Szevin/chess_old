@@ -18,7 +18,6 @@ export enum Rule {
   RENDER_SWAP = 'render-swap',
   FOG_OF_WAR = 'fog-of-war',
   NO_PAWNS = 'no-pawns',
-  ONLY_X_CAN_MOVE = 'only-x-can-move',
 }
 
 export class Board {
@@ -321,6 +320,7 @@ export class Board {
           piece.moves.captures = []
           piece.moves.empty = []
           piece.takeable = false
+          piece.disabled = true
           return piece
         })
         break
@@ -335,13 +335,19 @@ export class Board {
           return piece
         })
         break
-      case Rule.ONLY_X_CAN_MOVE:
-        break
       case Rule.RENDER_SWAP:
-        break
-
-      default:
-        break
+        piecesArray = piecesArray.map((piece) => {
+          switch (piece.name) {
+            case 'knight':
+              piece.renderName = 'bishop'
+              return piece
+            case 'bishop':
+              piece.renderName = 'knight'
+              return piece
+            default:
+              return piece
+          }
+        })
     }
 
     this.pieces = piecesArray.reduce((acc, piece) => {
@@ -354,6 +360,8 @@ export class Board {
     this.pieces = Object.values(this.pieces).reduce((acc, piece) => {
       piece.hidden = false
       piece.takeable = true
+      piece.disabled = false
+      piece.renderName = piece.name
       acc[piece.position] = piece
       return acc
     }, {} as Record<string, Piece>)

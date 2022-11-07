@@ -68,6 +68,8 @@ export class Piece {
 
   name: PieceType
 
+  renderName: PieceType
+
   position: Annotation
 
   color: ColorType
@@ -88,6 +90,8 @@ export class Piece {
   takeable = true
 
   hidden = false
+
+  disabled = false
 
   moves = {
     empty: [] as Annotation[],
@@ -159,6 +163,7 @@ export class Piece {
     this.id = uuid.v4()
     this.name = name
     this.color = color
+    this.renderName = name
     this.position = position
     this.directions = this.setDirections(name, color)
     this.range = this.setRange(name)
