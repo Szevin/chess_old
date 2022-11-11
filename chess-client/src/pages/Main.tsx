@@ -5,6 +5,7 @@ import { IUser } from 'chess-common'
 import React from 'react'
 import { useNavigate } from 'react-router'
 import PlayDialog from '../components/dialog/PlayDialog'
+import useTranslate from '../hooks/useTranslate'
 import { useAppSelector } from '../store'
 import { useGetAllBoardsQuery } from '../store/rest/board'
 import { useSocket } from '../store/socket'
@@ -18,6 +19,7 @@ const Main = () => {
   const toast = useToast()
   const user = useAppSelector((state) => state.user)
   const { data: boards, refetch: refetchBoards } = useGetAllBoardsQuery()
+  const t = useTranslate()
 
   // const autoFetch = setInterval(() => {
   //   refetchBoards()
@@ -50,20 +52,20 @@ const Main = () => {
     <Box width="920px" margin="auto">
       <Input placeholder="ID" autoFocus={!!user._id} disabled={!user._id} onChange={(e) => setId(e.target.value)} onKeyDown={(e) => (e.key === 'Enter' ? handleJoinOngoing() : null)} />
       <HStack>
-        <Button width="100%" onClick={handleJoinOngoing} colorScheme="blue" disabled={!id}>Join</Button>
-        <Button autoFocus onClick={onOpen} colorScheme="green" width="100%" marginBottom="2rem" disabled={!user._id}>Play</Button>
+        <Button width="100%" onClick={handleJoinOngoing} colorScheme="blue" disabled={!id}>{t('main.join')}</Button>
+        <Button autoFocus onClick={onOpen} colorScheme="green" width="100%" marginBottom="2rem" disabled={!user._id}>{t('main.play')}</Button>
       </HStack>
       <PlayDialog isOpen={isOpen} onClose={onClose} />
 
       <TableContainer>
         <Table>
-          <TableCaption>Ongoing games</TableCaption>
+          <TableCaption>{t('main.ongoing')}</TableCaption>
           <Thead>
             <Tr>
-              <Th>Type</Th>
-              <Th>White</Th>
-              <Th>Black</Th>
-              <Th>Views</Th>
+              <Th>{t('main.game.type')}</Th>
+              <Th>{t('main.game.white')}</Th>
+              <Th>{t('main.game.black')}</Th>
+              <Th>{t('main.game.views')}</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -75,7 +77,7 @@ const Main = () => {
                 <Td>{board.spectators.length}</Td>
                 <Td>
                   <Button onClick={() => handleJoin(board._id)}>
-                    { [board.black?._id, board.white?._id].includes(user._id) ? 'Reconnect' : user._id && board.status === 'waiting' ? 'Join' : 'Watch' }
+                    { [board.black?._id, board.white?._id].includes(user._id) ? t('main.reconnect') : user._id && board.status === 'waiting' ? t('main.join') : t('main.watch') }
                   </Button>
                 </Td>
               </Tr>

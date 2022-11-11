@@ -14,6 +14,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
+import useTranslate from '../hooks/useTranslate'
 import { useAppDispatch } from '../store'
 import { setUser } from '../store/redux/user'
 import { useCreateUserMutation } from '../store/rest/user'
@@ -29,6 +30,7 @@ const Register = () => {
 
   const [createUser] = useCreateUserMutation()
   const dispatch = useAppDispatch()
+  const t = useTranslate()
 
   const [showPassword, setShowPassword] = useBoolean(false)
 
@@ -53,12 +55,12 @@ const Register = () => {
     <Box width="360px" margin="auto">
       <form onSubmit={form.handleSubmit(onSubmit)} style={{ width: '100%' }}>
         <FormControl>
-          <FormLabel htmlFor="name">Felhasználónév*</FormLabel>
+          <FormLabel htmlFor="name">{t('register.name')}*</FormLabel>
           <Input
             autoFocus
             width="97%"
             id="name"
-            {...form.register('name', { required: 'Felhasználónév megadása kötelező!' })}
+            {...form.register('name', { required: t('register.name.required') })}
           />
           <ErrorMessage
             errors={form.formState.errors}
@@ -72,13 +74,13 @@ const Register = () => {
         </FormControl>
 
         <FormControl>
-          <FormLabel htmlFor="email">Email cím*</FormLabel>
+          <FormLabel htmlFor="email">{t('register.email')}*</FormLabel>
           <Input
             width="97%"
             id="email"
             {...form.register('email', {
-              required: 'Email megadása kötelező!',
-              pattern: { value: emailRegex, message: 'Hibás email cím' },
+              required: t('register.email.required'),
+              pattern: { value: emailRegex, message: t('register.email.invalid') },
             })}
           />
           <ErrorMessage
@@ -93,14 +95,14 @@ const Register = () => {
         </FormControl>
 
         <FormControl>
-          <FormLabel htmlFor="password">Jelszó*</FormLabel>
+          <FormLabel htmlFor="password">{t('register.password')}*</FormLabel>
           <InputGroup size="md">
             <Input
               width="97%"
               type={showPassword ? 'text' : 'password'}
               id="password"
               {...form.register('password', {
-                required: 'Jelszó megadása kötelező!',
+                required: t('register.password.required'),
               })}
             />
             <InputRightElement width="4.5rem">
@@ -121,7 +123,7 @@ const Register = () => {
         </FormControl>
 
         <Button disabled={form.formState.isSubmitting || !form.formState.isValid} colorScheme="teal" size="sm" type="submit" marginTop={2}>
-          Regisztráció
+          {t('register.submit')}
         </Button>
       </form>
     </Box>

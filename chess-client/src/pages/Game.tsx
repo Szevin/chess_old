@@ -10,6 +10,7 @@ import BoardNode from '../components/BoardNode'
 import { useAppSelector } from '../store'
 import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
+import useTranslate from '../hooks/useTranslate'
 // import UserNode from '../components/UserNode'
 
 const Game = () => {
@@ -18,14 +19,15 @@ const Game = () => {
   const user = useAppSelector((state) => state.user)
   const toast = useToast()
   const [whiteView, setWhiteView] = useBoolean(board.black?._id !== user._id)
+  const t = useTranslate()
   // const dispatch = useAppDispatch()
   // const { leave } = useSocket()
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(id)
     toast({
-      title: 'Copied',
-      description: 'Game code copied to clipboard!',
+      title: t('game.copied.title'),
+      description: t('game.copied.message'),
       status: 'success',
       duration: 3000,
     })
@@ -41,7 +43,7 @@ const Game = () => {
       <Box>
         <Heading justifyContent="center">
           <HStack justifyContent="center">
-            <Heading size="lg" marginRight="2">Waiting for opponent</Heading>
+            <Heading size="lg" marginRight="2">{t('game.waiting')}</Heading>
             <Box className="dot-elastic align-self-end" />
           </HStack>
         </Heading>
@@ -49,11 +51,11 @@ const Game = () => {
           <Grid templateRows="repeat(2, 1fr)">
             <GridItem>
               <Heading size="md">
-                Code: {board._id}
+                {t('game.code')}: {board._id}
               </Heading>
             </GridItem>
             <GridItem display="flex" justifyContent="center">
-              <Button size="md" backgroundColor="InfoBackground" onClick={handleCopyCode}>Copy</Button>
+              <Button size="md" backgroundColor="InfoBackground" onClick={handleCopyCode}>{t('game.copy')}</Button>
             </GridItem>
           </Grid>
         </Box>
@@ -77,7 +79,7 @@ const Game = () => {
           <ViewIcon />
         </Button>
         <Text>
-          {board.rules[Math.floor((board.round / board.rule_frequency) % board.rules.length)]}
+          {t(`game.rule.${board.rules[Math.floor((board.round / board.rule_frequency) % board.rules.length)]}`)}
         </Text>
       </GridItem>
       <GridItem colSpan={2} colStart={9}>

@@ -14,6 +14,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
+import useTranslate from '../hooks/useTranslate'
 import { useAppDispatch } from '../store'
 import { setUser } from '../store/redux/user'
 import { useLoginUserMutation } from '../store/rest/user'
@@ -27,6 +28,7 @@ const Login = () => {
   const [login] = useLoginUserMutation()
   const toast = useToast()
   const dispatch = useAppDispatch()
+  const t = useTranslate()
 
   const [showPassword, setShowPassword] = useBoolean(false)
 
@@ -55,13 +57,13 @@ const Login = () => {
     <Box width="360px" margin="auto">
       <form onSubmit={form.handleSubmit(onSubmit)} style={{ width: '100%' }}>
         <FormControl>
-          <FormLabel htmlFor="name">Felhasználónév*</FormLabel>
+          <FormLabel htmlFor="name">{t('login.name')}*</FormLabel>
           <Input
             autoFocus
             width="97%"
             id="name"
             {...form.register('name', {
-              required: 'Felhasználónév megadása kötelező!',
+              required: t('login.name.required'),
             })}
           />
           <ErrorMessage
@@ -76,14 +78,14 @@ const Login = () => {
         </FormControl>
 
         <FormControl>
-          <FormLabel htmlFor="password">Jelszó*</FormLabel>
+          <FormLabel htmlFor="password">{t('login.password')}*</FormLabel>
           <InputGroup size="md">
             <Input
               width="97%"
               type={showPassword ? 'text' : 'password'}
               id="password"
               {...form.register('password', {
-                required: 'Jelszó megadása kötelező!',
+                required: t('login.password.required'),
               })}
             />
             <InputRightElement width="4.5rem">
@@ -103,7 +105,7 @@ const Login = () => {
           />
         </FormControl>
         <Button disabled={form.formState.isSubmitting || !form.formState.isValid} colorScheme="teal" size="sm" type="submit" marginTop={2}>
-          Bejelentkezés
+          {t('login.submit')}
         </Button>
       </form>
     </Box>

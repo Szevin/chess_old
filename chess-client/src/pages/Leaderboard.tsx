@@ -5,6 +5,7 @@ import {
 import { GameType, IUser } from 'chess-common'
 import React from 'react'
 import { useNavigate } from 'react-router'
+import useTranslate from '../hooks/useTranslate'
 import { useGetAllUsersQuery } from '../store/rest/user'
 import './Leaderboard.css'
 
@@ -16,6 +17,7 @@ const Leaderboard = () => {
   const [sortBy, setSortBy] = React.useState<ColType>('elo')
   const [sortOrder, setSortOrder] = React.useState<'asc' | 'desc'>('desc')
   const [gameType, setGameType] = React.useState<GameType>('normal')
+  const t = useTranslate()
 
   const { data: users } = useGetAllUsersQuery()
   const sortedUsers = React.useMemo(() => {
@@ -43,22 +45,40 @@ const Leaderboard = () => {
     <Box>
       <RadioGroup onChange={(value) => setGameType(value as GameType)} value={gameType}>
         <Stack direction="row">
-          <Radio value="normal">Normal</Radio>
-          <Radio value="adaptive">Adaptive</Radio>
-          <Radio value="custom">Custom</Radio>
+          <Radio value="normal">{t('leaderboard.game.type.normal')}</Radio>
+          <Radio value="adaptive">{t('leaderboard.game.type.adaptive')}</Radio>
+          <Radio value="custom">{t('leaderboard.game.type.custom')}</Radio>
         </Stack>
       </RadioGroup>
       <TableContainer>
         <Table>
-          <TableCaption>Leaderboard</TableCaption>
+          <TableCaption>{t('leaderboard.title')}</TableCaption>
           <Thead>
             <Tr>
-              <Th cursor="pointer" fontWeight={sortBy === 'name' ? 'extrabold' : 'none'} onClick={() => sort('name')}>Name <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'name'} /></Th>
-              <Th cursor="pointer" fontWeight={sortBy === 'elo' ? 'extrabold' : 'none'} onClick={() => sort('elo')}>Elo <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'elo'} /></Th>
-              <Th cursor="pointer" fontWeight={sortBy === 'wins' ? 'extrabold' : 'none'} onClick={() => sort('wins')}>Wins <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'wins'} /></Th>
-              <Th cursor="pointer" fontWeight={sortBy === 'losses' ? 'extrabold' : 'none'} onClick={() => sort('losses')}>Losses <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'losses'} /></Th>
-              <Th cursor="pointer" fontWeight={sortBy === 'draws' ? 'extrabold' : 'none'} onClick={() => sort('draws')}>Draws <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'draws'} /></Th>
-              <Th cursor="pointer" fontWeight={sortBy === 'streak' ? 'extrabold' : 'none'} onClick={() => sort('streak')}>Streak <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'streak'} /></Th>
+              <Th cursor="pointer" fontWeight={sortBy === 'name' ? 'extrabold' : 'none'} onClick={() => sort('name')}>
+                {t('leaderboard.user.name')}
+                <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'name'} />
+              </Th>
+              <Th cursor="pointer" fontWeight={sortBy === 'elo' ? 'extrabold' : 'none'} onClick={() => sort('elo')}>
+                {t('leaderboard.user.elo')}
+                <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'elo'} />
+              </Th>
+              <Th cursor="pointer" fontWeight={sortBy === 'wins' ? 'extrabold' : 'none'} onClick={() => sort('wins')}>
+                {t('leaderboard.user.wins')}
+                <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'wins'} />
+              </Th>
+              <Th cursor="pointer" fontWeight={sortBy === 'losses' ? 'extrabold' : 'none'} onClick={() => sort('losses')}>
+                {t('leaderboard.user.losses')}
+                <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'losses'} />
+              </Th>
+              <Th cursor="pointer" fontWeight={sortBy === 'draws' ? 'extrabold' : 'none'} onClick={() => sort('draws')}>
+                {t('leaderboard.user.draws')}
+                <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'draws'} />
+              </Th>
+              <Th cursor="pointer" fontWeight={sortBy === 'streak' ? 'extrabold' : 'none'} onClick={() => sort('streak')}>
+                {t('leaderboard.user.streak')}
+                <SortIcon sortOrder={sortOrder} hidden={sortBy !== 'streak'} />
+              </Th>
             </Tr>
           </Thead>
           <Tbody>
