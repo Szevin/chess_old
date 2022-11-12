@@ -1,3 +1,5 @@
+import { useAppSelector } from '../store'
+
 const translate: { en: Record<string, string>, hu: Record<string, string> } = {
   en: {
     'login.name': 'Username',
@@ -113,9 +115,9 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
   },
 }
 
-const useTranslate = () => (key: string) => {
-  const language: 'en' | 'hu' = (localStorage.getItem('language') ?? 'en') as 'en' | 'hu'
-  return translate[language][key] ?? 'UNDEFINED TRANSLATION'
+const useTranslate = () => {
+  const language: 'en' | 'hu' = useAppSelector((state) => state.settings.language)
+  return (key: string) => translate[language][key] ?? 'UNDEFINED TRANSLATION'
 }
 
 export default useTranslate

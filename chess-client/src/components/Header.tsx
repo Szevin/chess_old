@@ -8,18 +8,14 @@ import { setUser } from '../store/redux/user'
 import useTranslate from '../hooks/useTranslate'
 import HuSvg from '../assets/flags/hu'
 import EnSvg from '../assets/flags/en'
+import { toggleLanguage } from '../store/redux/settings'
 
 const Header = () => {
   const user = useAppSelector((state) => state.user)
+  const language = useAppSelector((state) => state.settings.language)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const t = useTranslate()
-  const currentLanguage = localStorage.getItem('language')
-
-  const toggleLanguage = () => {
-    localStorage.setItem('language', currentLanguage === 'hu' ? 'en' : 'hu')
-    window.location.reload()
-  }
 
   return (
     <Grid
@@ -33,8 +29,8 @@ const Header = () => {
       templateColumns="repeat(12, 1fr)"
       templateRows="repeat(1, 64px)"
     >
-      <GridItem colSpan={1} rowSpan={1} alignSelf="center" justifySelf="center" style={{ cursor: 'pointer' }} onClick={() => toggleLanguage()}>
-        {currentLanguage === 'hu' ? (
+      <GridItem colSpan={1} rowSpan={1} alignSelf="center" justifySelf="center" style={{ cursor: 'pointer' }} onClick={() => dispatch(toggleLanguage())}>
+        {language === 'hu' ? (
           <HuSvg />
         ) : (
           <EnSvg />

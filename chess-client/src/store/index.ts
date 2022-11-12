@@ -6,6 +6,7 @@ import { User } from './rest/user'
 import { Board } from './rest/board'
 import boardReducer from './redux/board'
 import userReducer from './redux/user'
+import settingsReducer from './redux/settings'
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     [Board.reducerPath]: Board.reducer,
     board: boardReducer,
     user: userReducer,
+    settings: settingsReducer,
   },
   devTools: process.env.NODE_ENV !== 'production',
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })
