@@ -11,14 +11,6 @@ import { store } from './store'
 import Router from './Router'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 
-if (!localStorage.getItem('theme')) {
-  localStorage.setItem('theme', 'light')
-}
-
-if (!localStorage.getItem('language')) {
-  localStorage.setItem('language', 'en')
-}
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 )

@@ -8,10 +8,23 @@ import Login from './pages/Login'
 import Main from './pages/Main'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
-import { useAppSelector } from './store'
+import { useAppDispatch, useAppSelector } from './store'
+import { toggleLanguage, toggleTheme } from './store/redux/settings'
 
 const Router = () => {
   const user = useAppSelector((state) => state.user)
+  const settings = useAppSelector((state) => state.settings)
+  const dispatch = useAppDispatch()
+
+  const defaultLanguage = localStorage.getItem('language') ?? 'en'
+  const defaultTheme = localStorage.getItem('theme') ?? 'light'
+
+  if (settings.language !== defaultLanguage) {
+    dispatch(toggleLanguage())
+  }
+  if (settings.theme !== defaultTheme) {
+    dispatch(toggleTheme())
+  }
 
   return (
     <Routes>
