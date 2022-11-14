@@ -1,4 +1,6 @@
-import { Heading, Button, GridItem, Grid } from '@chakra-ui/react'
+import {
+  Heading, Button, GridItem, Grid, useColorMode,
+} from '@chakra-ui/react'
 import React from 'react'
 import { useNavigate } from 'react-router'
 import { MdExitToApp } from 'react-icons/md'
@@ -16,6 +18,7 @@ const Header = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const t = useTranslate()
+  const { colorMode, toggleColorMode } = useColorMode()
 
   return (
     <Grid
@@ -35,6 +38,13 @@ const Header = () => {
         ) : (
           <EnSvg />
         )}
+      </GridItem>
+      <GridItem>
+        <header>
+          <Button onClick={toggleColorMode}>
+            Toggle {colorMode === 'light' ? 'Dark' : 'Light'}
+          </Button>
+        </header>
       </GridItem>
       <GridItem gridColumnStart={2} gridColumnEnd={10} gridRowStart={1} display="flex" alignItems="center" justifyContent="center">
         <Heading as="h1" size="xl" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
