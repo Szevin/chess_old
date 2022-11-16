@@ -32,19 +32,21 @@ const Header = () => {
       templateColumns="repeat(12, 1fr)"
       templateRows="repeat(1, 64px)"
     >
-      <GridItem colSpan={1} rowSpan={1} alignSelf="center" justifySelf="center" style={{ cursor: 'pointer' }} onClick={() => dispatch(toggleLanguage())}>
-        {language === 'hu' ? (
-          <HuSvg />
-        ) : (
-          <EnSvg />
-        )}
-      </GridItem>
-      <GridItem>
-        <header>
-          <Button onClick={toggleColorMode}>
-            Toggle {colorMode === 'light' ? 'Dark' : 'Light'}
-          </Button>
-        </header>
+      <GridItem style={{ marginLeft: '1rem' }} colSpan={1} rowSpan={1} alignSelf="center" justifySelf="center">
+        <Grid templateColumns="repeat(2, 1fr)">
+          <GridItem gridColumn={1} style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => dispatch(toggleLanguage())}>
+            {language === 'hu' ? (
+              <HuSvg />
+            ) : (
+              <EnSvg />
+            )}
+          </GridItem>
+          <GridItem gridColumn={2}>
+            <Button onClick={toggleColorMode}>
+              {colorMode === 'light' ? 'Dark' : 'Light'}
+            </Button>
+          </GridItem>
+        </Grid>
       </GridItem>
       <GridItem gridColumnStart={2} gridColumnEnd={10} gridRowStart={1} display="flex" alignItems="center" justifyContent="center">
         <Heading as="h1" size="xl" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
