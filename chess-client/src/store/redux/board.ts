@@ -22,7 +22,7 @@ const boardSlice = createSlice({
   initialState,
   reducers: {
     setBoard(state, action: PayloadAction<Board>) {
-      const board = Object.assign(new Board(action.payload._id.toString()), action.payload)
+      const board = Object.assign(new Board(action.payload._id.toString(), '', true), action.payload)
       board.pieces = {}
       Object.values(action.payload.pieces).forEach((piece) => {
         board.pieces[piece.position as Annotation] = Object.assign(new Piece('p', 'a1'), piece)
