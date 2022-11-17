@@ -240,6 +240,7 @@ export class Board {
         player: piece.color,
         boardId: this._id,
         time: dayjs().toDate(),
+        delta: this.moves.length > 0 ? dayjs().diff(dayjs(this.moves.at(-1)?.time)) : 0,
       })
 
       if (!boardCopy.isCheck) {

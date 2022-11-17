@@ -1,5 +1,5 @@
 import {
-  Heading, Button, GridItem, Grid, useColorMode,
+  Heading, Button, GridItem, Grid, useColorMode, HStack, Box,
 } from '@chakra-ui/react'
 import React from 'react'
 import { useNavigate } from 'react-router'
@@ -26,27 +26,25 @@ const Header = () => {
       as="header"
       width="100%"
       height="64px"
-      backgroundColor="#F7BB38"
+      backgroundColor={colorMode === 'light' ? 'gray.200' : 'gray.900'}
       color="blueviolet"
       alignContent="center"
       templateColumns="repeat(12, 1fr)"
       templateRows="repeat(1, 64px)"
     >
       <GridItem style={{ marginLeft: '1rem' }} colSpan={1} rowSpan={1} alignSelf="center" justifySelf="center">
-        <Grid templateColumns="repeat(2, 1fr)">
-          <GridItem gridColumn={1} style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => dispatch(toggleLanguage())}>
+        <HStack>
+          <Button backgroundColor={colorMode === 'light' ? 'black' : 'white'} onClick={toggleColorMode}>
+            {t(colorMode === 'light' ? 'header.darkmode' : 'header.lightmode')}
+          </Button>
+          <Box style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => dispatch(toggleLanguage())}>
             {language === 'hu' ? (
               <HuSvg />
             ) : (
               <EnSvg />
             )}
-          </GridItem>
-          <GridItem gridColumn={2}>
-            <Button onClick={toggleColorMode}>
-              {colorMode === 'light' ? 'Dark' : 'Light'}
-            </Button>
-          </GridItem>
-        </Grid>
+          </Box>
+        </HStack>
       </GridItem>
       <GridItem gridColumnStart={2} gridColumnEnd={10} gridRowStart={1} display="flex" alignItems="center" justifyContent="center">
         <Heading as="h1" size="xl" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>

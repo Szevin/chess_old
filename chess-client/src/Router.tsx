@@ -1,3 +1,4 @@
+import { Box, useColorMode } from '@chakra-ui/react'
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router'
 
@@ -26,25 +27,29 @@ const Router = () => {
     dispatch(toggleTheme())
   }
 
+  const { colorMode } = useColorMode()
+
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Main />} />
-        <Route path="board/:id" element={<Game />} />
+    <Box backgroundColor={colorMode === 'light' ? 'whitesmoke' : 'blueviolet'} height="100vh">
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Main />} />
+          <Route path="board/:id" element={<Game />} />
 
-        { !user._id && (
-        <>
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-        </>
-        ) }
+          { !user._id && (
+          <>
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+          </>
+          ) }
 
-        <Route path="profile/:id" element={<Profile />} />
-        <Route path="leaderboard" element={<Leaderboard />} />
+          <Route path="profile/:id" element={<Profile />} />
+          <Route path="leaderboard" element={<Leaderboard />} />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </Box>
   )
 }
 

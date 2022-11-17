@@ -1,5 +1,5 @@
 import {
-  useToast, Input, Button, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Divider, HStack, FormControl, FormLabel, Select,
+  useToast, Input, Button, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Divider, HStack, FormControl, FormLabel, Select, Checkbox,
 } from '@chakra-ui/react'
 import { GameType, Rule } from 'chess-common/lib/Board'
 import React from 'react'
@@ -18,9 +18,11 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
 
   const form = useForm({
     defaultValues: {
+      name: '',
       type: 'normal' as GameType,
       fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
       time: -1,
+      public: true,
     },
   })
 
@@ -61,12 +63,22 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
             <Divider />
           </ModalHeader>
           <ModalBody>
-            <FormControl>
-              <FormLabel htmlFor="type">{t('game.type')}</FormLabel>
+            <FormControl id="name">
+              <FormLabel>{t('playdialog.name')}</FormLabel>
+              <Input {...form.register('name')} />
+            </FormControl>
+
+            <FormControl id="public" mt={2}>
+              <HStack>
+                <FormLabel>{t('playdialog.public')}</FormLabel>
+                <Checkbox {...form.register('public')} />
+              </HStack>
+            </FormControl>
+
+            <FormControl id="type" mt={2}>
+              <FormLabel>{t('game.type')}</FormLabel>
               <Select
-                autoFocus
                 width="97%"
-                id="type"
                 defaultValue="normal"
                 {...form.register('type')}
               >
@@ -76,11 +88,10 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
               </Select>
             </FormControl>
 
-            <FormControl>
-              <FormLabel htmlFor="time">{t('playdialog.time')}</FormLabel>
+            <FormControl id="time" mt={2}>
+              <FormLabel>{t('playdialog.time')}</FormLabel>
               <Select
                 width="97%"
-                id="time"
                 defaultValue="-1"
                 {...form.register('time')}
               >
@@ -93,11 +104,10 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
               </Select>
             </FormControl>
 
-            <FormControl hidden={['normal', 'adaptive'].includes(form.watch('type'))}>
-              <FormLabel htmlFor="fen">{t('playdialog.fen')}</FormLabel>
+            <FormControl id="fen" mt={2} hidden={['normal', 'adaptive'].includes(form.watch('type'))}>
+              <FormLabel>{t('playdialog.fen')}</FormLabel>
               <Input
                 width="97%"
-                id="fen"
                 defaultValue="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
                 {...form.register('fen')}
               />

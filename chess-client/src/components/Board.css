@@ -73,8 +73,8 @@
   height: 6px;
   top: -5px;
   border-radius: 5px;
-  background-color: black;
-  color: black;
+  background-color: blueviolet;
+  color: blueviolet;
   animation: dotElastic 1.5s infinite linear;
 }
 
@@ -90,8 +90,8 @@
   width: 6px;
   height: 6px;
   border-radius: 5px;
-  background-color: black;
-  color: black;
+  background-color: blueviolet;
+  color: blueviolet;
   animation: dotElasticBefore 1.5s infinite linear;
 }
 
@@ -100,8 +100,8 @@
   width: 6px;
   height: 6px;
   border-radius: 5px;
-  background-color: black;
-  color: black;
+  background-color: blueviolet;
+  color: blueviolet;
   animation: dotElasticAfter 1.5s infinite linear;
 }
 

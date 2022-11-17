@@ -44,10 +44,10 @@ const Leaderboard = () => {
   return (
     <Box>
       <RadioGroup onChange={(value) => setGameType(value as GameType)} value={gameType}>
-        <Stack direction="row">
-          <Radio value="normal">{t('leaderboard.game.type.normal')}</Radio>
-          <Radio value="adaptive">{t('leaderboard.game.type.adaptive')}</Radio>
-          <Radio value="custom">{t('leaderboard.game.type.custom')}</Radio>
+        <Stack style={{ display: 'flex', justifyContent: 'center' }} direction="row">
+          <Radio value="normal">{t('game.type.normal')}</Radio>
+          <Radio value="adaptive">{t('game.type.adaptive')}</Radio>
+          <Radio value="custom">{t('game.type.custom')}</Radio>
         </Stack>
       </RadioGroup>
       <TableContainer>

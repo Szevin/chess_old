@@ -54,16 +54,22 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
     'game.type.custom': 'Custom',
 
     'playdialog.title': 'Play',
+    'playdialog.name': 'Lobby name',
+    'playdialog.name.required': 'Lobby name is required!',
+    'playdialog.public': 'Public',
     'playdialog.type': 'Type',
     'playdialog.time': 'Time',
     'playdialog.time.unlimited': 'Unlimited',
     'playdialog.time.minute': 'Minutes',
     'playdialog.fen': 'FEN',
+    'playdialog.create': 'Create',
 
     'header.leaderboard': 'Leaderboard',
     'header.login': 'Login',
     'header.register': 'Register',
     'header.title': 'Adaptív Sakk',
+    'header.darkmode': 'Dark mode',
+    'header.lightmode': 'Light mode',
   },
   hu: {
     'login.name': 'Felhasználónév',
@@ -118,6 +124,9 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
     'game.type.custom': 'Egyedi',
 
     'playdialog.title': 'Játék',
+    'playdialog.name': 'Szoba név',
+    'playdialog.name.required': 'Szoba név megadása kötelező!',
+    'playdialog.public': 'Nyilvános',
     'playdialog.time': 'Idő',
     'playdialog.time.unlimited': 'Korlátlan',
     'playdialog.time.minute': 'Perc',
@@ -128,6 +137,8 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
     'header.login': 'Bejelentkezés',
     'header.register': 'Regisztráció',
     'header.title': 'Adaptív Sakk',
+    'header.darkmode': 'Sötét mód',
+    'header.lightmode': 'Világos mód',
   },
 }
 

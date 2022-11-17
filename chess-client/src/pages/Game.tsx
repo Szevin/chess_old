@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router'
 import {
-  Heading, Button, Grid, GridItem, Tag, Box, useToast, useBoolean, Text, HStack, VStack,
+  Heading, Button, Grid, GridItem, Tag, Box, useToast, useBoolean, Text, HStack, VStack, useColorMode,
 } from '@chakra-ui/react'
 import { ViewIcon } from '@chakra-ui/icons'
 import { IUser } from 'chess-common'
@@ -11,8 +11,6 @@ import { useAppSelector } from '../store'
 import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
 import useTranslate from '../hooks/useTranslate'
-import { getRender } from '../components/PieceNode'
-// import UserNode from '../components/UserNode'
 
 const Game = () => {
   const { id } = useParams() as { id: string }
@@ -21,8 +19,7 @@ const Game = () => {
   const toast = useToast()
   const [whiteView, setWhiteView] = useBoolean(board.black?._id !== user._id)
   const t = useTranslate()
-  // const dispatch = useAppDispatch()
-  // const { leave } = useSocket()
+  const { colorMode } = useColorMode()
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(id)
@@ -33,11 +30,6 @@ const Game = () => {
       duration: 3000,
     })
   }
-
-  // React.useEffect(() => () => {
-  //   dispatch(clearBoard())
-  //   leave(id)
-  // }, [])
 
   if (board.status === 'waiting') {
     return (
@@ -76,6 +68,7 @@ const Game = () => {
       marginLeft={0}
       justifyContent="start"
       gap={2}
+      backgroundColor={colorMode === 'light' ? 'whitesmoke' : 'blueviolet'}
     >
       <GridItem area="info">
         <VStack>
@@ -86,12 +79,12 @@ const Game = () => {
             </Tag>
             <Button
               size="sm"
-              backgroundColor={whiteView ? 'white' : 'gray.400'}
+              backgroundColor={colorMode === 'light' ? 'blueviolet' : 'gray.400'}
               onClick={throttle(setWhiteView.toggle, 1000)}
               marginTop={2}
               marginLeft={2}
             >
-              <ViewIcon />
+              <ViewIcon color={whiteView ? 'white' : 'black'} />
             </Button>
           </HStack>
           <Text>
