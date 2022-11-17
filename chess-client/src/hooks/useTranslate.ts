@@ -70,6 +70,14 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
     'header.title': 'Adaptív Sakk',
     'header.darkmode': 'Dark mode',
     'header.lightmode': 'Light mode',
+
+    'user.name': 'Name',
+    'user.email': 'Email',
+    'user.stats.elo': 'Elo',
+    'user.stats.wins': 'Wins',
+    'user.stats.losses': 'Losses',
+    'user.stats.draws': 'Draws',
+    'user.stats.streak': 'Streak',
   },
   hu: {
     'login.name': 'Felhasználónév',
@@ -139,6 +147,14 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
     'header.title': 'Adaptív Sakk',
     'header.darkmode': 'Sötét mód',
     'header.lightmode': 'Világos mód',
+
+    'user.name': 'Név',
+    'user.email': 'Email',
+    'user.stats.elo': 'Elo',
+    'user.stats.wins': 'Győzelmek',
+    'user.stats.losses': 'Vereségek',
+    'user.stats.draws': 'Döntetlenek',
+    'user.stats.streak': 'Sorozat',
   },
 }
 
