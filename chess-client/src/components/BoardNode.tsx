@@ -2,9 +2,10 @@ import './Board.css'
 
 import classNames from 'classnames'
 import React from 'react'
-import { Annotation, IUser } from 'chess-common'
+import { Annotation, IUser, Piece } from 'chess-common'
 import { Box, useToast } from '@chakra-ui/react'
 import { useReward } from 'react-rewards'
+import dayjs from 'dayjs'
 import PieceNode from './PieceNode'
 import { useAppSelector } from '../store'
 import { useSocket } from '../store/socket'
@@ -60,9 +61,10 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
     move({
       from: selectedPosition,
       to,
-      piece: piece.name,
+      piece: Object.assign(new Piece('p', 'a1'), piece),
       player: user.name,
       boardId: board._id,
+      time: dayjs().toDate(),
     })
     setselectedPosition(null)
   }

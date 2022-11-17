@@ -142,7 +142,7 @@ io.on('connection', (socket) => {
 
     if (!board) throw Error(`Board not found for ${move.player}`)
     if(board.status !== 'playing') throw Error(`Board not playing for ${move.player}`)
-    if (!Object.values(board.pieces).some(piece => piece.moves.valid.some((valid) => piece.position === move.from && piece.name === move.piece && valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${move.boardId}`)
+    if (!Object.values(board.pieces).some(piece => piece.moves.valid.some((valid) => piece.position === move.from && piece.name === move.piece.name && valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${move.boardId}`)
 
     const boardClass = Object.assign(new Board(move.boardId), board.toObject())
     boardClass.pieces = {}

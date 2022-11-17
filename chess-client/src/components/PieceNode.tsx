@@ -37,7 +37,7 @@ const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable, whiteView 
     </Rnd>
 )
 
-const getRender = (piece: Piece) => {
+export const getRender = (piece: Piece) => {
   const { hidden, renderName, color } = piece
   if (hidden) return <QuestionIcon />
 

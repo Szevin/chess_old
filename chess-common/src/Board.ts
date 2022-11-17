@@ -7,6 +7,7 @@ import Piece, { ColorType, PieceCodeType, PieceMoves } from './Piece'
 import { Move } from './Move'
 import { Message } from './Message'
 import { IUser } from './User'
+import dayjs from 'dayjs'
 
 export const defaultPieceSetup = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'
 
@@ -235,9 +236,10 @@ export class Board {
       boardCopy.simulateMove({
         from: piece.position,
         to: move,
-        piece: piece.name,
+        piece: Object.assign(new Piece('p', 'a1'), piece),
         player: piece.color,
         boardId: this._id,
+        time: dayjs().toDate(),
       })
 
       if (!boardCopy.isCheck) {

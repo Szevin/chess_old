@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router'
 import {
-  Heading, HStack, Button, Grid, GridItem, Tag, Box, useToast, useBoolean, Text,
+  Heading, Button, Grid, GridItem, Tag, Box, useToast, useBoolean, Text, HStack, VStack,
 } from '@chakra-ui/react'
 import { ViewIcon } from '@chakra-ui/icons'
 import { IUser } from 'chess-common'
@@ -11,6 +11,7 @@ import { useAppSelector } from '../store'
 import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
 import useTranslate from '../hooks/useTranslate'
+import { getRender } from '../components/PieceNode'
 // import UserNode from '../components/UserNode'
 
 const Game = () => {
@@ -64,78 +65,93 @@ const Game = () => {
   }
 
   return (
-    <Grid templateRows="repeat(6, 0.1fr)" templateColumns="repeat(12, 1fr)" marginLeft={0} justifyContent="start">
-      <GridItem colSpan={4}>
-        <Text>
-          {t(`game.rule.${board.rules[Math.floor((board.round / board.rule_frequency) % board.rules.length)]}`)}
-        </Text>
-      </GridItem>
-      <GridItem>
-        <Button
-          size="sm"
-          backgroundColor={whiteView ? 'white' : 'gray.400'}
-          onClick={throttle(setWhiteView.toggle, 1000)}
-          marginTop={2}
-          marginLeft={2}
-        >
-          <ViewIcon />
-        </Button>
-      </GridItem>
-      <GridItem colSpan={2} colStart={9}>
-        <Tag colorScheme="blue">
-          <ViewIcon marginRight="1" />
-          {board.spectators.length}
-        </Tag>
-      </GridItem>
-
-      <GridItem rowStart={2} colStart={3} marginBottom={2}>
-        <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
-      </GridItem>
-      <GridItem rowStart={2} colStart={5}>
-        <Text>
-          {
-          board.capturedPieces
-            .filter((p) => p.color === 'white')
-            .map((p) => p.unicode)
-            .join('')
-        }
-        </Text>
-      </GridItem>
-      <GridItem rowStart={2} colStart={8}>
-        <Text>{board.blackTime}</Text>
+    <Grid
+      templateAreas={`"noneU1 black black black noneU2"
+      "info board board history noneR"
+      " info board board history noneR"
+      "noneD1 white white white noneR"
+      "noneD1 chat chat chat noneD2"`}
+      templateRows="0.2fr 1fr 1fr 0.2fr 1fr"
+      templateColumns="repeat(5, 1fr)"
+      marginLeft={0}
+      justifyContent="start"
+      gap={2}
+    >
+      <GridItem area="info">
+        <VStack>
+          <HStack>
+            <Tag colorScheme="blue">
+              <ViewIcon marginRight="1" />
+              {board.spectators.length}
+            </Tag>
+            <Button
+              size="sm"
+              backgroundColor={whiteView ? 'white' : 'gray.400'}
+              onClick={throttle(setWhiteView.toggle, 1000)}
+              marginTop={2}
+              marginLeft={2}
+            >
+              <ViewIcon />
+            </Button>
+          </HStack>
+          <Text>
+            {board.rules.length > 0 && t(`game.rule.${board.rules[Math.floor((board.round / board.rule_frequency) % board.rules.length)]}`)}
+          </Text>
+        </VStack>
       </GridItem>
 
-      <GridItem colStart={3} colSpan={6} className="board">
+      <GridItem area="black">
+        <HStack>
+          <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
+          <Text>
+            {
+            board.capturedPieces
+              .filter((p) => p.color === 'white')
+              .map((p) => p.unicode)
+              .join('')
+          }
+          </Text>
+          <Text>{board.blackTime}</Text>
+        </HStack>
+      </GridItem>
+
+      <GridItem area="board" className="board">
         <BoardNode whiteView={whiteView} />
       </GridItem>
 
-      <Grid width="14rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400" templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
-        { board.moves.map((move) => (
-        // TODO unique keys
-          <GridItem key={move.piece + move.from + move.to}>
-            {`${move.piece}${move.from}-${move.to}`}
-          </GridItem>
-        )) }
-      </Grid>
-
-      <GridItem marginTop={2} colStart={3} rowStart={5}>
-        <UserNode active={board.currentPlayer === 'white'} user={board.white as unknown as IUser} />
+      <GridItem area="history" minHeight="1fr" width="14rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400">
+        <Grid templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
+          { board.moves.map((move) => (
+            // TODO unique keys
+            <GridItem key={move.piece.renderName + move.from + move.to}>
+              <div>
+                {/* {getRender(move.piece)} */}
+              </div>
+              <Text>
+                {move.piece.unicode}
+                {`${move.from}-${move.to}`}
+              </Text>
+            </GridItem>
+          )) }
+        </Grid>
       </GridItem>
-      <GridItem rowStart={5} colStart={5}>
-        <Text>
-          {
-          board.capturedPieces
-            .filter((p) => p.color === 'black')
-            .map((p) => p.unicode)
-            .join('')
+
+      <GridItem area="white">
+        <HStack>
+          <UserNode active={board.currentPlayer === 'white'} user={board.white as unknown as IUser} />
+          <Text>
+            {
+            board.capturedPieces
+              .filter((p) => p.color === 'black')
+              .map((p) => p.unicode)
+              .join('')
         }
-        </Text>
-      </GridItem>
-      <GridItem rowStart={5} colStart={8}>
-        <Text>{board.whiteTime}</Text>
+          </Text>
+          <Text>{board.whiteTime}</Text>
+        </HStack>
       </GridItem>
 
-      <GridItem marginTop={4} colStart={3} colEnd={10} rowStart={6} rowSpan={1} hidden={![(board.white as IUser)._id, (board.black as IUser)._id].includes(user._id)}>
+      <GridItem area="chat" hidden={![(board.white as IUser)._id, (board.black as IUser)._id].includes(user._id)}>
         <Chat messages={board.messages} readonly={board.status !== 'playing'} blackId={board?.black._id.toString() ?? ''} whiteId={board?.white._id.toString() ?? ''} />
       </GridItem>
     </Grid>

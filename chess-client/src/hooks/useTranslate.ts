@@ -133,7 +133,7 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
 
 const useTranslate = () => {
   const language: 'en' | 'hu' = useAppSelector((state) => state.settings.language)
-  return (key: string) => translate[language][key] ?? 'UNDEFINED TRANSLATION'
+  return (key: string) => translate[language][key] ?? `UNDEFINED TRANSLATION: ${key}`
 }
 
 export default useTranslate
