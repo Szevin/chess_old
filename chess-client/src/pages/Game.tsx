@@ -64,9 +64,11 @@ const Game = () => {
   }
 
   return (
-    <Grid templateRows="repeat(4, 0.1fr)" templateColumns="repeat(12, 1fr)" marginLeft={0} justifyContent="start">
-      <GridItem colStart={3} marginBottom={2}>
-        <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
+    <Grid templateRows="repeat(6, 0.1fr)" templateColumns="repeat(12, 1fr)" marginLeft={0} justifyContent="start">
+      <GridItem colSpan={4}>
+        <Text>
+          {t(`game.rule.${board.rules[Math.floor((board.round / board.rule_frequency) % board.rules.length)]}`)}
+        </Text>
       </GridItem>
       <GridItem>
         <Button
@@ -78,9 +80,6 @@ const Game = () => {
         >
           <ViewIcon />
         </Button>
-        <Text>
-          {t(`game.rule.${board.rules[Math.floor((board.round / board.rule_frequency) % board.rules.length)]}`)}
-        </Text>
       </GridItem>
       <GridItem colSpan={2} colStart={9}>
         <Tag colorScheme="blue">
@@ -89,9 +88,27 @@ const Game = () => {
         </Tag>
       </GridItem>
 
+      <GridItem rowStart={2} colStart={3} marginBottom={2}>
+        <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
+      </GridItem>
+      <GridItem rowStart={2} colStart={5}>
+        <Text>
+          {
+          board.capturedPieces
+            .filter((p) => p.color === 'white')
+            .map((p) => p.unicode)
+            .join('')
+        }
+        </Text>
+      </GridItem>
+      <GridItem rowStart={2} colStart={8}>
+        <Text>{board.blackTime}</Text>
+      </GridItem>
+
       <GridItem colStart={3} colSpan={6} className="board">
         <BoardNode whiteView={whiteView} />
       </GridItem>
+
       <Grid width="14rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400" templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
         { board.moves.map((move) => (
         // TODO unique keys
@@ -100,11 +117,25 @@ const Game = () => {
           </GridItem>
         )) }
       </Grid>
-      <GridItem marginTop={2} colStart={3} rowStart={3}>
+
+      <GridItem marginTop={2} colStart={3} rowStart={5}>
         <UserNode active={board.currentPlayer === 'white'} user={board.white as unknown as IUser} />
       </GridItem>
+      <GridItem rowStart={5} colStart={5}>
+        <Text>
+          {
+          board.capturedPieces
+            .filter((p) => p.color === 'black')
+            .map((p) => p.unicode)
+            .join('')
+        }
+        </Text>
+      </GridItem>
+      <GridItem rowStart={5} colStart={8}>
+        <Text>{board.whiteTime}</Text>
+      </GridItem>
 
-      <GridItem marginTop={4} colStart={3} colEnd={10} rowStart={4} rowSpan={1} hidden={![(board.white as IUser)._id, (board.black as IUser)._id].includes(user._id)}>
+      <GridItem marginTop={4} colStart={3} colEnd={10} rowStart={6} rowSpan={1} hidden={![(board.white as IUser)._id, (board.black as IUser)._id].includes(user._id)}>
         <Chat messages={board.messages} readonly={board.status !== 'playing'} blackId={board?.black._id.toString() ?? ''} whiteId={board?.white._id.toString() ?? ''} />
       </GridItem>
     </Grid>

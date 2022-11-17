@@ -6,9 +6,9 @@ import { Encrypt } from '../utils/Encrypt.js'
 import { v4 } from 'uuid'
 import { Rule } from 'chess-common/lib/Board.js'
 
-const create = async (req: { body: { pieces: string, type: GameType, rules: Rule[] } }, res) => {
+const create = async (req: { body: { pieces: string, type: GameType, time: number, rules: Rule[] } }, res) => {
 
-  const boardClass = new Board('-1', req.body.pieces, req.body.type, false, req.body.rules)
+  const boardClass = new Board('-1', req.body.pieces, req.body.type, false, req.body.time, req.body.rules)
   const board = new BoardModel({
     _id: new mongoose.Types.ObjectId(),
     white: null,
@@ -25,6 +25,9 @@ const create = async (req: { body: { pieces: string, type: GameType, rules: Rule
     status: 'waiting',
     rules: req.body.rules,
     type: req.body.type,
+    time: req.body.time,
+    whiteTime: req.body.time,
+    blackTime: req.body.time,
   });
 
   await board.save();

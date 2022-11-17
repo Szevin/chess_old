@@ -83,7 +83,23 @@ const BoardSchema = new mongoose.Schema(
     type: Number,
     required: true,
     default: 0,
-  }
+  },
+  capturedPieces: {
+    type: Array,
+    required: true,
+  },
+  time: {
+    type: Number,
+    required: true,
+  },
+  whiteTime: {
+    type: Number,
+    required: true,
+  },
+  blackTime: {
+    type: Number,
+    required: true,
+  },
 }, { id: false });
 
 export const BoardModel = mongoose.model<Board>('Board', BoardSchema);

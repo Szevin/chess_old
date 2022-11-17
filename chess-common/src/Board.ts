@@ -59,11 +59,19 @@ export class Board {
 
   rule_frequency = 6
 
-  constructor(id: string, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false, rules: Rule[] = []) {
+  capturedPieces: Piece[] = []
+
+  time: number = -1
+
+  whiteTime = 0
+
+  blackTime = 0
+
+  constructor(id: string, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false, time: number = -1, rules: Rule[] = []) {
     this._id = id
     this.type = type
     this.pieces = Board.FENtoMap(FEN)
-    this.rules = rules
+    this.rules = type !== 'normal' ? rules : []
 
     if (!simulated) {
       [...Object.values(this.pieces)].forEach((piece) => {
@@ -220,7 +228,7 @@ export class Board {
     if (!moves) return filteredMoves
 
     moves.forEach((move) => {
-      const boardCopy = new Board('-1', Board.MaptoFEN(this.pieces), this.type, true, this.rules)
+      const boardCopy = new Board('-1', Board.MaptoFEN(this.pieces), this.type, true, this.time, this.rules)
       boardCopy.round = this.round
       boardCopy.currentPlayer = this.currentPlayer
 
@@ -265,7 +273,10 @@ export class Board {
 
   getPiece = (at: Annotation) => this.pieces[at]
 
-  removePiece = (at: Annotation) => delete this.pieces[at]
+  removePiece = (at: Annotation) => {
+    this.capturedPieces.push(Object.assign(new Piece('p', 'a1'), this.pieces[at]))
+    delete this.pieces[at]
+}
 
   static MaptoFEN = (pieces: Record<string, Piece>) => {
     const fen = new Array(8).fill([]).map(() => new Array(8).fill('1'));
@@ -296,6 +307,7 @@ export class Board {
   }
 
   private setRules = () => {
+    if (this.type === 'normal') return
     this.resetRules()
 
     let piecesArray = Object.values(this.pieces)

@@ -158,6 +158,7 @@ io.on('connection', (socket) => {
     board.isCheckmate = boardClass.isCheckmate
     board.isStalemate = boardClass.isStalemate
     board.pieces = boardClass.pieces
+    board.capturedPieces = boardClass.capturedPieces
     board.round = boardClass.round
     await board.save()
 

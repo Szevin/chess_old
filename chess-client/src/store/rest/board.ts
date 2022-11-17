@@ -9,7 +9,7 @@ export const Board = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/api/board' }),
   refetchOnMountOrArgChange: true,
   endpoints: (build) => ({
-    createBoard: build.mutation<string, { FEN: string, type: GameType, rules: Rule[] }>({
+    createBoard: build.mutation<string, { FEN: string, type: GameType, time: number, rules: Rule[] }>({
       query: (body) => ({
         url: '',
         method: 'POST',
