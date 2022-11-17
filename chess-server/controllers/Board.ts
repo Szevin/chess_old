@@ -11,6 +11,8 @@ const create = async (req: { body: { pieces: string, name: string, isPublic: boo
   const boardClass = new Board('-1', req.body.name, req.body.isPublic, req.body.pieces, req.body.type, false, req.body.time, req.body.rules)
   const board = new BoardModel({
     _id: new mongoose.Types.ObjectId(),
+    name: req.body.name,
+    isPublic: req.body.isPublic,
     white: null,
     black: null,
     moves: [],
@@ -36,7 +38,7 @@ const create = async (req: { body: { pieces: string, name: string, isPublic: boo
 
 const getAll = async (req, res) => {
   const boards = await BoardModel.find().populate(['white', 'black']);
-  res.send(boards.filter((board) => board.status !== 'finished' && board.isPublic)).status(200);
+  res.send(boards.filter((board) => board.status !== 'finished')).status(200);
 }
 
 export default { create, getAll }

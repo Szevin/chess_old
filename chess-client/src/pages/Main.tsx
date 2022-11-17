@@ -62,15 +62,17 @@ const Main = () => {
           <TableCaption>{t('main.ongoing')}</TableCaption>
           <Thead>
             <Tr>
-              <Th>{t('main.game.type')}</Th>
-              <Th>{t('main.game.white')}</Th>
-              <Th>{t('main.game.black')}</Th>
-              <Th>{t('main.game.views')}</Th>
+              <Th>{t('game.name')}</Th>
+              <Th>{t('game.type')}</Th>
+              <Th>{t('game.white')}</Th>
+              <Th>{t('game.black')}</Th>
+              <Th>{t('game.views')}</Th>
             </Tr>
           </Thead>
           <Tbody>
             {boards && (user._id ? boards : boards.filter((board) => board.status !== 'waiting')).map((board) => (
               <Tr key={board._id} backgroundColor={user._id && board.status === 'waiting' ? 'teal.400' : 'telegram.400'}>
+                <Td>{board.name}</Td>
                 <Td>{board.type}</Td>
                 <Td>{(board.white as IUser)?.name}</Td>
                 <Td>{(board.black as IUser)?.name}</Td>

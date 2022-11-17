@@ -4,6 +4,15 @@ import { v1 } from 'uuid';
 
 const BoardSchema = new mongoose.Schema(
   {
+  name: {
+    type: String,
+    required: true,
+  },
+  isPublic: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
   createDate: {
     type: Schema.Types.Date,
     required: true,

@@ -22,7 +22,9 @@ export const Board = createApi({
         url: '',
         method: 'GET',
       }),
-      transformResponse: (res: BoardClass[]) => res.sort((a, b) => dayjs(b.createDate).diff(dayjs(a.createDate), 'seconds')),
+      transformResponse: (res: BoardClass[]) => res
+        .filter((b) => b.isPublic)
+        .sort((a, b) => dayjs(b.createDate).diff(dayjs(a.createDate), 'seconds')),
     }),
   }),
 })

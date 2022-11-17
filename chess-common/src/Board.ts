@@ -72,7 +72,7 @@ export class Board {
 
   blackTime = 0
 
-  constructor(id: string, name: string, isPublic: boolean, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false, time: number = -1, rules: Rule[] = []) {
+  constructor(id: string, name: string = '', isPublic: boolean = true, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false, time: number = -1, rules: Rule[] = []) {
     this._id = id
     this.name = name
     this.isPublic = isPublic
