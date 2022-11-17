@@ -3,7 +3,7 @@ import './Board.css'
 import classNames from 'classnames'
 import React from 'react'
 import { Annotation, IUser, Piece } from 'chess-common'
-import { Box, useToast } from '@chakra-ui/react'
+import { Box, useColorMode, useToast } from '@chakra-ui/react'
 import { useReward } from 'react-rewards'
 import dayjs from 'dayjs'
 import PieceNode from './PieceNode'
@@ -19,6 +19,7 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
   const rows = whiteView ? [7, 6, 5, 4, 3, 2, 1, 0] : [0, 1, 2, 3, 4, 5, 6, 7]
   const { move } = useSocket()
   const toast = useToast()
+  const { colorMode } = useColorMode()
   const { reward } = useReward('last', 'confetti', {
     lifetime: 300,
     elementCount: 100,
@@ -102,6 +103,7 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
       {rows.map((row) => (
         cols.map((letter, col) => (
           <Box
+            backgroundColor={colorMode === 'light' ? (row + col) % 2 === 0 ? 'gray.500' : 'gray.200' : (row + col) % 2 === 0 ? 'gray.700' : 'gray.600'}
             id={`${letter}${row + 1}` === board.moves.at(-1)?.to ? 'last' : ''}
             className={classNames({
               white: ((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2)),
