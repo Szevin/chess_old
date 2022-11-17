@@ -24,6 +24,10 @@ export enum Rule {
 export class Board {
   _id: string
 
+  name: string
+
+  isPublic: boolean = true
+
   type: GameType = 'normal'
 
   createDate: Date = new Date()
@@ -68,8 +72,10 @@ export class Board {
 
   blackTime = 0
 
-  constructor(id: string, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false, time: number = -1, rules: Rule[] = []) {
+  constructor(id: string, name: string, isPublic: boolean, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false, time: number = -1, rules: Rule[] = []) {
     this._id = id
+    this.name = name
+    this.isPublic = isPublic
     this.type = type
     this.pieces = Board.FENtoMap(FEN)
     this.rules = type !== 'normal' ? rules : []
@@ -229,7 +235,7 @@ export class Board {
     if (!moves) return filteredMoves
 
     moves.forEach((move) => {
-      const boardCopy = new Board('-1', Board.MaptoFEN(this.pieces), this.type, true, this.time, this.rules)
+      const boardCopy = new Board('-1', this.name, this.isPublic, Board.MaptoFEN(this.pieces), this.type, true, this.time, this.rules)
       boardCopy.round = this.round
       boardCopy.currentPlayer = this.currentPlayer
 

@@ -22,12 +22,12 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
       type: 'normal' as GameType,
       fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
       time: -1,
-      public: true,
+      isPublic: true,
     },
   })
 
   const handleSubmit = async () => {
-    const { fen, type, time } = form.getValues()
+    const { name, fen, type, time, isPublic } = form.getValues()
     const allRules = [Rule.FOG_OF_WAR, Rule.NO_CAPTURE, Rule.NO_PAWNS, Rule.NO_RETREAT, Rule.RENDER_SWAP]
     const firstRandomRuleIndex = Math.floor(Math.random() * allRules.length)
     const secondRandomRuleIndex = Math.floor(Math.random() * allRules.length)
@@ -36,6 +36,8 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
       type,
       time,
       rules: type !== 'normal' ? [allRules[firstRandomRuleIndex], allRules[secondRandomRuleIndex]] : [],
+      name,
+      isPublic,
     })
 
     if (!('data' in res)) {
@@ -68,10 +70,10 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
               <Input {...form.register('name')} />
             </FormControl>
 
-            <FormControl id="public" mt={2}>
+            <FormControl id="isPublic" mt={2}>
               <HStack>
                 <FormLabel>{t('playdialog.public')}</FormLabel>
-                <Checkbox {...form.register('public')} />
+                <Checkbox {...form.register('isPublic')} />
               </HStack>
             </FormControl>
 
