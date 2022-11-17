@@ -102,6 +102,7 @@ const Game = () => {
 
       <GridItem area="black">
         <HStack>
+          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{board.blackTime}</Text>
           <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
           <Text>
             {
@@ -111,7 +112,6 @@ const Game = () => {
               .join('')
           }
           </Text>
-          <Text>{board.blackTime}</Text>
         </HStack>
       </GridItem>
 
@@ -138,6 +138,7 @@ const Game = () => {
 
       <GridItem area="white">
         <HStack>
+          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{board.whiteTime}</Text>
           <UserNode active={board.currentPlayer === 'white'} user={board.white as unknown as IUser} />
           <Text>
             {
@@ -147,7 +148,6 @@ const Game = () => {
               .join('')
         }
           </Text>
-          <Text>{board.whiteTime}</Text>
         </HStack>
       </GridItem>
 
