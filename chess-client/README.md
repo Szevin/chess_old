@@ -1,13 +1,29 @@
 # Adaptive Chess
 
 ## Install dependencies
+
+```bash
 npm run install-all
+```
 
 ## Run the app
+First, you need to create a .env file in the chess-server folder. The .env file should contain the following variables:
+
+```json
+MONGODB_URI={your_mongodb_uri}
+```
+
+Then, run the following command:
+
+```bash
 npm start
+```
 
 ## Run the tests
+
+```bash
 npm run test
+```
 
 ## Libraries used
 Main:
