@@ -58,13 +58,13 @@ const Game = () => {
 
   return (
     <Grid
-      templateAreas={`"noneU1 black black black noneU2"
-      "info board board history noneR"
-      " info board board history noneR"
-      "noneD1 white white white noneR"
-      "noneD1 chat chat chat noneD2"`}
-      templateRows="0.2fr 1fr 1fr 0.2fr 1fr"
-      templateColumns="repeat(5, 1fr)"
+      templateAreas={`"noneU1 black black black"
+      "info numbers board history"
+      "info noneL1 letters noneR1"
+      "noneL white white white"
+      "noneL chat chat chat"`}
+      templateColumns="0.5fr 0.01fr 0.5fr 0.2fr"
+      templateRows="0.2fr 0.5fr 0.1fr 0.2fr 0.2fr"
       marginLeft={0}
       justifyContent="start"
       gap={2}
@@ -106,6 +106,22 @@ const Game = () => {
           }
           </Text>
         </HStack>
+      </GridItem>
+
+      <GridItem area="numbers" className="coord-numbers">
+        <Box display="flex" flexDirection="column" justifyContent="space-between">
+          {['8', '7', '6', '5', '4', '3', '2', '1'].map((n) => (
+            <Text key={n} fontSize="1.7rem" textAlign="center" display="flex" alignItems="center" minHeight="64px">{n}</Text>
+          ))}
+        </Box>
+      </GridItem>
+
+      <GridItem area="letters" className="coord-letters">
+        <Box display="flex" flexDirection="row" justifyContent="space-between">
+          {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((n) => (
+            <Text key={n} fontSize="1.7rem" textAlign="center" display="flex" justifyContent="center" minWidth="64px">{n}</Text>
+          ))}
+        </Box>
       </GridItem>
 
       <GridItem area="board" className="board">
