@@ -201,7 +201,7 @@ export class Board {
     const captures: Position[] = []
 
     piece.directions.capture.forEach((direction) => {
-      const position = new Position(piece.position)
+      let position = new Position(piece.position)
       position.addDirections(direction)
       let directionRange = 0
       while (
@@ -220,9 +220,15 @@ export class Board {
 
       // En passant
       if (piece.name === 'pawn') {
+        position = new Position(piece.position).addDirections(direction)
         const enPassantPosition = new Position(position.annotation).addDirection(piece.color === 'white' ? 'down' : 'up')
         const lastMove = this.moves[this.moves.length - 1]
-        if (lastMove && this.getPiece(enPassantPosition.annotation)?.name === 'pawn' && lastMove.to === enPassantPosition.annotation) {
+        if (
+          lastMove
+          && this.getPiece(enPassantPosition.annotation)?.name === 'pawn'
+          && lastMove.to === enPassantPosition.annotation
+          && lastMove.from === new Position(position.annotation).addDirection(piece.color === 'white' ? 'up' : 'down').annotation
+        ) {
           captures.push(new Position(position.annotation))
         }
       }

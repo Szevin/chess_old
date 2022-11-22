@@ -14,6 +14,8 @@ describe('constructor', () => {
   test('2 pawns', () => {
     const board = new Board(
       '1',
+      'teszt',
+      true,
       '8/p7/8/8/8/8/P7/8',
     )
     expect(board._id).toBe('1')

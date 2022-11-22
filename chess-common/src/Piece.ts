@@ -273,6 +273,7 @@ export class Piece {
       // Promotion
       if ((this.color === 'white' && this.position[1] === '8') || (this.color === 'black' && this.position[1] === '1')) {
         this.name = 'queen'
+        this.renderName = 'queen'
         this.directions = this.setDirections(this.name, this.color)
         this.range = this.setRange(this.name)
         this.unicode = this.setUnicode(this.name, this.color)

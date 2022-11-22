@@ -275,7 +275,7 @@ describe('setUnicode', () => {
 
 describe('moveTo', () => {
   test('normal', () => {
-    const board = new Board('1', '8/8/8/8/8/8/4P3/8')
+    const board = new Board('1', 'teszt', true, '8/8/8/8/8/8/4P3/8')
     const piece = [...Object.values(board.pieces)][0]
 
     piece.moveTo('e4', board)
@@ -285,7 +285,7 @@ describe('moveTo', () => {
 
   describe('promotion', () => {
     test('white', () => {
-      const board = new Board('1', '8/4P3/8/8/8/8/8/8')
+      const board = new Board('1', 'teszt', true, '8/4P3/8/8/8/8/8/8')
       const piece = [...Object.values(board.pieces)][0]
 
       piece.moveTo('e8', board)
@@ -295,7 +295,7 @@ describe('moveTo', () => {
     })
 
     test('black', () => {
-      const board = new Board('1', '8/8/8/8/8/8/4p3/8')
+      const board = new Board('1', 'teszt', true, '8/8/8/8/8/8/4p3/8')
       const piece = [...Object.values(board.pieces)][0]
 
       piece.moveTo('e1', board)
@@ -305,30 +305,23 @@ describe('moveTo', () => {
     })
   })
 
-  // describe('en passant', () => {
-  //   test('white', () => {
-  //     const board = new Board('1', [
-  //       { name: 'pawn', color: 'white', position: 'e5' },
-  //       { name: 'pawn', color: 'black', position: 'd5' },
-  //     ]);
-  //     const piece = [...Object.values(board.pieces)][0];
+  describe('en passant', () => {
+    test('white', () => {
+      const board = new Board('1', 'teszt', true, '8/8/8/8/4pP2/8/8/8')
+      const piece = [...Object.values(board.pieces)][0]
 
-  //     piece.moveTo('d6', board);
+      piece.moveTo('d6', board)
 
-  //     expect(piece.position).toBe('d6');
-  //   })
+      expect(piece.position).toBe('d6')
+    })
 
-  //   test('black', () => {
-  //     const board = new Board('1', [
-  //       { name: 'pawn', color: 'white', position: 'e4' },
-  //       { name: 'pawn', color: 'black', position: 'd4' },
-  //     ]);
-  //     const piece = board.pieces[1];
+    test('black', () => {
+      const board = new Board('1', 'teszt', true, '8/8/4Pp2/8/8/8/8/8')
+      const piece = board.pieces[1]
 
-  //     expect(piece.position).toBe('e3');
-  //   })
-
-  // })
+      expect(piece.position).toBe('e3')
+    })
+  })
 
   describe('castling', () => {
     describe('king side', () => {
