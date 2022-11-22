@@ -109,16 +109,16 @@ const Game = () => {
       </GridItem>
 
       <GridItem area="numbers" className="coord-numbers">
-        <Box display="flex" flexDirection="column" justifyContent="space-between">
+        <Box display="flex" flexDirection="column">
           {['8', '7', '6', '5', '4', '3', '2', '1'].map((n) => (
             <Text key={n} fontSize="1.7rem" textAlign="center" display="flex" alignItems="center" minHeight="64px">{n}</Text>
           ))}
         </Box>
       </GridItem>
 
-      <GridItem area="letters" className="coord-letters">
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
-          {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((n) => (
+      <GridItem area="letters" className="coord-letters p-0 m-0">
+        <Box display="flex" flexDirection="row">
+          {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map((n) => (
             <Text key={n} fontSize="1.7rem" textAlign="center" display="flex" justifyContent="center" minWidth="64px">{n}</Text>
           ))}
         </Box>

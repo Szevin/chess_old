@@ -42,17 +42,17 @@
   left: 2rem;
   height: 528px;
   z-index: 10000;
-  color: rgb(72, 6, 110);
+  color: rgb(129, 25, 189);
   font-weight: bold;
 }
 
 .coord-letters {
   position: relative;
-  left: 1rem;
+  left: 1.7rem;
   top: -3.2rem;
   width: 528px;
   z-index: 10000;
-  color: rgb(72, 6, 110);
+  color: rgb(129, 25, 189);
   font-weight: bold;
 }
 
