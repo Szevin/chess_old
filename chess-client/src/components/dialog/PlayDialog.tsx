@@ -43,7 +43,7 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
     if (!('data' in res)) {
       toast({
         title: 'Error',
-        description: 'An error occured while creating the board',
+        description: (res.error as { data: string }).data,
         status: 'error',
         duration: 3000,
         isClosable: true,
