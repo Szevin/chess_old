@@ -102,7 +102,7 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
                 <option value="300">5 {t('playdialog.time.minute')}</option>
                 <option value="600">10 {t('playdialog.time.minute')}</option>
                 <option value="900">15 {t('playdialog.time.minute')}</option>
-                <option value="1800">30 {t('playdialog.time.minutes')}</option>
+                <option value="1800">30 {t('playdialog.time.minute')}</option>
               </Select>
             </FormControl>
 
