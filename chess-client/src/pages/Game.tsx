@@ -58,13 +58,13 @@ const Game = () => {
 
   return (
     <Grid
-      templateAreas={`"noneU1 black black black"
+      templateAreas={`"noneU1 noneU1 black black"
       "info numbers board history"
       "info noneL1 letters noneR1"
       "noneL white white white"
       "noneL chat chat chat"`}
-      templateColumns="0.5fr 0.01fr 0.5fr 0.2fr"
-      templateRows="0.2fr 0.5fr 0.1fr 0.2fr 0.2fr"
+      templateColumns="0.4fr 0.001fr 0.05fr 0.2fr"
+      templateRows="0.2fr 0.05fr 0.001fr 0.2fr 0.2fr"
       marginLeft={0}
       justifyContent="start"
       gap={2}
