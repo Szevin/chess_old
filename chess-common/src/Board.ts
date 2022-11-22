@@ -290,6 +290,8 @@ export class Board {
   getPiece = (at: Annotation) => this.pieces[at]
 
   removePiece = (at: Annotation) => {
+    if (!this.pieces[at]) return
+
     this.capturedPieces.push(Object.assign(new Piece('p', 'a1'), this.pieces[at]))
     delete this.pieces[at]
   }
