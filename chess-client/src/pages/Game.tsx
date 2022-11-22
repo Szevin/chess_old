@@ -111,15 +111,15 @@ const Game = () => {
       <GridItem area="numbers" className="coord-numbers">
         <Box display="flex" flexDirection="column">
           {['8', '7', '6', '5', '4', '3', '2', '1'].map((n) => (
-            <Text key={n} fontSize="1.7rem" textAlign="center" display="flex" alignItems="center" minHeight="64px">{n}</Text>
+            <Text key={n} fontSize="1.3rem" textAlign="center" display="flex" alignItems="center" minHeight="64px">{n}</Text>
           ))}
         </Box>
       </GridItem>
 
       <GridItem area="letters" className="coord-letters p-0 m-0">
         <Box display="flex" flexDirection="row">
-          {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map((n) => (
-            <Text key={n} fontSize="1.7rem" textAlign="center" display="flex" justifyContent="center" minWidth="64px">{n}</Text>
+          {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((n) => (
+            <Text key={n} fontSize="1.3rem" textAlign="center" display="flex" justifyContent="center" minWidth="64px">{n}</Text>
           ))}
         </Box>
       </GridItem>
