@@ -106,7 +106,7 @@ export class Board {
       if (this.pieces[key].position !== key) {
         const temp = Object.assign(new Piece('p', 'a1'), this.pieces[key])
         delete this.pieces[key]
-        this.pieces[piece.position] = temp
+        this.pieces[temp.position] = temp
       }
     });
     [...Object.values(this.pieces)].forEach((piece) => {
@@ -132,7 +132,7 @@ export class Board {
       if (this.pieces[key].position !== key) {
         const temp = Object.assign(new Piece('p', 'a1'), this.pieces[key])
         delete this.pieces[key]
-        this.pieces[piece.position] = temp
+        this.pieces[temp.position] = temp
       }
     })
 
@@ -266,18 +266,32 @@ export class Board {
 
   getCastleMoves = (piece: Piece): Annotation[] => {
     const moves: Annotation[] = []
-    if (piece.hasMoved || piece.name !== 'king') return moves
+    if (piece.hasMoved || piece.name !== 'king' || this.isCheck) return moves
 
     const directions = ['left', 'right'] as Direction[]
 
+    const enemyValidMoves = this.getEnemyPieces().reduce((acc, enemyPiece) => {
+      acc.push(...enemyPiece.moves.empty)
+      return acc
+    }, [] as Annotation[])
+
     directions.forEach((direction) => {
       const position = new Position(piece.position)
-      while (position.isValid() && !this.getEnemyPieces().map((piece) => piece.moves.valid).some((moves) => moves.includes(position.annotation))) {
+      while (position.isValid() && !enemyValidMoves.includes(position.annotation)) {
         position.addDirection(direction)
         const piece = this.getPiece(position.annotation)
         if (piece) {
           if (piece.name === 'rook' && !piece.hasMoved) {
-            moves.push(position.addDirections(direction === 'left' ? ['right', 'right'] : ['left']).annotation)
+            switch (piece.color) {
+              case 'white':
+                moves.push(new Position(position.annotation).addDirections(direction === 'left' ? ['right', 'right'] : ['left']).annotation)
+                break
+              case 'black':
+                moves.push(new Position(position.annotation).addDirections(direction === 'left' ? ['right', 'right'] : ['left']).annotation)
+                break
+              default:
+                break
+            }
           }
           break
         }

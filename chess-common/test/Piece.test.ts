@@ -305,19 +305,22 @@ describe('moveTo', () => {
     })
   })
 
+  // TODO: en passant test
   describe('en passant', () => {
     test('white', () => {
       const board = new Board('1', 'teszt', true, '8/8/8/8/4pP2/8/8/8')
       const piece = [...Object.values(board.pieces)][0]
 
-      piece.moveTo('d6', board)
+      piece.moveTo('e6', board)
 
-      expect(piece.position).toBe('d6')
+      expect(piece.position).toBe('e6')
     })
 
     test('black', () => {
-      const board = new Board('1', 'teszt', true, '8/8/4Pp2/8/8/8/8/8')
-      const piece = board.pieces[1]
+      const board = new Board('1', 'teszt', true, '8/8/8/8/4Pp2/8/8/8')
+      const piece = [...Object.values(board.pieces)][1]
+
+      piece.moveTo('e3', board)
 
       expect(piece.position).toBe('e3')
     })
@@ -326,45 +329,53 @@ describe('moveTo', () => {
   describe('castling', () => {
     describe('king side', () => {
       test('white', () => {
-        const board = new Board('1', '8/8/8/8/8/8/8/4K2R')
-        const piece = [...Object.values(board.pieces)][0]
+        const board = new Board('1', 'teszt', true, '8/8/8/8/8/8/8/4K2R')
+        const king = board.getKing('white')
 
-        piece.moveTo('g1', board)
+        king?.moveTo('g1', board)
 
-        expect(piece.position).toBe('g1')
-        expect([...Object.values(board.pieces)][1].position).toBe('f1')
+        const rook = board.getPiece('h1')
+
+        expect(king?.position).toBe('g1')
+        expect(rook.position).toBe('f1')
       })
 
       test('black', () => {
-        const board = new Board('1', '4k2r/8/8/8/8/8/8/8')
-        const piece = [...Object.values(board.pieces)][0]
+        const board = new Board('1', 'teszt', true, '4k2r/8/8/8/8/8/8/8')
+        const king = board.getKing('black')
 
-        piece.moveTo('g8', board)
+        king?.moveTo('g8', board)
 
-        expect(piece.position).toBe('g8')
-        expect([...Object.values(board.pieces)][1].position).toBe('f8')
+        const rook = board.getPiece('h8')
+
+        expect(king?.position).toBe('g8')
+        expect(rook.position).toBe('f8')
       })
     })
 
     describe('queen side', () => {
       test('white', () => {
-        const board = new Board('1', '8/8/8/8/8/8/8/R3K3')
-        const piece = [...Object.values(board.pieces)][0]
+        const board = new Board('1', 'teszt', true, '8/8/8/8/8/8/8/R3K3')
+        const king = board.getKing('white')
 
-        piece.moveTo('c1', board)
+        king?.moveTo('c1', board)
 
-        expect(piece.position).toBe('c1')
-        expect([...Object.values(board.pieces)][1].position).toBe('d1')
+        const rook = board.getPiece('a1')
+
+        expect(king?.position).toBe('c1')
+        expect(rook.position).toBe('d1')
       })
 
       test('black', () => {
-        const board = new Board('1', 'r3k3/8/8/8/8/8/8/8')
-        const piece = [...Object.values(board.pieces)][0]
+        const board = new Board('1', 'teszt', true, 'r3k3/8/8/8/8/8/8/8')
+        const king = board.getKing('black')
 
-        piece.moveTo('c8', board)
+        king?.moveTo('c8', board)
 
-        expect(piece.position).toBe('c8')
-        expect([...Object.values(board.pieces)][1].position).toBe('d8')
+        const rook = board.getPiece('a8')
+
+        expect(king?.position).toBe('c8')
+        expect(rook.position).toBe('d8')
       })
     })
   })
