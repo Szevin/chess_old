@@ -2,12 +2,12 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-named-as-default */
 import mongoose from 'mongoose'
+import dayjs from 'dayjs'
 import Position, { Annotation, COLS, Direction } from './Position'
 import Piece, { ColorType, PieceCodeType, PieceMoves } from './Piece'
 import { Move } from './Move'
 import { Message } from './Message'
 import { IUser } from './User'
-import dayjs from 'dayjs'
 
 export const defaultPieceSetup = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'
 
@@ -77,6 +77,7 @@ export class Board {
     this.name = name
     this.isPublic = isPublic
     this.type = type
+    this.time = time
     this.pieces = Board.FENtoMap(FEN)
     this.rules = type !== 'normal' ? rules : []
 
@@ -285,7 +286,7 @@ export class Board {
   removePiece = (at: Annotation) => {
     this.capturedPieces.push(Object.assign(new Piece('p', 'a1'), this.pieces[at]))
     delete this.pieces[at]
-}
+  }
 
   static MaptoFEN = (pieces: Record<string, Piece>) => {
     const fen = new Array(8).fill([]).map(() => new Array(8).fill('1'));
@@ -321,6 +322,7 @@ export class Board {
 
     let piecesArray = Object.values(this.pieces)
 
+    // eslint-disable-next-line default-case
     switch (this.rules[Math.floor((this.round / this.rule_frequency) % this.rules.length)]) {
       case Rule.FOG_OF_WAR:
         piecesArray = piecesArray.map((piece) => {

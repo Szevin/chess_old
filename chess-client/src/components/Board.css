@@ -56,15 +56,15 @@
 }
 
 .last {
-  background-color: rgb(255, 236, 69);
+  background-color: rgb(255, 243, 136) !important;
 }
 
 .check {
-  background-color: rgb(255, 0, 0);
+  background-color: rgb(255, 73, 73) !important;
 }
 
 .valid {
-  background-color: turquoise;
+  background-color: rgb(103, 255, 240) !important;
 }
 
 .dot-elastic {
