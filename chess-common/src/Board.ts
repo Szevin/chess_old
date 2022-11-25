@@ -98,6 +98,14 @@ export class Board {
     const piece = this.getPiece(move.from)
     if (!piece) throw Error(`Piece not found at ${move.from}!`)
 
+    if (this.currentPlayer === 'white') {
+      this.whiteTime -= move.delta
+      this.whiteTime += 5
+    } else {
+      this.blackTime -= move.delta
+      this.blackTime += 5
+    }
+
     piece.moveTo(move.to, this)
 
     this.moves.push(move)

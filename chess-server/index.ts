@@ -160,6 +160,8 @@ io.on('connection', (socket) => {
     board.pieces = boardClass.pieces
     board.capturedPieces = boardClass.capturedPieces
     board.round = boardClass.round
+    board.whiteTime = boardClass.whiteTime
+    board.blackTime = boardClass.blackTime
     await board.save()
 
     if (board.isCheckmate || board.isStalemate) await scoreBoard(move.boardId)

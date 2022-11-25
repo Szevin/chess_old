@@ -1,6 +1,5 @@
-import Piece from './Piece';
+import { Piece } from './Piece'
 import { Annotation } from './Position'
-import Dayjs from 'dayjs'
 
 export interface Move {
   boardId: string;

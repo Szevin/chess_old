@@ -11,6 +11,7 @@ import { useAppSelector } from '../store'
 import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
 import useTranslate from '../hooks/useTranslate'
+import { useCountdown } from '../hooks/useCountdown'
 
 const Game = () => {
   const { id } = useParams() as { id: string }
@@ -21,6 +22,9 @@ const Game = () => {
   const t = useTranslate()
   const { colorMode } = useColorMode()
 
+  const { timeLeft: whiteTimer, setTimeLeft: setWhiteTimer } = useCountdown(board, 'white')
+  const { timeLeft: blackTimer, setTimeLeft: setBlackTimer } = useCountdown(board, 'black')
+
   const handleCopyCode = () => {
     navigator.clipboard.writeText(id)
     toast({
@@ -30,6 +34,11 @@ const Game = () => {
       duration: 3000,
     })
   }
+
+  React.useEffect(() => {
+    setWhiteTimer(board.whiteTime)
+    setBlackTimer(board.blackTime)
+  }, [board.whiteTime, board.blackTime])
 
   if (board.status === 'waiting') {
     return (
@@ -95,7 +104,7 @@ const Game = () => {
 
       <GridItem area="black">
         <HStack>
-          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{board.blackTime}</Text>
+          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{blackTimer}</Text>
           <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
           <Text>
             {
@@ -147,7 +156,7 @@ const Game = () => {
 
       <GridItem area="white">
         <HStack>
-          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{board.whiteTime}</Text>
+          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{whiteTimer}</Text>
           <UserNode active={board.currentPlayer === 'white'} user={board.white as unknown as IUser} />
           <Text>
             {
