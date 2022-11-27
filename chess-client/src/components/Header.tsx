@@ -2,7 +2,7 @@ import {
   Heading, Button, GridItem, Grid, useColorMode, HStack, Box,
 } from '@chakra-ui/react'
 import React from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { MdExitToApp } from 'react-icons/md'
 import { useAppDispatch, useAppSelector } from '../store'
 import UserNode from './UserNode'
@@ -19,6 +19,7 @@ const Header = () => {
   const navigate = useNavigate()
   const t = useTranslate()
   const { colorMode, toggleColorMode } = useColorMode()
+  const { pathname } = useLocation()
 
   return (
     <Grid
@@ -52,10 +53,12 @@ const Header = () => {
         </Heading>
       </GridItem>
       <GridItem gridColumnStart={11} gridColumn={2} gridRowStart={1} display="flex" alignItems="center">
-        <Button variant="ghost" onClick={() => navigate('/leaderboard')}>{t('header.leaderboard')}</Button>
-        <Button hidden={!!user._id} variant="ghost" onClick={() => navigate('/login')}>{t('header.login')}</Button>
-        <Button hidden={!!user._id} variant="ghost" onClick={() => navigate('/register')}>{t('header.register')}</Button>
-        <UserNode hidden={!user._id} user={user} />
+        <Button backgroundColor={pathname === '/leaderboard' ? 'cyan.400' : ''} variant="ghost" onClick={() => navigate('/leaderboard')}>{t('header.leaderboard')}</Button>
+        <Button backgroundColor={pathname === '/login' ? 'cyan.400' : ''} hidden={!!user._id} variant="ghost" onClick={() => navigate('/login')}>{t('header.login')}</Button>
+        <Button backgroundColor={pathname === '/register' ? 'cyan.400' : ''} hidden={!!user._id} variant="ghost" onClick={() => navigate('/register')}>{t('header.register')}</Button>
+        <Box backgroundColor={pathname.includes('/profile') ? 'cyan.400' : ''}>
+          <UserNode hidden={!user._id} user={user} />
+        </Box>
         <Button hidden={!user._id} variant="solid" colorScheme="pink" marginLeft="1rem" onClick={() => { dispatch(setUser(null)); navigate('/login') }}><MdExitToApp /></Button>
       </GridItem>
     </Grid>

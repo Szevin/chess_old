@@ -1,6 +1,6 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
 import {
-  TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Tfoot, Box, RadioGroup, Radio, Stack,
+  TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Tfoot, Box, RadioGroup, Radio, Stack, Select,
 } from '@chakra-ui/react'
 import { GameType, IUser } from 'chess-common'
 import React from 'react'
@@ -43,13 +43,16 @@ const Leaderboard = () => {
 
   return (
     <Box>
-      <RadioGroup onChange={(value) => setGameType(value as GameType)} value={gameType}>
-        <Stack style={{ display: 'flex', justifyContent: 'center' }} direction="row">
-          <Radio value="normal">{t('game.type.normal')}</Radio>
-          <Radio value="adaptive">{t('game.type.adaptive')}</Radio>
-          <Radio value="custom">{t('game.type.custom')}</Radio>
-        </Stack>
-      </RadioGroup>
+      <Select
+        width="30%"
+        defaultValue="normal"
+        marginX="auto"
+        onChange={(e) => setGameType(e.target.value as GameType)}
+      >
+        <option value="normal">{t('game.type.normal')}</option>
+        <option value="adaptive">{t('game.type.adaptive')}</option>
+        <option value="custom">{t('game.type.custom')}</option>
+      </Select>
       <TableContainer>
         <Table>
           <TableCaption>{t('leaderboard.title')}</TableCaption>
