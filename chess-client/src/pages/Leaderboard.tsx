@@ -1,6 +1,6 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
 import {
-  TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Tfoot, Box, RadioGroup, Radio, Stack, Select,
+  TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Tfoot, Box, Select,
 } from '@chakra-ui/react'
 import { GameType, IUser } from 'chess-common'
 import React from 'react'
