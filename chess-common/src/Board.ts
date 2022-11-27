@@ -99,10 +99,10 @@ export class Board {
     if (!piece) throw Error(`Piece not found at ${move.from}!`)
 
     if (this.currentPlayer === 'white') {
-      this.whiteTime -= move.delta
+      this.whiteTime -= dayjs().diff(dayjs(move.time), 'seconds')
       this.whiteTime += 5
     } else {
-      this.blackTime -= move.delta
+      this.blackTime -= dayjs().diff(dayjs(move.time), 'seconds')
       this.blackTime += 5
     }
 
@@ -261,7 +261,6 @@ export class Board {
         player: piece.color,
         boardId: this._id,
         time: dayjs().toDate(),
-        delta: this.moves.length > 0 ? dayjs().diff(dayjs(this.moves.at(-1)?.time)) : 0,
       })
 
       if (!boardCopy.isCheck) {

@@ -22,8 +22,8 @@ const Game = () => {
   const t = useTranslate()
   const { colorMode } = useColorMode()
 
-  const { timeLeft: whiteTimer, setTimeLeft: setWhiteTimer } = useCountdown(board, 'white')
-  const { timeLeft: blackTimer, setTimeLeft: setBlackTimer } = useCountdown(board, 'black')
+  const { timeLeft: whiteTimer } = useCountdown(board, 'white')
+  const { timeLeft: blackTimer } = useCountdown(board, 'black')
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(id)
@@ -34,11 +34,6 @@ const Game = () => {
       duration: 3000,
     })
   }
-
-  React.useEffect(() => {
-    setWhiteTimer(board.whiteTime)
-    setBlackTimer(board.blackTime)
-  }, [board.whiteTime, board.blackTime])
 
   if (board.status === 'waiting') {
     return (

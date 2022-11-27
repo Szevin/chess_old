@@ -8,5 +8,4 @@ export interface Move {
   piece: Piece;
   player: string;
   time: Date;
-  delta: number;
 }

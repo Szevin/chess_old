@@ -127,6 +127,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('move', async (move) => {
+    move.time = new Date()
     let board = await BoardModel.findById(move.boardId).populate<{white: IUser, black: IUser}>([
       {
         path: 'white black',

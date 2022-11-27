@@ -66,7 +66,6 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
       player: user.name,
       boardId: board._id,
       time: dayjs().toDate(),
-      delta: board.moves.length > 0 ? dayjs().diff(dayjs(board.moves.at(-1)?.time), 'seconds') : 0,
     })
     setselectedPosition(null)
   }
