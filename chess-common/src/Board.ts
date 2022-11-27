@@ -362,6 +362,8 @@ export class Board {
       case Rule.NO_CAPTURE:
         piecesArray = piecesArray.map((piece) => {
           piece.moves.captures = []
+          piece.moves.valid = [...piece.moves.captures, ...piece.moves.empty, ...piece.moves.captures]
+
           return piece
         })
         break

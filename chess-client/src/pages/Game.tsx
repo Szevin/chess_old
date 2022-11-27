@@ -134,7 +134,7 @@ const Game = () => {
 
       <GridItem area="history" minHeight="1fr" width="14rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400">
         <Grid templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
-          { board.moves.map((move) => (
+          { Object.values(board.pieces).every((p) => !p.hidden) && board.moves.map((move) => (
             // TODO unique keys
             <GridItem key={move.piece.renderName + move.from + move.to}>
               <div>
