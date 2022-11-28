@@ -128,48 +128,55 @@ io.on('connection', (socket) => {
 
   socket.on('move', async (move) => {
     move.time = new Date()
-    let board = await BoardModel.findById(move.boardId).populate<{white: IUser, black: IUser}>([
-      {
-        path: 'white black',
-        model: 'User',
-      }, {
-        path: 'messages',
-        populate: {
-          path: 'user',
+    try {
+      let board = await BoardModel.findById(move.boardId).populate<{white: IUser, black: IUser}>([
+        {
+          path: 'white black',
           model: 'User',
-        },
-      }
-    ])
+        }, {
+          path: 'messages',
+          populate: {
+            path: 'user',
+            model: 'User',
+          },
+        }
+      ])
 
-    if (!board) throw Error(`Board not found for ${move.player}`)
-    if(board.status !== 'playing') throw Error(`Board not playing for ${move.player}`)
-    if (!Object.values(board.pieces).some(piece => piece.moves.valid.some((valid) => piece.position === move.from && piece.name === move.piece.name && valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${move.boardId}`)
+      if (!board) throw Error(`Board not found for ${move.player}`)
+      if(board.status !== 'playing') throw Error(`Board not playing for ${move.player}`)
+      if (!Object.values(board.pieces).some(piece => piece.moves.valid.some((valid) => piece.position === move.from && piece.name === move.piece.name && valid == move.to))) throw Error(`Invalid Move: ${move.piece}${move.from}-${move.to}, not found on board ${move.boardId}`)
 
-    const boardClass = Object.assign(new Board(move.boardId), board.toObject())
-    boardClass.pieces = {}
-    Object.values(board.pieces).forEach((piece) => {
-      boardClass.pieces[piece.position] = Object.assign(new Piece('p', 'a1'), piece)
-    })
+      const boardClass = Object.assign(new Board(move.boardId), board.toObject())
+      boardClass.pieces = {}
+      Object.values(board.pieces).forEach((piece) => {
+        boardClass.pieces[piece.position] = Object.assign(new Piece('p', 'a1'), piece)
+      })
 
-    boardClass.handleMove(move)
+      boardClass.handleMove(move)
 
-    board.currentPlayer = boardClass.currentPlayer
-    board.moves = boardClass.moves
-    board.isCheck = boardClass.isCheck
-    board.isCheckmate = boardClass.isCheckmate
-    board.isStalemate = boardClass.isStalemate
-    board.pieces = boardClass.pieces
-    board.capturedPieces = boardClass.capturedPieces
-    board.round = boardClass.round
-    board.whiteTime = boardClass.whiteTime
-    board.blackTime = boardClass.blackTime
-    await board.save()
+      board.currentPlayer = boardClass.currentPlayer
+      board.moves = boardClass.moves
+      board.isCheck = boardClass.isCheck
+      board.isCheckmate = boardClass.isCheckmate
+      board.isStalemate = boardClass.isStalemate
+      board.pieces = boardClass.pieces
+      board.capturedPieces = boardClass.capturedPieces
+      board.round = boardClass.round
+      board.whiteTime = boardClass.whiteTime
+      board.blackTime = boardClass.blackTime
+      board.lastMoveDate = boardClass.lastMoveDate
+      await board.save()
 
-    if (board.isCheckmate || board.isStalemate) await scoreBoard(move.boardId)
+      if (board.isCheckmate || board.isStalemate) await scoreBoard(move.boardId)
 
-    board = await BoardModel.findById(move.boardId).populate<{white: IUser, black: IUser}>(['white', 'black'])
+      board = await BoardModel.findById(move.boardId).populate<{white: IUser, black: IUser}>(['white', 'black'])
 
-    io.to(move.boardId).emit('board', Object.assign(new Board(move.boardId), board.toObject()))
+      io.to(move.boardId).emit('board', Object.assign(new Board(move.boardId), board.toObject()))
+
+    } catch (error) {
+      console.log(error)
+    }
+
   })
 
   socket.on('message', async ({content, boardId, userId}) => {

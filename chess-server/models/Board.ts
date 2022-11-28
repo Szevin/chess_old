@@ -109,6 +109,10 @@ const BoardSchema = new mongoose.Schema(
     type: Number,
     required: true,
   },
+  lastMoveDate: {
+    type: Date,
+    required: false,
+  },
 }, { id: false });
 
 export const BoardModel = mongoose.model<Board>('Board', BoardSchema);

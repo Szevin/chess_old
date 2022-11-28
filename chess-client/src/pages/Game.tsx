@@ -6,12 +6,13 @@ import {
 import { ViewIcon } from '@chakra-ui/icons'
 import { IUser } from 'chess-common'
 import throttle from 'throttleit'
+import { useTimer } from 'react-timer-hook'
+import dayjs from 'dayjs'
 import BoardNode from '../components/BoardNode'
 import { useAppSelector } from '../store'
 import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
 import useTranslate from '../hooks/useTranslate'
-import { useCountdown } from '../hooks/useCountdown'
 import Rules from '../components/Rules'
 
 const Game = () => {
@@ -23,8 +24,16 @@ const Game = () => {
   const t = useTranslate()
   const { colorMode } = useColorMode()
 
-  const { timeLeft: whiteTimer } = useCountdown(board, 'white')
-  const { timeLeft: blackTimer } = useCountdown(board, 'black')
+  console.log(!!board.lastMoveDate)
+  const whiteTimeExpiryDate = (board.currentPlayer === 'white' && board.lastMoveDate ? dayjs(board.lastMoveDate) : dayjs()).add(board.whiteTime, 'seconds').toDate()
+  const blackTimeExpiryDate = (board.currentPlayer === 'black' && board.lastMoveDate ? dayjs(board.lastMoveDate) : dayjs()).add(board.blackTime, 'seconds').toDate()
+
+  const { minutes: whiteMinutes, seconds: whiteSeconds, pause: pauseWhiteTimer, restart: resetWhiteTimer } = useTimer(
+    { expiryTimestamp: whiteTimeExpiryDate },
+  )
+  const { minutes: blackMinutes, seconds: blackSeconds, pause: pauseBlackTimer, restart: resetBlackTimer } = useTimer(
+    { expiryTimestamp: blackTimeExpiryDate },
+  )
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(id)
@@ -35,6 +44,22 @@ const Game = () => {
       duration: 3000,
     })
   }
+
+  React.useEffect(() => {
+    if (!board.lastMoveDate) {
+      resetWhiteTimer(dayjs().add(board.whiteTime, 'seconds').toDate(), false)
+      resetBlackTimer(dayjs().add(board.blackTime, 'seconds').toDate(), false)
+      return
+    }
+
+    if (board.currentPlayer === 'white') {
+      resetWhiteTimer(dayjs(board.lastMoveDate).add(board.whiteTime, 'seconds').toDate())
+      pauseBlackTimer()
+    } else {
+      resetBlackTimer(dayjs(board.lastMoveDate).add(board.blackTime, 'seconds').toDate())
+      pauseWhiteTimer()
+    }
+  }, [board])
 
   if (board.status === 'waiting') {
     return (
@@ -98,7 +123,7 @@ const Game = () => {
 
       <GridItem area="black">
         <HStack>
-          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{blackTimer}</Text>
+          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{`${blackMinutes}:${blackSeconds}`}</Text>
           <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
           <Text>
             {
@@ -150,7 +175,7 @@ const Game = () => {
 
       <GridItem area="white">
         <HStack>
-          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{whiteTimer}</Text>
+          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{`${whiteMinutes}:${whiteSeconds}`}</Text>
           <UserNode active={board.currentPlayer === 'white'} user={board.white as unknown as IUser} />
           <Text>
             {

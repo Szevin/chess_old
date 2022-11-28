@@ -74,6 +74,8 @@ export class Board {
 
   blackTime = 0
 
+  lastMoveDate: Date = null
+
   constructor(id: string, name: string = '', isPublic: boolean = true, FEN: string = defaultPieceSetup, type: GameType = 'normal', simulated: boolean = false, time: number = -1, rules: Rule[] = []) {
     this._id = id
     this.name = name
@@ -100,12 +102,13 @@ export class Board {
     const piece = this.getPiece(move.from)
     if (!piece) throw Error(`Piece not found at ${move.from}!`)
 
+    const deltaSeconds = dayjs(move.time).diff((this.lastMoveDate ? dayjs(this.lastMoveDate) : dayjs()), 'second')
     if (this.currentPlayer === 'white') {
-      this.whiteTime -= dayjs().diff(dayjs(move.time), 'seconds')
-      this.whiteTime += 5
+      this.whiteTime -= deltaSeconds
+      this.lastMoveDate = move.time
     } else {
-      this.blackTime -= dayjs().diff(dayjs(move.time), 'seconds')
-      this.blackTime += 5
+      this.blackTime -= deltaSeconds
+      this.lastMoveDate = move.time
     }
 
     piece.moveTo(move.to, this)
