@@ -64,6 +64,8 @@ export class Board {
 
   rule_frequency = 6
 
+  rule_timeout = 4
+
   capturedPieces: Piece[] = []
 
   time: number = -1
@@ -346,13 +348,13 @@ export class Board {
   }
 
   private setRules = () => {
-    if (this.type === 'normal') return
+    if (this.type === 'normal' || this.round % (this.rule_frequency + this.rule_timeout) < this.rule_timeout) return
     this.resetRules()
 
     let piecesArray = Object.values(this.pieces)
 
     // eslint-disable-next-line default-case
-    switch (this.rules[Math.floor((this.round / this.rule_frequency) % this.rules.length)]) {
+    switch (this.rules[Math.floor((this.round / (this.rule_frequency + this.rule_timeout)) % this.rules.length)]) {
       case Rule.FOG_OF_WAR:
         piecesArray = piecesArray.map((piece) => {
           piece.hidden = true

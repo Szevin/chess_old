@@ -12,6 +12,7 @@ import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
 import useTranslate from '../hooks/useTranslate'
 import { useCountdown } from '../hooks/useCountdown'
+import Rules from '../components/Rules'
 
 const Game = () => {
   const { id } = useParams() as { id: string }
@@ -91,9 +92,7 @@ const Game = () => {
               <ViewIcon color={whiteView ? 'white' : 'black'} />
             </Button>
           </HStack>
-          <Text>
-            {board.rules.length > 0 && t(`game.rule.${board.rules[Math.floor((board.round / board.rule_frequency) % board.rules.length)]}`)}
-          </Text>
+          <Rules rules={board.rules} timeout={board.rule_timeout} frequency={board.rule_frequency} round={board.round} />
         </VStack>
       </GridItem>
 
