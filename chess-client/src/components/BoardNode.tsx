@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import React from 'react'
 import { Annotation, IUser, Piece } from 'chess-common'
 import { Box, useColorMode, useToast } from '@chakra-ui/react'
-import { useReward } from 'react-rewards'
+// import { useReward } from 'react-rewards'
 import dayjs from 'dayjs'
 import PieceNode from './PieceNode'
 import { useAppSelector } from '../store'
@@ -20,14 +20,14 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
   const { move } = useSocket()
   const toast = useToast()
   const { colorMode } = useColorMode()
-  const { reward } = useReward('last', 'confetti', {
-    lifetime: 300,
-    elementCount: 100,
-    elementSize: 15,
-    angle: 90,
-    startVelocity: 15,
-    spread: 360,
-  })
+  // const { reward } = useReward('last', 'confetti', {
+  //   lifetime: 300,
+  //   elementCount: 100,
+  //   elementSize: 15,
+  //   angle: 90,
+  //   startVelocity: 15,
+  //   spread: 360,
+  // })
   const [selectedPosition, setselectedPosition] = React.useState<Annotation | null>(null)
   const [validMoves, setValidMoves] = React.useState<Array<Annotation>>([])
 
@@ -80,7 +80,7 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
         isClosable: true,
       })
 
-      reward()
+      // reward()
     }
 
     if (board.isStalemate) {
@@ -91,10 +91,22 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
         duration: null,
         isClosable: true,
       })
-
-      reward()
     }
   }, [board.isCheckmate, board.isStalemate])
+
+  const isWhiteTile = (row: number, col: number) => {
+    if (whiteView) {
+      if (row % 2 === 0) {
+        return col % 2 !== 0
+      }
+      return col % 2 === 0
+    }
+
+    if (row % 2 === 0) {
+      return col % 2 === 0
+    }
+    return col % 2 !== 0
+  }
 
   return (
 
@@ -105,8 +117,8 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
             backgroundColor={colorMode === 'light' ? (row + col) % 2 === 0 ? 'gray.500' : 'gray.200' : (row + col) % 2 === 0 ? 'gray.700' : 'gray.600'}
             id={`${letter}${row + 1}` === board.moves.at(-1)?.to ? 'last' : ''}
             className={classNames({
-              white: ((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2)),
-              black: !(((col % 2) && !(row % 2)) || (!(col % 2) && (row % 2))),
+              white: isWhiteTile(row, col),
+              black: !isWhiteTile(row, col),
               valid: validMoves.includes((letter + (row + 1)) as Annotation),
               last: board.moves.length && [board.moves[board.moves.length - 1].from, board.moves[board.moves.length - 1].to].includes((letter + (row + 1)) as Annotation),
               check: board.isCheck

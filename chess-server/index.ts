@@ -301,10 +301,10 @@ const scoreBoard = async (boardId: string) => {
 
     if(!whitePlayer || !blackPlayer) throw Error('White or black not found!')
 
-    whitePlayer.stats[board.type] = calculateStats(whitePlayer.stats[board.type], blackPlayer[board.type], 0.5)
+    whitePlayer.stats[board.type] = calculateStats(whitePlayer.stats[board.type], blackPlayer.stats[board.type], 0.5)
     await whitePlayer.save()
 
-    blackPlayer.stats[board.type] = calculateStats(blackPlayer.stats[board.type], whitePlayer[board.type], 0.5)
+    blackPlayer.stats[board.type] = calculateStats(blackPlayer.stats[board.type], whitePlayer.stats[board.type], 0.5)
     await blackPlayer.save()
 
     await board.save()

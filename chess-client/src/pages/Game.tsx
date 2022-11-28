@@ -112,17 +112,17 @@ const Game = () => {
         </HStack>
       </GridItem>
 
-      <GridItem area="numbers" className="coord-numbers">
+      <GridItem area="numbers" className="coord-numbers" pointerEvents="none">
         <Box display="flex" flexDirection="column">
-          {['8', '7', '6', '5', '4', '3', '2', '1'].map((n) => (
+          {(whiteView ? '87654321' : '12345678').split('').map((n) => (
             <Text key={n} fontSize="1.3rem" textAlign="center" display="flex" alignItems="center" minHeight="64px">{n}</Text>
           ))}
         </Box>
       </GridItem>
 
-      <GridItem area="letters" className="coord-letters p-0 m-0">
+      <GridItem area="letters" className="coord-letters p-0 m-0" pointerEvents="none">
         <Box display="flex" flexDirection="row">
-          {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((n) => (
+          {(whiteView ? 'abcdefgh' : 'hgfedcba').split('').map((n) => (
             <Text key={n} fontSize="1.3rem" textAlign="center" display="flex" justifyContent="center" minWidth="64px">{n}</Text>
           ))}
         </Box>
