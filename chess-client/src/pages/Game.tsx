@@ -24,7 +24,6 @@ const Game = () => {
   const t = useTranslate()
   const { colorMode } = useColorMode()
 
-  console.log(!!board.lastMoveDate)
   const whiteTimeExpiryDate = (board.currentPlayer === 'white' && board.lastMoveDate ? dayjs(board.lastMoveDate) : dayjs()).add(board.whiteTime, 'seconds').toDate()
   const blackTimeExpiryDate = (board.currentPlayer === 'black' && board.lastMoveDate ? dayjs(board.lastMoveDate) : dayjs()).add(board.blackTime, 'seconds').toDate()
 
