@@ -117,7 +117,7 @@ export class Board {
     this.currentPlayer = this.getEnemyColor()
     Object.keys(this.pieces).forEach((key) => {
       if (this.pieces[key].position !== key) {
-        const temp = Object.assign(new Piece('p', 'a1'), this.pieces[key])
+        const temp = Object.assign(new Piece('p', this.pieces[key].position), this.pieces[key])
         delete this.pieces[key]
         this.pieces[temp.position] = temp
       }
