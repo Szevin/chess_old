@@ -131,6 +131,17 @@ export class Board {
     this.isCheck = this.getEnemyPieces().map((piece) => piece.moves.captures).some((moves) => moves.includes(this.getKing(this.currentPlayer).position))
     this.isCheckmate = this.isCheck && this.getOwnPieces().every((piece) => piece.moves.valid.length === 0)
     this.isStalemate = !this.isCheck && this.getOwnPieces().every((piece) => piece.moves.valid.length === 0)
+    const piecesArray = Object.values(this.pieces)
+    if (!piecesArray.find((p) => p.name === 'pawn')) {
+      const blackPieces = piecesArray.filter((p) => p.color === 'black').map((p) => p.name)
+      const whitePieces = piecesArray.filter((p) => p.color === 'white').map((p) => p.name)
+
+      const insufficients = [['king'], ['king', 'bishop'], ['king', 'knight'], ['king', 'knight', 'bishop']]
+      if (insufficients.some((insufficient) => blackPieces.find((p) => !insufficient.includes(p)))) return
+      if (insufficients.some((insufficient) => whitePieces.find((p) => !insufficient.includes(p)))) return
+
+      this.isStalemate = true
+    }
   }
 
   simulateMove = (move: Move) => {
