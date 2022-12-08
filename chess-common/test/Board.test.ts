@@ -172,6 +172,8 @@ describe('getOwnPieces', () => {
         player: 'white',
         time: dayjs().toDate(),
       })
+      expect(board.pieces.a2).toBeUndefined()
+      expect(board.pieces.a4).toBeDefined()
       board.handleMove({
         from: 'b7',
         to: 'b5',
@@ -180,6 +182,8 @@ describe('getOwnPieces', () => {
         player: 'black',
         time: dayjs().toDate(),
       })
+      expect(board.pieces.b7).toBeUndefined()
+      expect(board.pieces.b5).toBeDefined()
       board.handleMove({
         from: 'a4',
         to: 'b5',
@@ -271,12 +275,12 @@ describe('getOwnPieces', () => {
 
         { from: 'f2', to: 'f3' },
         { from: 'd8', to: 'h4' },
-      ] as { from: Annotation; to: Annotation }[]
+      ]
 
       moves.forEach((move) => {
         board.handleMove({
-          from: move.from,
-          to: move.to,
+          from: move.from as Annotation,
+          to: move.to as Annotation,
           boardId: '1',
           piece: board.pieces[move.from],
           player: board.currentPlayer,
@@ -303,12 +307,12 @@ describe('getOwnPieces', () => {
         { from: 'd7', to: 'd6' },
 
         { from: 'f3', to: 'f7' },
-      ] as { from: Annotation; to: Annotation }[]
+      ]
 
       moves.forEach((m) => {
         board.handleMove({
-          from: m.from,
-          to: m.to,
+          from: m.from as Annotation,
+          to: m.to as Annotation,
           boardId: '1',
           piece: board.pieces[m.from],
           player: 'white',
@@ -352,12 +356,12 @@ describe('getOwnPieces', () => {
         { from: 'f7', to: 'g6' },
 
         { from: 'c8', to: 'e6' },
-      ] as { from: Annotation; to: Annotation }[]
+      ]
 
       moves.forEach((m) => {
         board.handleMove({
-          from: m.from,
-          to: m.to,
+          from: m.from as Annotation,
+          to: m.to as Annotation,
           boardId: '1',
           piece: board.pieces[m.from],
           player: board.currentPlayer,
