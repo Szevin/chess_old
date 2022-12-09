@@ -128,6 +128,7 @@ export class Board {
     this.round += 1
     this.setRules()
 
+    // draw by insufficient material
     this.isCheck = this.getEnemyPieces().map((piece) => piece.moves.captures).some((moves) => moves.includes(this.getKing(this.currentPlayer).position))
     this.isCheckmate = this.isCheck && this.getOwnPieces().every((piece) => piece.moves.valid.length === 0)
     this.isStalemate = !this.isCheck && this.getOwnPieces().every((piece) => piece.moves.valid.length === 0)
@@ -141,6 +142,47 @@ export class Board {
       if (insufficients.some((insufficient) => whitePieces.find((p) => !insufficient.includes(p)))) return
 
       this.isStalemate = true
+    }
+
+    // draw by repetition
+    if (this.moves.length >= 8) {
+      const lastMove1 = this.moves[this.moves.length - 1]
+      const lastMove2 = this.moves[this.moves.length - 2]
+      const lastMove3 = this.moves[this.moves.length - 3]
+      const lastMove4 = this.moves[this.moves.length - 4]
+      const lastMove5 = this.moves[this.moves.length - 5]
+      const lastMove6 = this.moves[this.moves.length - 6]
+      const lastMove7 = this.moves[this.moves.length - 7]
+      const lastMove8 = this.moves[this.moves.length - 8]
+      if (lastMove1.from === lastMove5.from
+        && lastMove1.piece.name === lastMove5.piece.name
+        && lastMove1.to === lastMove5.to
+        && lastMove2.from === lastMove6.from
+        && lastMove2.piece.name === lastMove6.piece.name
+        && lastMove2.to === lastMove6.to
+        && lastMove3.from === lastMove7.from
+        && lastMove3.piece.name === lastMove7.piece.name
+        && lastMove3.to === lastMove7.to
+        && lastMove4.from === lastMove8.from
+        && lastMove4.piece.name === lastMove8.piece.name
+        && lastMove4.to === lastMove8.to) {
+        this.isStalemate = true
+      }
+    }
+
+    if (this.isCheckmate || this.isStalemate) {
+      const piecesArray = Object.values(this.pieces).map((piece) => {
+        piece.moves.valid = []
+        piece.moves.captures = []
+        piece.moves.castle = []
+        piece.moves.empty = []
+        return piece
+      })
+
+      this.pieces = piecesArray.reduce((acc, piece) => {
+        acc[piece.position] = piece
+        return acc
+      }, {} as { [key: string]: Piece })
     }
   }
 
