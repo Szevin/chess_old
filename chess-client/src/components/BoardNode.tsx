@@ -49,6 +49,7 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
   }, [selectedPosition])
 
   const handleMove = (to: Annotation) => {
+    console.log('handleMove', to)
     if (!selectedPosition) return
     const piece = board.getPiece(selectedPosition)
     if (!piece) {

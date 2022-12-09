@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/lines-between-class-members */
 import React from 'react'
 import { Rnd } from 'react-rnd'
-import { ColorTypes, PieceTypes, Piece, Annotation } from 'chess-common'
+import { Piece, Annotation } from 'chess-common'
 import { QuestionIcon } from '@chakra-ui/icons'
 import BishopSvg from '../assets/pieces/BishopSvg'
 import KingSvg from '../assets/pieces/KingSvg'
@@ -27,7 +27,7 @@ const PieceNode = ({ piece, setselectedPosition, onMove, isDraggable, whiteView 
       enableUserSelectHack={false}
       onDragStart={() => setselectedPosition(piece.position)}
       onDragStop={(e, d) => onMove(
-        `${(whiteView ? 'abcdefgh' : 'ghfedcba')[(Math.floor(d.x / 60))]}${(whiteView ? Math.floor(8 - ((d.y + 16) / 60)) : 7 - Math.floor(8 - (d.y + 16) / 60)) + 1}` as Annotation,
+        `${(whiteView ? 'abcdefgh' : 'hgfedcba')[(Math.floor(d.x / 60))]}${(whiteView ? Math.floor(8 - ((d.y + 16) / 60)) : 7 - Math.floor(8 - (d.y + 16) / 60)) + 1}` as Annotation,
       )}
       size={{ width: 50, height: 50 }}
       position={{ x: ((whiteView ? annotationToCoord(piece.position).x : 9 - annotationToCoord(piece.position).x) * 64) - 50,
