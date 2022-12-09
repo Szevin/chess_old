@@ -20,7 +20,7 @@ const Rules = ({ rules, timeout, frequency, round }: { rules: Rule[], timeout: n
       </Text>
       <Text>
         {`${t('game.rule.next')}: `}
-        {isCurrentlyTimeout ? t(`game.rule.${rules[(Math.floor((round / (frequency + timeout)) + 1) % rules.length)]}`) : t('game.rule.timeout')}
+        {isCurrentlyTimeout ? t(`game.rule.${rules[(Math.floor((round / (frequency + timeout))) % rules.length)]}`) : t('game.rule.timeout')}
       </Text>
     </>
   )

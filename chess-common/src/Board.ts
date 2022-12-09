@@ -362,8 +362,8 @@ export class Board {
   }
 
   private setRules = () => {
-    if (this.type === 'normal' || this.round % (this.rule_frequency + this.rule_timeout) < this.rule_timeout) return
     this.resetRules()
+    if (this.type === 'normal' || this.round % (this.rule_frequency + this.rule_timeout) < this.rule_timeout) return
 
     let piecesArray = Object.values(this.pieces)
 
