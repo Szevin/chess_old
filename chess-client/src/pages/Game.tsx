@@ -9,11 +9,12 @@ import throttle from 'throttleit'
 import { useTimer } from 'react-timer-hook'
 import dayjs from 'dayjs'
 import BoardNode from '../components/BoardNode'
-import { useAppSelector } from '../store'
+import { useAppDispatch, useAppSelector } from '../store'
 import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
 import useTranslate from '../hooks/useTranslate'
 import Rules from '../components/Rules'
+import { clearBoard } from '../store/redux/board'
 
 const Game = () => {
   const { id } = useParams() as { id: string }
@@ -23,6 +24,7 @@ const Game = () => {
   const [whiteView, setWhiteView] = useBoolean(board.black?._id !== user._id)
   const t = useTranslate()
   const { colorMode } = useColorMode()
+  const dispatch = useAppDispatch()
 
   const whiteTimeExpiryDate = (board.currentPlayer === 'white' && board.lastMoveDate ? dayjs(board.lastMoveDate) : dayjs()).add(board.whiteTime, 'seconds').toDate()
   const blackTimeExpiryDate = (board.currentPlayer === 'black' && board.lastMoveDate ? dayjs(board.lastMoveDate) : dayjs()).add(board.blackTime, 'seconds').toDate()
@@ -45,6 +47,28 @@ const Game = () => {
   }
 
   React.useEffect(() => {
+    if (board.isCheckmate) {
+      toast({
+        title: 'Checkmate',
+        description: `Checkmate! ${board.currentPlayer === 'white' ? 'black' : 'white'} wins!`,
+        status: 'success',
+        duration: null,
+        isClosable: true,
+      })
+    }
+
+    if (board.isStalemate) {
+      toast({
+        title: 'Stalemate',
+        description: 'Stalemate!',
+        status: 'warning',
+        duration: null,
+        isClosable: true,
+      })
+    }
+  }, [board.isCheckmate, board.isStalemate])
+
+  React.useEffect(() => {
     if (!board.lastMoveDate) {
       resetWhiteTimer(dayjs().add(board.whiteTime, 'seconds').toDate(), false)
       resetBlackTimer(dayjs().add(board.blackTime, 'seconds').toDate(), false)
@@ -59,6 +83,10 @@ const Game = () => {
       pauseWhiteTimer()
     }
   }, [board])
+
+  React.useEffect(() => () => {
+    dispatch(clearBoard())
+  })
 
   if (board.status === 'waiting') {
     return (

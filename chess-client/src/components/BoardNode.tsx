@@ -3,7 +3,7 @@ import './Board.css'
 import classNames from 'classnames'
 import React from 'react'
 import { Annotation, IUser, Piece } from 'chess-common'
-import { Box, useColorMode, useToast } from '@chakra-ui/react'
+import { Box, useColorMode } from '@chakra-ui/react'
 // import { useReward } from 'react-rewards'
 import dayjs from 'dayjs'
 import PieceNode from './PieceNode'
@@ -18,7 +18,6 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
   const cols = whiteView ? ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'] : ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']
   const rows = whiteView ? [7, 6, 5, 4, 3, 2, 1, 0] : [0, 1, 2, 3, 4, 5, 6, 7]
   const { move } = useSocket()
-  const toast = useToast()
   const { colorMode } = useColorMode()
   // const { reward } = useReward('last', 'confetti', {
   //   lifetime: 300,
@@ -69,30 +68,6 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
     })
     setselectedPosition(null)
   }
-
-  React.useEffect(() => {
-    if (board.isCheckmate) {
-      toast({
-        title: 'Checkmate',
-        description: `Checkmate! ${board.currentPlayer === 'white' ? 'black' : 'white'} wins!`,
-        status: 'success',
-        duration: null,
-        isClosable: true,
-      })
-
-      // reward()
-    }
-
-    if (board.isStalemate) {
-      toast({
-        title: 'Stalemate',
-        description: 'Stalemate!',
-        status: 'warning',
-        duration: null,
-        isClosable: true,
-      })
-    }
-  }, [board.isCheckmate, board.isStalemate])
 
   const isWhiteTile = (row: number, col: number) => {
     if (whiteView) {
