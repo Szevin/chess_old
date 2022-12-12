@@ -405,7 +405,7 @@ export class Board {
 
   private setRules = () => {
     this.resetRules()
-    if (this.type === 'normal' || this.round % (this.rule_frequency + this.rule_timeout) < this.rule_timeout) return
+    if (this.type !== 'adaptive' || this.round % (this.rule_frequency + this.rule_timeout) < this.rule_timeout) return
 
     let piecesArray = Object.values(this.pieces)
 
@@ -427,7 +427,11 @@ export class Board {
         break
       case Rule.NO_PAWNS:
         piecesArray = piecesArray.map((piece) => {
-          if (piece.name !== 'pawn') return piece
+          if (piece.name !== 'pawn') {
+            piece.moves.captures = piece.moves.captures.filter((move) => this.getPiece(move)?.name !== 'pawn')
+            piece.moves.valid = [...piece.moves.captures, ...piece.moves.empty, ...piece.moves.captures]
+            return piece
+          }
           piece.moves.valid = []
           piece.moves.captures = []
           piece.moves.empty = []
