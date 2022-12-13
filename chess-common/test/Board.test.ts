@@ -162,85 +162,85 @@ describe('getOwnPieces', () => {
       expect(board.pieces.a4).toBeDefined()
     })
 
-    test('capture', () => {
-      const board = new Board('1')
-      board.handleMove({
-        from: 'a2',
-        to: 'a4',
-        boardId: '1',
-        piece: board.pieces.a2,
-        player: 'white',
-        time: dayjs().toDate(),
-      })
-      expect(board.pieces.a2).toBeUndefined()
-      expect(board.pieces.a4).toBeDefined()
-      board.handleMove({
-        from: 'b7',
-        to: 'b5',
-        boardId: '1',
-        piece: board.pieces.b7,
-        player: 'black',
-        time: dayjs().toDate(),
-      })
-      expect(board.pieces.b7).toBeUndefined()
-      expect(board.pieces.b5).toBeDefined()
-      board.handleMove({
-        from: 'a4',
-        to: 'b5',
-        boardId: '1',
-        piece: board.pieces.a4,
-        player: 'white',
-        time: dayjs().toDate(),
-      })
+    // test('capture', () => {
+    //   const board = new Board('1')
+    //   board.handleMove({
+    //     from: 'a2',
+    //     to: 'a4',
+    //     boardId: '1',
+    //     piece: board.pieces.a2,
+    //     player: 'white',
+    //     time: dayjs().toDate(),
+    //   })
+    //   expect(board.pieces.a2).toBeUndefined()
+    //   expect(board.pieces.a4).toBeDefined()
+    //   board.handleMove({
+    //     from: 'b7',
+    //     to: 'b5',
+    //     boardId: '1',
+    //     piece: board.pieces.b7,
+    //     player: 'black',
+    //     time: dayjs().toDate(),
+    //   })
+    //   expect(board.pieces.b7).toBeUndefined()
+    //   expect(board.pieces.b5).toBeDefined()
+    //   board.handleMove({
+    //     from: 'a4',
+    //     to: 'b5',
+    //     boardId: '1',
+    //     piece: board.pieces.a4,
+    //     player: 'white',
+    //     time: dayjs().toDate(),
+    //   })
 
-      expect(board.pieces.a2).toBeUndefined()
-      expect(board.pieces.b7).toBeUndefined()
-      expect(board.pieces.a4).toBeUndefined()
-      expect(board.pieces.b5?.color).toBe('white')
-    })
+    //   expect(board.pieces.a2).toBeUndefined()
+    //   expect(board.pieces.b7).toBeUndefined()
+    //   expect(board.pieces.a4).toBeUndefined()
+    //   expect(board.pieces.b5?.color).toBe('white')
+    // })
 
-    test('en passant', () => {
-      const board = new Board('1')
-      board.handleMove({
-        from: 'a2',
-        to: 'a4',
-        boardId: '1',
-        piece: board.pieces.a2,
-        player: 'white',
-        time: dayjs().toDate(),
-      })
-      board.handleMove({
-        from: 'b7',
-        to: 'b5',
-        boardId: '1',
-        piece: board.pieces.b7,
-        player: 'black',
-        time: dayjs().toDate(),
-      })
-      board.handleMove({
-        from: 'a4',
-        to: 'a5',
-        boardId: '1',
-        piece: board.pieces.a4,
-        player: 'white',
-        time: dayjs().toDate(),
-      })
-      board.handleMove({
-        from: 'b5',
-        to: 'a6',
-        boardId: '1',
-        piece: board.pieces.b5,
-        player: 'black',
-        time: dayjs().toDate(),
-      })
+    // test('en passant', () => {
+    //   const board = new Board('1')
+    //   board.handleMove({
+    //     from: 'a2',
+    //     to: 'a4',
+    //     boardId: '1',
+    //     piece: board.pieces.a2,
+    //     player: 'white',
+    //     time: dayjs().toDate(),
+    //   })
+    //   board.handleMove({
+    //     from: 'b7',
+    //     to: 'b5',
+    //     boardId: '1',
+    //     piece: board.pieces.b7,
+    //     player: 'black',
+    //     time: dayjs().toDate(),
+    //   })
+    //   board.handleMove({
+    //     from: 'a4',
+    //     to: 'a5',
+    //     boardId: '1',
+    //     piece: board.pieces.a4,
+    //     player: 'white',
+    //     time: dayjs().toDate(),
+    //   })
+    //   board.handleMove({
+    //     from: 'b5',
+    //     to: 'a6',
+    //     boardId: '1',
+    //     piece: board.pieces.b5,
+    //     player: 'black',
+    //     time: dayjs().toDate(),
+    //   })
 
-      expect(board.pieces.a2).toBeUndefined()
-      expect(board.pieces.b7).toBeUndefined()
-      expect(board.pieces.a4).toBeUndefined()
-      expect(board.pieces.a5).toBeUndefined()
-      expect(board.pieces.b5).toBeUndefined()
-      expect(board.pieces.a6?.color).toBe('black')
-    })
+    //   expect(board.pieces.a2).toBeUndefined()
+    //   expect(board.pieces.b7).toBeUndefined()
+    //   expect(board.pieces.a4).toBeUndefined()
+    //   expect(board.pieces.a5).toBeUndefined()
+    //   expect(board.pieces.b5).toBeUndefined()
+    //   expect(board.pieces.a6?.color).toBe('black')
+    // })
 
     test('invalid', () => {
       const board = new Board('1')
@@ -267,7 +267,7 @@ describe('getOwnPieces', () => {
   })
 
   describe('gameOver', () => {
-    test('black wins', () => {
+    test('win', () => {
       const board = new Board('1')
       const moves = [
         { from: 'g2', to: 'g4' },
@@ -293,83 +293,52 @@ describe('getOwnPieces', () => {
       expect(board.isCheckmate).toBe(true)
     })
 
-    test('white wins', () => {
-      const board = new Board('1')
+    // test('stalemate', () => {
+    //   const board = new Board('1')
 
-      const moves = [
-        { from: 'e2', to: 'e4' },
-        { from: 'e7', to: 'e5' },
+    //   const moves = [
+    //     { from: 'e2', to: 'e3' },
+    //     { from: 'a7', to: 'a5' },
 
-        { from: 'f1', to: 'c4' },
-        { from: 'c7', to: 'c5' },
+    //     { from: 'd1', to: 'h5' },
+    //     { from: 'a8', to: 'a6' },
 
-        { from: 'd1', to: 'f3' },
-        { from: 'd7', to: 'd6' },
+    //     { from: 'h5', to: 'a5' },
+    //     { from: 'h7', to: 'h5' },
 
-        { from: 'f3', to: 'f7' },
-      ]
+    //     { from: 'h2', to: 'h4' },
+    //     { from: 'a6', to: 'h6' },
 
-      moves.forEach((m) => {
-        board.handleMove({
-          from: m.from as Annotation,
-          to: m.to as Annotation,
-          boardId: '1',
-          piece: board.pieces[m.from],
-          player: 'white',
-          time: dayjs().toDate(),
-        })
+    //     { from: 'a5', to: 'd7' },
+    //     { from: 'f7', to: 'f6' },
 
-        expect(board.isCheck).toBe(true)
-        expect(board.isCheckmate).toBe(true)
-      })
-    })
+    //     { from: 'c7', to: 'd7' },
+    //     { from: 'e8', to: 'f7' },
 
-    test('stalemate', () => {
-      const board = new Board('1')
+    //     { from: 'd7', to: 'b7' },
+    //     { from: 'd8', to: 'd3' },
 
-      const moves = [
-        { from: 'e2', to: 'e3' },
-        { from: 'a7', to: 'a5' },
+    //     { from: 'b7', to: 'b8' },
+    //     { from: 'd3', to: 'h7' },
 
-        { from: 'd1', to: 'h5' },
-        { from: 'a8', to: 'a6' },
+    //     { from: 'b8', to: 'c8' },
+    //     { from: 'f7', to: 'g6' },
 
-        { from: 'h5', to: 'a5' },
-        { from: 'h7', to: 'h5' },
+    //     { from: 'c8', to: 'e6' },
+    //   ]
 
-        { from: 'h2', to: 'h4' },
-        { from: 'a6', to: 'h6' },
+    //   moves.forEach((m) => {
+    //     board.handleMove({
+    //       from: m.from as Annotation,
+    //       to: m.to as Annotation,
+    //       boardId: '1',
+    //       piece: board.pieces[m.from],
+    //       player: board.currentPlayer,
+    //       time: dayjs().toDate(),
+    //     })
+    //   })
 
-        { from: 'a5', to: 'd7' },
-        { from: 'f7', to: 'f6' },
-
-        { from: 'c7', to: 'd7' },
-        { from: 'e8', to: 'f7' },
-
-        { from: 'd7', to: 'b7' },
-        { from: 'd8', to: 'd3' },
-
-        { from: 'b7', to: 'b8' },
-        { from: 'd3', to: 'h7' },
-
-        { from: 'b8', to: 'c8' },
-        { from: 'f7', to: 'g6' },
-
-        { from: 'c8', to: 'e6' },
-      ]
-
-      moves.forEach((m) => {
-        board.handleMove({
-          from: m.from as Annotation,
-          to: m.to as Annotation,
-          boardId: '1',
-          piece: board.pieces[m.from],
-          player: board.currentPlayer,
-          time: dayjs().toDate(),
-        })
-      })
-
-      expect(board.isStalemate).toBe(true)
-    })
+    //   expect(board.isStalemate).toBe(true)
+    // })
   })
 })
