@@ -11,6 +11,7 @@ import useTranslate from '../hooks/useTranslate'
 import HuSvg from '../assets/flags/hu'
 import EnSvg from '../assets/flags/en'
 import { toggleLanguage } from '../store/redux/settings'
+import { useGetAllBoardsQuery } from '../store/rest/board'
 
 const Header = () => {
   const user = useAppSelector((state) => state.user)
@@ -20,6 +21,7 @@ const Header = () => {
   const t = useTranslate()
   const { colorMode, toggleColorMode } = useColorMode()
   const { pathname } = useLocation()
+  const { refetch: refetchBoards } = useGetAllBoardsQuery()
 
   return (
     <Grid
@@ -48,7 +50,7 @@ const Header = () => {
         </HStack>
       </GridItem>
       <GridItem gridColumnStart={2} gridColumnEnd={10} gridRowStart={1} display="flex" alignItems="center" justifyContent="center">
-        <Heading as="h1" size="xl" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+        <Heading as="h1" size="xl" style={{ cursor: 'pointer' }} onClick={() => { navigate('/'); refetchBoards() }}>
           {t('header.title')}
         </Heading>
       </GridItem>

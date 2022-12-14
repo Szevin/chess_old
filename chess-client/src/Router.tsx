@@ -1,6 +1,6 @@
 import { Box, useColorMode } from '@chakra-ui/react'
 import React from 'react'
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 
 import Layout from './components/Layout'
 import Game from './pages/Game'
@@ -10,12 +10,14 @@ import Main from './pages/Main'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
 import { useAppDispatch, useAppSelector } from './store'
+import { clearBoard } from './store/redux/board'
 import { toggleLanguage, toggleTheme } from './store/redux/settings'
 
 const Router = () => {
   const user = useAppSelector((state) => state.user)
   const settings = useAppSelector((state) => state.settings)
   const dispatch = useAppDispatch()
+  const location = useLocation()
 
   const defaultLanguage = localStorage.getItem('language') ?? 'en'
   const defaultTheme = localStorage.getItem('theme') ?? 'light'
@@ -28,6 +30,11 @@ const Router = () => {
   }
 
   const { colorMode } = useColorMode()
+
+  React.useEffect(() => {
+    if (location.pathname.includes('board')) return
+    dispatch(clearBoard())
+  }, [location])
 
   return (
     <Box backgroundColor={colorMode === 'light' ? 'whitesmoke' : 'blueviolet'} height="100vh">

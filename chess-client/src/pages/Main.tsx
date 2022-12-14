@@ -2,7 +2,7 @@ import {
   Box, Button, HStack, Input, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, useDisclosure, useToast,
 } from '@chakra-ui/react'
 import { IUser } from 'chess-common'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import PlayDialog from '../components/dialog/PlayDialog'
 import useTranslate from '../hooks/useTranslate'
@@ -21,9 +21,12 @@ const Main = () => {
   const { data: boards, refetch: refetchBoards } = useGetAllBoardsQuery()
   const t = useTranslate()
 
-  // const autoFetch = setInterval(() => {
-  //   refetchBoards()
-  // }, 5_000)
+  useEffect(() => {
+    const autoFetch = setInterval(() => {
+      refetchBoards()
+    }, 10_000)
+    return () => clearInterval(autoFetch)
+  }, [])
 
   const handleJoinOngoing = () => {
     if (!id) {
@@ -45,7 +48,6 @@ const Main = () => {
   const handleJoin = (id: string) => {
     join(id)
     navigate(`/board/${id}`)
-    // clearInterval(autoFetch)
   }
 
   return (
