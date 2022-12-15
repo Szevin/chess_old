@@ -13,10 +13,11 @@ export const useSocket = () => {
   const user = useAppSelector((state) => state.user)
   const board = useAppSelector((state) => state.board)
 
-  socket.on('board', (board: Board) => {
-    if (Object.values(board.pieces).some((piece) => piece.hidden)) {
-      let piecesArray = Object.values(board.pieces)
-      const hiddenColor = board.white._id === user._id ? 'black' : board.black._id === user._id ? 'white' : null
+  socket.on('board', (incomingBoard: Board) => {
+    console.log(incomingBoard)
+    if (Object.values(incomingBoard.pieces).some((piece) => piece.hidden)) {
+      let piecesArray = Object.values(incomingBoard.pieces)
+      const hiddenColor = incomingBoard.white._id === user._id ? 'black' : incomingBoard.black._id === user._id ? 'white' : null
       piecesArray = piecesArray.map((piece) => {
         if (piece.color !== hiddenColor) {
           piece.hidden = false
@@ -26,9 +27,9 @@ export const useSocket = () => {
         return piece
       })
 
-      board.pieces = Object.fromEntries(piecesArray.map((piece) => [piece.position, piece]))
+      incomingBoard.pieces = Object.fromEntries(piecesArray.map((piece) => [piece.position, piece]))
     }
-    dispatch(setBoard(board))
+    dispatch(setBoard(incomingBoard))
   })
 
   const move = (move: Move) => {

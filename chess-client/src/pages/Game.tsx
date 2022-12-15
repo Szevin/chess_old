@@ -110,6 +110,19 @@ const Game = () => {
     }
   }, [whiteMinutes, whiteSeconds, blackMinutes, blackSeconds])
 
+  if (!board._id) {
+    return (
+      <Box>
+        <Heading justifyContent="center">
+          <HStack justifyContent="center">
+            <Heading size="lg" marginRight="2">{t('game.loading')}</Heading>
+            <Box className="dot-elastic align-self-end" />
+          </HStack>
+        </Heading>
+      </Box>
+    )
+  }
+
   if (board.status === 'waiting') {
     return (
       <Box>
@@ -139,10 +152,10 @@ const Game = () => {
     <Grid
       templateAreas={`"noneU1 noneU1 black black"
       "info numbers board history"
-      "info noneL1 letters noneR1"
-      "noneL white white white"
-      "noneL chat chat chat"`}
-      templateColumns="0.4fr 0.001fr 0.05fr 0.2fr"
+      "info noneL1 white white"
+      "noneL noneL letters noneR"
+      "noneL noneL chat chat"`}
+      templateColumns="0.5fr 0.001fr 0.05fr 0.2fr"
       templateRows="0.2fr 0.05fr 0.001fr 0.2fr 0.2fr"
       marginLeft={0}
       justifyContent="start"
@@ -170,7 +183,7 @@ const Game = () => {
         </VStack>
       </GridItem>
 
-      <GridItem area="black">
+      <GridItem area={whiteView ? 'black' : 'white'}>
         <HStack>
           <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{formatTime(blackMinutes, blackSeconds)}</Text>
           <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
@@ -221,7 +234,7 @@ const Game = () => {
         </Grid>
       </GridItem>
 
-      <GridItem area="white">
+      <GridItem area={whiteView ? 'white' : 'black'}>
         <HStack>
           <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{formatTime(whiteMinutes, whiteSeconds)}</Text>
           <UserNode active={board.currentPlayer === 'white'} user={board.white as unknown as IUser} />
