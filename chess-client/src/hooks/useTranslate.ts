@@ -34,6 +34,7 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
 
     'game.name': 'Name',
     'game.waiting': 'Waiting for opponent',
+    'game.notFound': 'Game not found',
     'game.your.turn': 'Your turn',
     'game.opponents.turn': 'Opponents turn',
     'game.white': 'White',
@@ -115,6 +116,7 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
 
     'game.name': 'Név',
     'game.waiting': 'Várakozás az ellenfélre',
+    'game.notFound': 'Játék nem található',
     'game.your.turn': 'Te következel',
     'game.opponents.turn': 'Ellenfél következik',
     'game.white': 'Fehér',

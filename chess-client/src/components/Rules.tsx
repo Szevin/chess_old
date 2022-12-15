@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text } from '@chakra-ui/react'
+import { Badge } from '@chakra-ui/react'
 import { Rule } from 'chess-common/lib/Board'
 import useTranslate from '../hooks/useTranslate'
 
@@ -14,14 +14,14 @@ const Rules = ({ rules, timeout, frequency, round }: { rules: Rule[], timeout: n
 
   return (
     <>
-      <Text>
+      <Badge colorScheme="purple">
         {`${t('game.rule.current')}(${currentDuration}): `}
         {!isCurrentlyTimeout ? t(`game.rule.${rules[Math.floor((round / (frequency + timeout)) % rules.length)]}`) : t('game.rule.timeout')}
-      </Text>
-      <Text>
+      </Badge>
+      <Badge colorScheme="purple">
         {`${t('game.rule.next')}: `}
         {isCurrentlyTimeout ? t(`game.rule.${rules[(Math.floor((round / (frequency + timeout))) % rules.length)]}`) : t('game.rule.timeout')}
-      </Text>
+      </Badge>
     </>
   )
 }

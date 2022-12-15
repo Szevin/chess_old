@@ -14,6 +14,7 @@ import Chat from '../components/Chat'
 import UserNode from '../components/UserNode'
 import useTranslate from '../hooks/useTranslate'
 import Rules from '../components/Rules'
+import { useSocket } from '../store/socket'
 
 const Game = () => {
   const { id } = useParams() as { id: string }
@@ -23,6 +24,7 @@ const Game = () => {
   const [whiteView, setWhiteView] = useBoolean(board.black?._id !== user._id)
   const t = useTranslate()
   const { colorMode } = useColorMode()
+  const { timesover, join, leave } = useSocket()
 
   const whiteTimeExpiryDate = (board.currentPlayer === 'white' && board.lastMoveDate ? dayjs(board.lastMoveDate) : dayjs()).add(board.whiteTime, 'seconds').toDate()
   const blackTimeExpiryDate = (board.currentPlayer === 'black' && board.lastMoveDate ? dayjs(board.lastMoveDate) : dayjs()).add(board.blackTime, 'seconds').toDate()
@@ -45,22 +47,30 @@ const Game = () => {
   }
 
   React.useEffect(() => {
+    join(id)
+    return () => {
+      leave(id)
+    }
+  }, [])
+
+  React.useEffect(() => {
     if (board.isCheckmate) {
+      const didILose = board.currentPlayer === 'black' && board.black._id === user._id
       toast({
-        title: 'Checkmate',
-        description: `Checkmate! ${board.currentPlayer === 'white' ? 'black' : 'white'} wins!`,
-        status: 'success',
-        duration: null,
+        title: 'Game Over',
+        description: `${board.currentPlayer === 'white' ? 'Black' : 'White'} wins!`,
+        status: `${didILose ? 'error' : 'success'}`,
+        duration: 3000,
         isClosable: true,
       })
     }
 
     if (board.isStalemate) {
       toast({
-        title: 'Stalemate',
+        title: 'Game Over',
         description: 'Stalemate!',
         status: 'warning',
-        duration: null,
+        duration: 3000,
         isClosable: true,
       })
     }
@@ -81,6 +91,18 @@ const Game = () => {
       pauseWhiteTimer()
     }
   }, [board])
+
+  React.useEffect(() => {
+    if (board.time === -1 || board.status !== 'playing') return
+
+    if (whiteMinutes === 0 && whiteSeconds === 0) {
+      timesover('white')
+    }
+
+    if (blackMinutes === 0 && blackSeconds === 0) {
+      timesover('black')
+    }
+  }, [whiteMinutes, whiteSeconds, blackMinutes, blackSeconds])
 
   if (board.status === 'waiting') {
     return (
@@ -126,7 +148,7 @@ const Game = () => {
           <HStack>
             <Tag colorScheme="blue">
               <ViewIcon marginRight="1" />
-              {board.spectators.length}
+              {board.spectators.filter((id, index, self) => self.indexOf(id) === index).length}
             </Tag>
             <Button
               size="sm"
@@ -180,8 +202,7 @@ const Game = () => {
       <GridItem area="history" minHeight="1fr" width="14rem" border="1px solid grey" borderRadius="md" backgroundColor="gray.400">
         <Grid templateColumns="repeat(2, 1fr)" templateRows="repeat(20, 1fr)">
           { Object.values(board.pieces).every((p) => !p.hidden) && board.moves.map((move) => (
-            // TODO unique keys
-            <GridItem key={move.piece.renderName + move.from + move.to}>
+            <GridItem key={move.id}>
               <div>
                 {/* {getRender(move.piece)} */}
               </div>

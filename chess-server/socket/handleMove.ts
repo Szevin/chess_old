@@ -18,6 +18,7 @@ export async function handleMove(move: Move, io: IoType) {
           },
         }
       ])
+      move.id = board.moves.length
 
       if (!board) throw Error(`Board not found for ${move.player}`)
       if(board.status !== 'playing') throw Error(`Board not playing for ${move.player}`)
@@ -55,7 +56,7 @@ export async function handleMove(move: Move, io: IoType) {
     }
   }
 
-const scoreBoard = async (boardId: string) => {
+export const scoreBoard = async (boardId: string) => {
   let board = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>([
     {
       path: 'white black',

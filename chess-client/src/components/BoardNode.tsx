@@ -34,7 +34,7 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
   const user = useAppSelector((state) => state.user)
 
   React.useEffect(() => {
-    if (!selectedPosition) {
+    if (!selectedPosition || board.status !== 'playing') {
       setValidMoves([])
       return
     }
@@ -59,6 +59,7 @@ const BoardNode = ({ whiteView } : { whiteView: boolean }) => {
       return
     }
     move({
+      id: board.moves.length,
       from: selectedPosition,
       to,
       piece: Object.assign(new Piece('p', 'a1'), piece),

@@ -13,6 +13,7 @@ import { handleJoin } from './socket/handleJoin.js';
 import { handleMessage } from './socket/handleMessage.js';
 import { handleLeave } from './socket/handleLeave.js';
 import { handleDisconnect } from './socket/handleDisconnect.js';
+import { handleTimesover } from './socket/handleTimesover.js';
 
 dotenv.config()
 const port = process.env.PORT ?? 3030
@@ -36,6 +37,7 @@ interface ServerToClientEvents {
 
 interface ClientToServerEvents {
   move: (move: Move) => void;
+  timesover: ({ boardId, color }: { boardId: string, color: 'white' | 'black' }) => void;
   join: ({boardId, userId}: { boardId: string, userId: string }) => void;
   leave: ({boardId, userId}: { boardId: string, userId: string }) => void;
   message: ({ content, boardId, userId }: { content: string, boardId: string, userId: string }) => void;
@@ -68,6 +70,10 @@ io.on('connection', (socket) => {
 
   socket.on('move', (move) => {
     handleMove(move, io)
+  })
+
+  socket.on('timesover', ({ boardId, color }) => {
+    handleTimesover({ boardId, color }, socket, io)
   })
 
   socket.on('message', async ({content, boardId, userId}) => {

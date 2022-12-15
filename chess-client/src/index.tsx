@@ -15,16 +15,14 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 )
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <ChakraProvider>
-        <BrowserRouter>
-          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-          <Router />
-        </BrowserRouter>
-      </ChakraProvider>
-    </Provider>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <ChakraProvider>
+      <BrowserRouter>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <Router />
+      </BrowserRouter>
+    </ChakraProvider>
+  </Provider>,
 )
 
 serviceWorkerRegistration.register()

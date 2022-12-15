@@ -313,6 +313,7 @@ export class Board {
       boardCopy.currentPlayer = this.currentPlayer
 
       boardCopy.simulateMove({
+        id: this.moves.length,
         from: piece.position,
         to: move,
         piece: Object.assign(new Piece('p', 'a1'), piece),

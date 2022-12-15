@@ -70,7 +70,7 @@ const BoardSchema = new mongoose.Schema(
   spectators: [
     {
       type: String,
-      required: true,
+      required: false,
     },
   ],
   pieces: {

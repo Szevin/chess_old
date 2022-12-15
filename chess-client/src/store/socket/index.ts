@@ -33,6 +33,10 @@ export const useSocket = () => {
     socket.emit('move', move)
   }
 
+  const timesover = (color: 'white' | 'black') => {
+    socket.emit('timesover', { boardId: board._id, color })
+  }
+
   const join = (boardId: string) => {
     socket.emit('join', { boardId, userId: user._id ?? socket.id })
   }
@@ -45,5 +49,5 @@ export const useSocket = () => {
     socket.emit('message', { content, boardId: board._id, userId: user._id })
   }
 
-  return { move, join, message, leave }
+  return { move, timesover, join, message, leave }
 }

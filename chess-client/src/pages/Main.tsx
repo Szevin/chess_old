@@ -24,7 +24,7 @@ const Main = () => {
   useEffect(() => {
     const autoFetch = setInterval(() => {
       refetchBoards()
-    }, 10_000)
+    }, 5_000)
     return () => clearInterval(autoFetch)
   }, [])
 
@@ -78,7 +78,9 @@ const Main = () => {
                 <Td>{board.type}</Td>
                 <Td>{(board.white as IUser)?.name}</Td>
                 <Td>{(board.black as IUser)?.name}</Td>
-                <Td>{board.spectators.length}</Td>
+                <Td>
+                  {board.spectators.filter((id, index, self) => self.indexOf(id) === index).length}
+                </Td>
                 <Td>
                   <Button onClick={() => handleJoin(board._id)}>
                     { [board.black?._id, board.white?._id].includes(user._id) ? t('main.reconnect') : user._id && board.status === 'waiting' ? t('main.join') : t('main.watch') }
