@@ -16,7 +16,6 @@ export const useSocket = () => {
 
   React.useEffect(() => {
     socket.on('board', (incomingBoard: Board) => {
-      console.log(incomingBoard)
       if (Object.values(incomingBoard.pieces).some((piece) => piece.hidden)) {
         let piecesArray = Object.values(incomingBoard.pieces)
         const hiddenColor = incomingBoard.white._id === user._id ? 'black' : incomingBoard.black._id === user._id ? 'white' : null

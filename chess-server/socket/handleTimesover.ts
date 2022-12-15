@@ -5,7 +5,6 @@ import { BoardModel } from '../models/Board.js'
 import { scoreBoard } from './handleMove.js'
 
 export async function handleTimesover({ boardId, color }: { boardId: string, color: 'white' | 'black' }, socket: SocketType, io: IoType) {
-  console.log(`Times over for ${color} on board ${boardId}`)
     let board = await BoardModel.findById(boardId).populate<{white: IUser, black: IUser}>([
       {
         path: 'white black',
