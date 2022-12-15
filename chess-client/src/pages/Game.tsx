@@ -46,6 +46,12 @@ const Game = () => {
     })
   }
 
+  const formatTime = (minutes: number, seconds: number) => {
+    const minutesString = minutes < 10 ? `0${minutes}` : minutes
+    const secondsString = seconds < 10 ? `0${seconds}` : seconds
+    return `${minutesString}:${secondsString}`
+  }
+
   React.useEffect(() => {
     join(id)
     return () => {
@@ -166,7 +172,7 @@ const Game = () => {
 
       <GridItem area="black">
         <HStack>
-          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{`${blackMinutes}:${blackSeconds}`}</Text>
+          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{formatTime(blackMinutes, blackSeconds)}</Text>
           <UserNode active={board.currentPlayer === 'black'} user={board.black as unknown as IUser} />
           <Text>
             {
@@ -217,7 +223,7 @@ const Game = () => {
 
       <GridItem area="white">
         <HStack>
-          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{`${whiteMinutes}:${whiteSeconds}`}</Text>
+          <Text hidden={board.time === -1} border="1px solid grey" width="5rem" borderRadius="md" style={{ display: 'flex', justifyContent: 'center' }}>{formatTime(whiteMinutes, whiteSeconds)}</Text>
           <UserNode active={board.currentPlayer === 'white'} user={board.white as unknown as IUser} />
           <Text>
             {

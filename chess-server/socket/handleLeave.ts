@@ -18,7 +18,11 @@ export async function handleLeave({ boardId, userId }: { boardId: string, userId
 
     if (!board) return
 
-    board.spectators = board.spectators.filter(spectator => spectator !== socket.id)
+    try {
+      board.spectators = board.spectators.filter(spectator => spectator !== socket.id)
+    } catch (error) {
+      return
+    }
     board.save()
     socket.leave(boardId)
     io.to(boardId).emit('board', Object.assign(new Board(boardId), board.toObject()))
