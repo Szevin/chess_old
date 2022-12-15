@@ -29,7 +29,7 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
   const handleSubmit = async () => {
     const { name, fen, type, time, isPublic } = form.getValues()
     const allRules = [Rule.FOG_OF_WAR, Rule.NO_CAPTURE, Rule.NO_PAWNS, Rule.NO_RETREAT, Rule.RENDER_SWAP]
-    const firstRandomRuleIndex = 0 // Math.floor(Math.random() * allRules.length)
+    const firstRandomRuleIndex = Math.floor(Math.random() * allRules.length)
     const secondRandomRuleIndex = Math.floor(Math.random() * allRules.length)
     const res = await createBoard({
       FEN: ['normal', 'adaptive'].includes(type) ? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR' : fen,

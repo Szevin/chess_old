@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { io } from 'socket.io-client'
 import { Board, Move } from 'chess-common'
+import React from 'react'
 import { useAppDispatch, useAppSelector } from '..'
 import { setBoard } from '../redux/board'
 
@@ -13,24 +14,26 @@ export const useSocket = () => {
   const user = useAppSelector((state) => state.user)
   const board = useAppSelector((state) => state.board)
 
-  socket.on('board', (incomingBoard: Board) => {
-    console.log(incomingBoard)
-    if (Object.values(incomingBoard.pieces).some((piece) => piece.hidden)) {
-      let piecesArray = Object.values(incomingBoard.pieces)
-      const hiddenColor = incomingBoard.white._id === user._id ? 'black' : incomingBoard.black._id === user._id ? 'white' : null
-      piecesArray = piecesArray.map((piece) => {
-        if (piece.color !== hiddenColor) {
-          piece.hidden = false
-        } else {
-          piece.hidden = true
-        }
-        return piece
-      })
+  React.useEffect(() => {
+    socket.on('board', (incomingBoard: Board) => {
+      console.log(incomingBoard)
+      if (Object.values(incomingBoard.pieces).some((piece) => piece.hidden)) {
+        let piecesArray = Object.values(incomingBoard.pieces)
+        const hiddenColor = incomingBoard.white._id === user._id ? 'black' : incomingBoard.black._id === user._id ? 'white' : null
+        piecesArray = piecesArray.map((piece) => {
+          if (piece.color !== hiddenColor) {
+            piece.hidden = false
+          } else {
+            piece.hidden = true
+          }
+          return piece
+        })
 
-      incomingBoard.pieces = Object.fromEntries(piecesArray.map((piece) => [piece.position, piece]))
-    }
-    dispatch(setBoard(incomingBoard))
-  })
+        incomingBoard.pieces = Object.fromEntries(piecesArray.map((piece) => [piece.position, piece]))
+      }
+      dispatch(setBoard(incomingBoard))
+    })
+  }, [socket])
 
   const move = (move: Move) => {
     socket.emit('move', move)
