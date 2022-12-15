@@ -20,6 +20,8 @@ export const useSocket = () => {
       piecesArray = piecesArray.map((piece) => {
         if (piece.color !== hiddenColor) {
           piece.hidden = false
+        } else {
+          piece.hidden = true
         }
         return piece
       })
