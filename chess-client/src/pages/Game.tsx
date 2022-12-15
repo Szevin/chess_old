@@ -212,7 +212,7 @@ const Game = () => {
               <div>
                 {/* {getRender(move.piece)} */}
               </div>
-              <Text color="black">
+              <Text color="black" textAlign="center">
                 {move.piece.unicode}
                 {`${move.from}-${move.to}`}
               </Text>
