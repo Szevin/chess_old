@@ -4,7 +4,7 @@ import { IUser, Message } from 'chess-common'
 import dayjs from 'dayjs'
 import { useSocket } from '../store/socket'
 
-const Chat = ({ messages, readonly, blackId, whiteId } : { messages: Message[], readonly: boolean, blackId: string, whiteId: string }) => {
+const Chat = ({ messages, readonly, black, white } : { messages: Message[], readonly: boolean, black: IUser, white: IUser }) => {
   const [newMessage, setNewMessage] = useState('')
   const { message } = useSocket()
 
@@ -23,8 +23,8 @@ const Chat = ({ messages, readonly, blackId, whiteId } : { messages: Message[], 
             <Box>{dayjs(m.timestamp).format('YYYY-MM-DD hh:mm')}</Box>
             <Box>
               <Tag
-                color={m.user._id === whiteId ? 'black' : m.user._id === blackId ? 'white' : 'white'}
-                backgroundColor={m.user._id === whiteId ? 'white' : m.user._id === blackId ? 'black' : 'red'}
+                color={m.user._id === white._id ? 'black' : m.user._id === black._id ? 'white' : 'white'}
+                backgroundColor={m.user._id === white._id ? 'white' : m.user._id === black._id ? 'black' : 'red'}
               >{(m.user as IUser)?.name}
               </Tag>
             </Box>

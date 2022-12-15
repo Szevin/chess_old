@@ -237,7 +237,7 @@ const Game = () => {
       </GridItem>
 
       <GridItem area="chat" hidden={![(board.white as IUser)._id, (board.black as IUser)._id].includes(user._id)}>
-        <Chat messages={board.messages} readonly={board.status !== 'playing'} blackId={board?.black._id.toString() ?? ''} whiteId={board?.white._id.toString() ?? ''} />
+        <Chat messages={board.messages} readonly={board.status !== 'playing'} black={board.black as unknown as IUser} white={board.white as unknown as IUser} />
       </GridItem>
     </Grid>
   )
