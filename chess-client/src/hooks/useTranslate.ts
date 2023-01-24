@@ -67,6 +67,7 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
     'playdialog.time.unlimited': 'Unlimited',
     'playdialog.time.minute': 'Minutes',
     'playdialog.fen': 'FEN',
+    'playdialog.fen.invalid': 'Invalid FEN!',
     'playdialog.create': 'Create',
 
     'header.leaderboard': 'Leaderboard',
@@ -149,6 +150,7 @@ const translate: { en: Record<string, string>, hu: Record<string, string> } = {
     'playdialog.time.unlimited': 'Korlátlan',
     'playdialog.time.minute': 'Perc',
     'playdialog.fen': 'FEN',
+    'playdialog.fen.invalid': 'Érvénytelen FEN!',
     'playdialog.create': 'Létrehozás',
 
     'header.leaderboard': 'Ranglista',

@@ -26,13 +26,37 @@ const PlayDialog = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void 
     },
   })
 
+  const isValidFEN = (fen: string) => {
+    const fenParts = fen.split('/')
+    if (fenParts.length !== 8) return false
+    if (fen.includes(' ')) return false
+    if (fen.indexOf('K') === -1 || fen.indexOf('k') === -1) return false
+    if (fen.indexOf('K') !== fen.lastIndexOf('K')) return false
+    if (fen.indexOf('k') !== fen.lastIndexOf('k')) return false
+    if (fenParts.some((part) => part.length > 8)) return false
+    if (fenParts.some((part) => part.split('').map((s) => (Number(s) ? Number(s) : 1)).reduce((sum, i) => sum + i, 0) < 7)) return false
+
+    return true
+  }
+
   const handleSubmit = async () => {
     const { name, fen, type, time, isPublic } = form.getValues()
+    if (!isValidFEN(fen)) {
+      toast({
+        title: 'Error',
+        description: t('playdialog.fen.invalid'),
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+      return
+    }
+
     const allRules = [Rule.FOG_OF_WAR, Rule.NO_CAPTURE, Rule.NO_PAWNS, Rule.NO_RETREAT, Rule.RENDER_SWAP]
     const firstRandomRuleIndex = Math.floor(Math.random() * allRules.length)
     const secondRandomRuleIndex = Math.floor(Math.random() * allRules.length)
     const res = await createBoard({
-      FEN: ['normal', 'adaptive'].includes(type) ? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR' : fen,
+      pieces: ['normal', 'adaptive'].includes(type) ? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR' : fen.trim(),
       type,
       time,
       rules: type !== 'normal' ? [allRules[firstRandomRuleIndex], allRules[secondRandomRuleIndex]] : [],
