@@ -30,11 +30,17 @@ const Game = () => {
   const blackTimeExpiryDate = (board.currentPlayer === 'black' && board.lastMoveDate ? dayjs(board.lastMoveDate) : dayjs()).add(board.blackTime, 'seconds').toDate()
 
   const { minutes: whiteMinutes, seconds: whiteSeconds, pause: pauseWhiteTimer, restart: resetWhiteTimer } = useTimer(
-    { expiryTimestamp: whiteTimeExpiryDate },
+    { expiryTimestamp: whiteTimeExpiryDate, onExpire: () => handleTimeOver('white') },
   )
   const { minutes: blackMinutes, seconds: blackSeconds, pause: pauseBlackTimer, restart: resetBlackTimer } = useTimer(
-    { expiryTimestamp: blackTimeExpiryDate },
+    { expiryTimestamp: blackTimeExpiryDate, onExpire: () => handleTimeOver('black') },
   )
+
+  const handleTimeOver = (player: 'white' | 'black') => {
+    if (board.time === -1 || board.status !== 'playing') return
+
+    timesover(player)
+  }
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(id)
@@ -97,18 +103,6 @@ const Game = () => {
       pauseWhiteTimer()
     }
   }, [board])
-
-  React.useEffect(() => {
-    if (board.time === -1 || board.status !== 'playing') return
-
-    if (whiteMinutes === 0 && whiteSeconds === 0) {
-      timesover('white')
-    }
-
-    if (blackMinutes === 0 && blackSeconds === 0) {
-      timesover('black')
-    }
-  }, [whiteMinutes, whiteSeconds, blackMinutes, blackSeconds])
 
   if (!board._id) {
     return (

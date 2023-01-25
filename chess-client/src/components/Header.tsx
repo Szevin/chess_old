@@ -58,7 +58,7 @@ const Header = () => {
         <Button backgroundColor={pathname === '/leaderboard' ? 'cyan.400' : ''} variant="ghost" onClick={() => navigate('/leaderboard')}>{t('header.leaderboard')}</Button>
         <Button backgroundColor={pathname === '/login' ? 'cyan.400' : ''} hidden={!!user._id} variant="ghost" onClick={() => navigate('/login')}>{t('header.login')}</Button>
         <Button backgroundColor={pathname === '/register' ? 'cyan.400' : ''} hidden={!!user._id} variant="ghost" onClick={() => navigate('/register')}>{t('header.register')}</Button>
-        <Box backgroundColor={pathname.includes('/profile') ? 'cyan.400' : ''}>
+        <Box>
           <UserNode hidden={!user._id} user={user} />
         </Box>
         <Button hidden={!user._id} variant="solid" colorScheme="pink" marginLeft="1rem" onClick={() => { dispatch(setUser(null)); navigate('/login') }}><MdExitToApp /></Button>
